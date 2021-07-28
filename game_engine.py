@@ -1,9 +1,5 @@
 from local_data_handling import read_data
 
-day, plant_key = '0', str(input('Do you want a pea plant(0) or a potato plant(1)\n>>> '))
-weather_db = read_data('weather.json')
-todays_weather = weather_db[day]
-
 class Plant():
     def __init__(self, plant_key):
         self.get_attr(self.get_plant_data(plant_key))
@@ -35,9 +31,9 @@ class Plant():
             else: 
                 growth_from_temp = 0
         return growth_from_temp
-        
 
-current_plants = []
-current_plants.append(Plant(plant_key))
-for plant in current_plants:
-    plant.grow()
+if __name__ == "__main__":
+    todays_weather, current_plants   = read_data('weather.json')['0'], []
+    current_plants.append(Plant(str(input('Do you want a pea plant(0) or a potato plant(1)\n>>> '))))
+    for plant in current_plants:
+        plant.grow()
