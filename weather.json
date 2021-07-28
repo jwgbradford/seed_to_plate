@@ -1,182 +1,182 @@
 {
   "0": {
     "type": "Normal",
-    "temp": 7.34,
-    "sun": 22.24,
-    "rainfall": 0.5253614154180426
+    "temp": 11.72,
+    "sun": 17.46,
+    "rainfall": 1.5154948567503512
   },
   "1": {
-    "type": "Snow",
-    "temp": 13.78,
-    "sun": 19.45,
-    "rainfall": 0.1925295222617287
+    "type": "Normal",
+    "temp": 1.35,
+    "sun": 3.91,
+    "rainfall": 1.1908486689519175
   },
   "2": {
-    "type": "Snow",
-    "temp": 4.93,
-    "sun": 0.81,
-    "rainfall": 1.145486533785977
+    "type": "Normal",
+    "temp": 7.57,
+    "sun": 4.03,
+    "rainfall": 0.7662757430468479
   },
   "3": {
     "type": "Normal",
-    "temp": -6.45,
-    "sun": 5.36,
-    "rainfall": 0.8556809804622039
+    "temp": 17.1,
+    "sun": 7.71,
+    "rainfall": 1.431343315670129
   },
   "4": {
     "type": "Normal",
-    "temp": 8.32,
-    "sun": 0.48,
-    "rainfall": 1.238034798039561
+    "temp": 3.29,
+    "sun": 16.33,
+    "rainfall": 0.8379763475478526
   },
   "5": {
-    "type": "Snow",
-    "temp": -7.88,
-    "sun": 19.87,
-    "rainfall": 1.5292817321822176
+    "type": "Normal",
+    "temp": 5.63,
+    "sun": 8.21,
+    "rainfall": 1.8817891951004106
   },
   "6": {
     "type": "Normal",
-    "temp": 4.29,
-    "sun": 4.71,
-    "rainfall": 0.32128258875954074
+    "temp": 7.54,
+    "sun": 14.69,
+    "rainfall": 1.492931722495041
   },
   "7": {
-    "type": "Normal",
-    "temp": 17.65,
-    "sun": 11.1,
-    "rainfall": 0.3424964031683626
+    "type": "Snow",
+    "temp": 2.9,
+    "sun": 0.68,
+    "rainfall": 1.1548498737902768
   },
   "8": {
-    "type": "Normal",
-    "temp": 11.76,
-    "sun": 14.03,
-    "rainfall": 1.3740449928458118
+    "type": "Snow",
+    "temp": 17.74,
+    "sun": 17.98,
+    "rainfall": 1.4050714210775668
   },
   "9": {
-    "type": "Snow",
-    "temp": 0.63,
-    "sun": 19.83,
-    "rainfall": 1.173113407955947
+    "type": "Normal",
+    "temp": 1.28,
+    "sun": 5.82,
+    "rainfall": 1.8810582721674336
   },
   "10": {
     "type": "Normal",
-    "temp": 8.79,
-    "sun": 12.44,
-    "rainfall": 1.240497286885056
+    "temp": -6.58,
+    "sun": 7.33,
+    "rainfall": 0.5694808986421742
   },
   "11": {
-    "type": "Snow",
-    "temp": -4.16,
-    "sun": 11.6,
-    "rainfall": 1.8810017574455833
+    "type": "Normal",
+    "temp": 9.09,
+    "sun": 8.18,
+    "rainfall": 1.2657761907184308
   },
   "12": {
-    "type": "Snow",
-    "temp": 10.32,
-    "sun": 7.46,
-    "rainfall": 1.0897940853932357
+    "type": "Normal",
+    "temp": 11.41,
+    "sun": 10.59,
+    "rainfall": 0.5769319779289384
   },
   "13": {
     "type": "Snow",
-    "temp": -1.67,
-    "sun": 9.96,
-    "rainfall": 0.730221933510325
+    "temp": -0.18,
+    "sun": 6.66,
+    "rainfall": 0.26287042385803305
   },
   "14": {
     "type": "Snow",
-    "temp": 10.45,
-    "sun": 10.79,
-    "rainfall": 0.6136751721361331
+    "temp": 14.55,
+    "sun": 15.56,
+    "rainfall": 1.6105022865429415
   },
   "15": {
     "type": "Normal",
-    "temp": -5.24,
-    "sun": 21.52,
-    "rainfall": 0.22901546867491152
+    "temp": 15.16,
+    "sun": 14.37,
+    "rainfall": 1.8239067380114724
   },
   "16": {
     "type": "Normal",
-    "temp": 13.09,
-    "sun": 4.09,
-    "rainfall": 0.9333678242604488
+    "temp": 17.88,
+    "sun": 2.25,
+    "rainfall": 0.310979527619204
   },
   "17": {
     "type": "Normal",
-    "temp": -4.89,
-    "sun": 12.89,
-    "rainfall": 1.7758236304935704
+    "temp": -2.58,
+    "sun": 16.58,
+    "rainfall": 1.1101463611608742
   },
   "18": {
     "type": "Normal",
-    "temp": 13.3,
-    "sun": 8.48,
-    "rainfall": 1.2422290503347615
+    "temp": -0.92,
+    "sun": 5.52,
+    "rainfall": 1.8799759563702434
   },
   "19": {
     "type": "Snow",
-    "temp": 5.0,
-    "sun": 6.12,
-    "rainfall": 1.1907366032788163
+    "temp": 10.05,
+    "sun": 17.28,
+    "rainfall": 1.597596263007533
   },
   "20": {
-    "type": "Snow",
-    "temp": -7.3,
-    "sun": 18.73,
-    "rainfall": 1.615121802695985
+    "type": "Normal",
+    "temp": 17.7,
+    "sun": 6.91,
+    "rainfall": 1.4796416406774051
   },
   "21": {
-    "type": "Snow",
-    "temp": -4.07,
-    "sun": 14.48,
-    "rainfall": 0.5236085539685378
+    "type": "Normal",
+    "temp": 17.07,
+    "sun": 14.87,
+    "rainfall": 1.6180196403675404
   },
   "22": {
     "type": "Normal",
-    "temp": -6.13,
-    "sun": 3.4,
-    "rainfall": 0.7427783376693298
+    "temp": 0.02,
+    "sun": 13.42,
+    "rainfall": 1.2008319564567445
   },
   "23": {
     "type": "Normal",
-    "temp": -1.23,
-    "sun": 6.08,
-    "rainfall": 0.4639422075644406
+    "temp": 4.85,
+    "sun": 13.45,
+    "rainfall": 1.6373028580085682
   },
   "24": {
-    "type": "Normal",
-    "temp": 7.24,
-    "sun": 19.47,
-    "rainfall": 1.1131873125899512
+    "type": "Snow",
+    "temp": 11.57,
+    "sun": 8.89,
+    "rainfall": 1.299385898759229
   },
   "25": {
-    "type": "Normal",
-    "temp": 8.79,
-    "sun": 11.08,
-    "rainfall": 1.0119316482379057
+    "type": "Snow",
+    "temp": 6.6,
+    "sun": 3.47,
+    "rainfall": 0.1492889481718207
   },
   "26": {
     "type": "Normal",
-    "temp": 5.6,
-    "sun": 18.08,
-    "rainfall": 1.277343186285461
+    "temp": 4.57,
+    "sun": 2.39,
+    "rainfall": 1.797574369224219
   },
   "27": {
     "type": "Normal",
-    "temp": 4.36,
-    "sun": 20.41,
-    "rainfall": 0.8702462246620872
+    "temp": 4.24,
+    "sun": 5.38,
+    "rainfall": 0.5159900969161015
   },
   "28": {
-    "type": "Snow",
-    "temp": -5.09,
-    "sun": 12.36,
-    "rainfall": 0.0058069945027425796
+    "type": "Normal",
+    "temp": 5.58,
+    "sun": 12.27,
+    "rainfall": 0.9690654718251219
   },
   "29": {
-    "type": "Snow",
-    "temp": 14.52,
-    "sun": 6.49,
-    "rainfall": 0.08140651927096032
+    "type": "Normal",
+    "temp": 12.51,
+    "sun": 8.68,
+    "rainfall": 1.1048624691890911
   }
 }

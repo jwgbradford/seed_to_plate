@@ -1,6 +1,6 @@
-import json
+import json, random
 
-def write_data(file_name, dict_to_save):
+def write_data(dict_to_save, file_name):
     with open(file_name, 'w') as file:
         json.dump(dict_to_save, file, indent=2)
     file.close
