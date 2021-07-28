@@ -2,30 +2,31 @@
   "0": {
     "name": "pea",
     "snow_min_temp": -15,
-    "min temp": -2,
-    "ideal temp": 10,
-    "max temp": 21,
-    "sunlight": 5,
-    "branches": 74.8,
-    "height": 0.9114,
+    "min_temp": -2,
+    "ideal_temp": 10,
+    "max_temp": 21,
+    "ideal_sunlight": 5,
+    "ideal_branches": 74.8,
+    "final_height": 0.9114,
     "days_to_flower": 91,
     "days_to_fruit": 94,
     "days_to_harvest": 142,
     "hydration_decay": 4.76,
-    "water": 0.014
+    "ideal_water": 0.014
   },
   "1": {
     "name": "potato",
-    "min temp": 10,
-    "ideal temp": 20,
-    "max temp": 35,
-    "sunlight": 8,
-    "branches": 7,
-    "height": 1,
+    "snow_min_temp": "?",
+    "min_temp": 10,
+    "ideal_temp": 20,
+    "max-temp": 35,
+    "ideal_sunlight": 8,
+    "ideal_branches": 7,
+    "final_height": 1,
     "days_to_flower": 70,
     "days_to_fruit": 120,
     "days_to_harvest": 75,
     "hydration_decay": 4.76,
-    "water": 0.1311
+    "ideal_water": 0.1311
   }
 }
