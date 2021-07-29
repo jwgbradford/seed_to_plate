@@ -27,7 +27,7 @@ class Plant():
         if temp > self.ideal_temp:
             growth_from_temp = 1 - ((temp - self.ideal_temp) / (self.max_temp - self.ideal_temp))
         elif temp < self.ideal_temp:
-            if modifier == "Snow":
+            if (modifier == "Snow") and (self.snow_min_temp != "?"):
                 growth_from_temp = 1 - ((self.ideal_temp - temp) / (self.ideal_temp - self.snow_min_temp))
             else:
                 growth_from_temp = 1 - ((self.ideal_temp - temp) / (self.ideal_temp - self.min_temp))
