@@ -4,7 +4,7 @@ class Plant():
     def __init__(self, plant_key):
         self.set_attributes(self.get_plant_data(plant_key))
         self.daily_growth_rate = self.final_height/self.days_to_harvest
-        self.my_height = 0
+        self.my_height, self.recovery_days = 0, 0
 
     def get_plant_data(self, plant_key):
         plant_db = read_data('plant.json')
@@ -15,22 +15,15 @@ class Plant():
             setattr(self, key, plant_model[key])
 
     def grow(self, weather_today):
-        temperature_modifier = self.growth_modifier_temperature(weather_today['temp'], weather_today['type'])
-        growth_today = self.daily_growth_rate * temperature_modifier
-        self.my_height += growth_today
-        print(self.my_height)
+        if self.recovery_days <= 0:
+            temperature_modifier = self.growth_modifier_temperature(weather_today['temp'], weather_today['type'])
+            growth_today = self.daily_growth_rate * temperature_modifier
+            self.my_height += growth_today
+        else:
+            self.recovery_days -= 1
 
     def growth_modifier_temperature(self, temp, modifier):
         #protection = plants_modifers[plant_key][todays_weather['type']]
-        '''
-        if modifier == 'Snow':
-            if self.snow_min_temp != '?':
-                if temp < self.snow_min_temp:
-                    growth_from_temp = 0
-            else:
-                growth_from_temp = 0
-        else:
-            '''
         if temp > self.ideal_temp:
             growth_from_temp = 1 - ((temp - self.ideal_temp) / (self.max_temp - self.ideal_temp))
         elif temp < self.ideal_temp:
@@ -43,6 +36,7 @@ class Plant():
         # we don't want our plant to 'ungrow'
         if growth_from_temp < 0:
             growth_from_temp = 0
+            self.recovery_days += 1
         return growth_from_temp
 
 if __name__ == "__main__":
@@ -51,3 +45,5 @@ if __name__ == "__main__":
     for today in weather_history:
         for plant in current_plants:
             plant.grow(weather_history[today])
+            print(plant.my_height)
+            print('rd: ', plant.recovery_days)
