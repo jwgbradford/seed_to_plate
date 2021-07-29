@@ -11,7 +11,6 @@
     "days_to_flower": 91,
     "days_to_fruit": 94,
     "days_to_harvest": 142,
-    "hydration_decay": 4.76,
     "ideal_water": 0.014
   },
   "1": {
@@ -19,14 +18,13 @@
     "snow_min_temp": "?",
     "min_temp": 10,
     "ideal_temp": 20,
-    "max-temp": 35,
+    "max_temp": 35,
     "ideal_sunlight": 8,
     "ideal_branches": 7,
     "final_height": 1,
     "days_to_flower": 70,
     "days_to_fruit": 120,
     "days_to_harvest": 75,
-    "hydration_decay": 4.76,
     "ideal_water": 0.1311
   }
 }
