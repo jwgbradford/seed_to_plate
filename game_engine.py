@@ -16,21 +16,21 @@ class Plant():
 
     def grow(self, weather_today):
         if self.recovery_days <= 0:
+            hydration_modifier = self.growth_modifier_hydration(weather_today['rainfall'])
             temperature_modifier = self.growth_modifier_temperature(weather_today['temp'], weather_today['type'])
-            growth_today = self.daily_growth_rate * temperature_modifier
+            growth_today = self.daily_growth_rate * temperature_modifier * hydration_modifier
             self.my_height += growth_today
         else:
             self.recovery_days -= 1
 
     def growth_modifier_temperature(self, temp, modifier):
-        #protection = plants_modifers[plant_key][todays_weather['type']]
         if temp > self.ideal_temp:
-            growth_from_temp = 1 - ((temp - self.ideal_temp) / (self.max_temp - self.ideal_temp))
+            growth_from_temp = 1 - (temp - self.ideal_temp) / (self.max_temp - self.ideal_temp)
         elif temp < self.ideal_temp:
             if (modifier == "Snow") and (self.snow_min_temp != "?"):
-                growth_from_temp = 1 - ((self.ideal_temp - temp) / (self.ideal_temp - self.snow_min_temp))
+                growth_from_temp = 1 - (self.ideal_temp - temp) / (self.ideal_temp - self.snow_min_temp)
             else:
-                growth_from_temp = 1 - ((self.ideal_temp - temp) / (self.ideal_temp - self.min_temp))
+                growth_from_temp = 1 - (self.ideal_temp - temp) / (self.ideal_temp - self.min_temp)
         else:
             growth_from_temp = 1
         # we don't want our plant to 'ungrow'
@@ -38,6 +38,17 @@ class Plant():
             growth_from_temp = 0
             self.recovery_days += 1
         return growth_from_temp
+
+    def growth_modifier_hydration(self, rainfall):
+        if rainfall != self.ideal_water:
+            growth_from_rainfall = 1 - (self.ideal_water - rainfall) / (self.ideal_water)
+        else:
+            growth_from_rainfall = 1
+        # we don't want our plant to 'ungrow'
+        if growth_from_rainfall < 0:
+            growth_from_rainfall = 0
+            self.recovery_days += 1
+        return growth_from_rainfall
 
 if __name__ == "__main__":
     weather_history, current_plants = read_data('weather.json'), []
