@@ -5,7 +5,8 @@ class Plant():
     def __init__(self, plant_key):
         self.set_attributes(self.get_plant_data(plant_key))
         self.daily_growth_rate = self.final_height/self.days_to_harvest
-        self.my_height, self.stored_water, self.my_branches = 0, 0, 0
+        self.my_flowers, self.my_fruit, self.pollinated_flowers, self.health = 0, 0, 0, 0
+        self.my_height, self.stored_water, self.my_branches, self.age = 0, 0, 0, 0
         self.sun_recovery_day, self.water_recovery_day, self.temp_recovery_day = 0, 0, 0
         self.rate_of_bifurication = self.set_bifurication_rate()
 
@@ -43,15 +44,39 @@ class Plant():
         sunlight_modifier = self.growth_modifier_sunlight(weather_today['sun'])
         hydration_modifier = self.growth_modifier_hydration(weather_today['rainfall'])
         temperature_modifier = self.growth_modifier_temperature(weather_today['temp'], weather_today['type'])
-        growth_today = self.daily_growth_rate * temperature_modifier * hydration_modifier * sunlight_modifier
-        self.my_height += growth_today
-        self.add_branch()
+        self.my_height += self.daily_growth_rate * temperature_modifier * hydration_modifier * sunlight_modifier
+        if (plant.sun_recovery_day + plant.water_recovery_day + plant.temp_recovery_day) == 0:
+            if (self.age < self.days_to_flower) and (self.my_height > 0):
+                self.add_branches()           
+            elif self.days_to_fruit > self.age >= self.days_to_flower:
+                self.add_flowers()
+            elif self.age >= self.days_to_fruit:
+                self.add_fruit()
 
-    def add_branch(self):
+    def add_flowers(self):
+        self.my_flowers = self.my_branches
+        pollinated_flowers = self.pollinate_flowers(self.my_flowers)
+        if pollinated_flowers < self.pollinated_flowers:
+            self.pollinated_flowers += pollinated_flowers
+
+    def add_fruit(self):
+        self.my_fruit = self.pollinated_flowers
+        self.my_flowers -= self.pollinated_flowers
+        self.pollinated_flowers = 0
+
+    def add_branches(self):
         branching = uniform(0,1)
         if branching > self.rate_of_bifurication:
-            self.my_branches += 1
+            self.my_branches += 1 
 
+    def pollinate_flowers(self, my_flowers):
+        ideal_current_height = self.daily_growth_rate * self.age
+        self.health = self.my_height / ideal_current_height
+        for flower in range(0, my_flowers):
+            if self.health < uniform(0,1):
+                my_flowers -= 1
+        return my_flowers
+    
     def growth_modifier_temperature(self, temp, modifier):
         if temp > self.ideal_temp:
             growth_from_temp = 1 - (temp - self.ideal_temp) / (self.max_temp - self.ideal_temp)
@@ -106,8 +131,12 @@ class Plant():
 if __name__ == "__main__":
     weather_history, current_plants = read_data('weather.json'), []
     current_plants.append(Plant(str(input('Do you want a pea plant(0) or a potato plant(1)\n>>> '))))
+    print("plant.sun_recovery_day, plant.water_recovery_day, plant.temp_recovery_day")
+    print("plant.my_height, plant.my_branches, plant.my_flowers, plant.my_fruit")
     for today in weather_history:
         for plant in current_plants:
+            plant.age += 1
             plant.grow(weather_history[today])
+            print(plant.age)
             print(plant.sun_recovery_day, plant.water_recovery_day, plant.temp_recovery_day)
-            print(plant.my_height, plant.my_branches)
+            print(plant.my_height, plant.my_branches, plant.my_flowers, plant.pollinated_flowers, plant.my_fruit, plant.health)
