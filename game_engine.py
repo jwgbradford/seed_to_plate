@@ -1,11 +1,13 @@
 from local_data_handling import read_data
+from random import uniform
 
 class Plant():
     def __init__(self, plant_key):
         self.set_attributes(self.get_plant_data(plant_key))
         self.daily_growth_rate = self.final_height/self.days_to_harvest
-        self.my_height, self.stored_water = 0, 0
+        self.my_height, self.stored_water, self.my_branches = 0, 0, 0
         self.sun_recovery_day, self.water_recovery_day, self.temp_recovery_day = 0, 0, 0
+        self.rate_of_bifurication = self.set_bifurication_rate()
 
     def get_plant_data(self, plant_key):
         plant_db = read_data('plant.json')
@@ -15,12 +17,40 @@ class Plant():
         for key in plant_model:
             setattr(self, key, plant_model[key])
 
+    def set_bifurication_rate(self):
+        rate_of_bifurication = 0
+        good_enough = False
+        cycles = 10
+        while not good_enough:
+            cumulative_days = 0
+            for i in range(cycles):
+                day = 0
+                branches = 1
+                while branches < self.ideal_branches:
+                    for i in range(branches):
+                        branch_chance = uniform(0, 1)
+                        if branch_chance > rate_of_bifurication:
+                            branches += 1
+                    day += 1
+                cumulative_days += day
+            average_days = cumulative_days / cycles
+            if average_days > self.days_to_flower:
+                good_enough = True
+            rate_of_bifurication += 0.0001
+        return rate_of_bifurication
+
     def grow(self, weather_today):
         sunlight_modifier = self.growth_modifier_sunlight(weather_today['sun'])
         hydration_modifier = self.growth_modifier_hydration(weather_today['rainfall'])
         temperature_modifier = self.growth_modifier_temperature(weather_today['temp'], weather_today['type'])
         growth_today = self.daily_growth_rate * temperature_modifier * hydration_modifier * sunlight_modifier
         self.my_height += growth_today
+        self.add_branch()
+
+    def add_branch(self):
+        branching = uniform(0,1)
+        if branching > self.rate_of_bifurication:
+            self.my_branches += 1
 
     def growth_modifier_temperature(self, temp, modifier):
         if temp > self.ideal_temp:
@@ -80,4 +110,4 @@ if __name__ == "__main__":
         for plant in current_plants:
             plant.grow(weather_history[today])
             print(plant.sun_recovery_day, plant.water_recovery_day, plant.temp_recovery_day)
-            print(plant.my_height)
+            print(plant.my_height, plant.my_branches)
