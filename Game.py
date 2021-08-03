@@ -34,13 +34,11 @@ class Game():
 
     def get_weather(self):
         weather_dict = {
-            self.date_today: {
-                'type': random.choice(['Snow', 'Normal']),
-                'temp': round(random.uniform(9, 21), 2),
-                'sun': round(random.uniform(0,8), 2),
-                'rainfall': random.uniform(0, 0.13143)
+            'type': random.choice(['Snow', 'Normal']),
+            'temp': round(random.uniform(9, 21), 2),
+            'sun': round(random.uniform(0,8), 2),
+            'rainfall': random.uniform(0, 0.13143)
             }
-        }
         return weather_dict
 
     def add_plant(self): 
@@ -60,9 +58,14 @@ class Game():
         return datetime.strptime(str_today, "%Y/%m/%d")
 
     def main_game_loop(self):
-        for plant in self.my_plants:
-            for _ in range(0, plant.days_to_harvest):
-                weather = self.get_weather()
+        # for each day we have weather, we want to grow our plants
+        # for testing purposes lets run over 200 days
+        days_to_run = 200
+        for _ in range(days_to_run):
+            # all plants receive the same weather
+            weather = self.get_weather()
+            # grow each plant by one day
+            for plant in self.my_plants:
                 print(weather.values())
                 print(plant.my_height, self.date_today)
                 plant.grow(weather)
