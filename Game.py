@@ -5,9 +5,19 @@ import random
 
 class Game():
     def __init__(self):
-        self.current_plants = []
+        self.my_plants = []
+
+    def run(self):
         self.date_today = self.set_time()
-        self.weather = self.get_weather()
+        playing = input('Do you want to add a plant(y/n)\n >>> ')
+        while playing != 'n':
+            while playing != 'y':
+                print('Not a valid input please try again')
+            if playing == 'y':
+                self.add_plant()
+            playing = input('Do you want to add a plant(y/n)\n >>> ')
+        if playing == 'n':
+            self.main_game_loop()
 
     def choose_plant_type(self, plant_db):
         plant_type = str(input(str(plant_db.keys()) + '\n enter type of plant\n>>> '))
@@ -37,7 +47,7 @@ class Game():
         plant_db = read_data('plant.json')
         plant_type = self.choose_plant_type(plant_db)
         plant_data = self.choose_plant(plant_db, plant_type)
-        self.current_plants.append(eval(f'{plant_type}({plant_data})'))
+        self.my_plants.append(eval(f'{plant_type}({plant_data})'))
 
     def set_time(self):
         clock_type = input('Do you wish for realistic time(0) or virtual time(1)\n >>> ')
@@ -50,23 +60,15 @@ class Game():
         return datetime.strptime(str_today, "%Y/%m/%d")
 
     def main_game_loop(self):
-        for plant in self.current_plants:
+        for plant in self.my_plants:
             for _ in range(0, plant.days_to_harvest):
-                print(self.weather)
+                weather = self.get_weather()
+                print(weather)
                 print(plant.my_height, self.date_today)
-                plant.grow(self.weather)
+                plant.grow(weather)
                 self.date_today = self.date_today + timedelta(days=1)
-                self.weather = self.get_weather()
 
 if __name__ ==  "__main__":
     my_game = Game()
-    playing = input('Do you want to add a plant(y/n)\n >>> ')
-    while playing != 'n':
-        while playing != 'y':
-            print('Not a valid input please try again')
-        if playing == 'y':
-            my_game.add_plant()
-        playing = input('Do you want to add a plant(y/n)\n >>> ')
-    if playing == 'n':
-        my_game.main_game_loop()
+    my_game.run()
     print('The Game has ended')
