@@ -57,5 +57,11 @@ class Game():
 
 if __name__ ==  "__main__":
     my_game = Game()
-    my_game.add_plant()
-    my_game.main_game_loop()
+    playing = input('Do you want to add a plant(y/n)\n >>> ')
+    while (playing != 'n') and (playing != 'y'):
+        print('Not a valid input please try again'
+        playing = input('Do you want to add a plant(y/n)\n >>> ')
+    if playing == 'y':
+        my_game.add_plant()
+        my_game.main_game_loop()
+    print('The Game has ended'
