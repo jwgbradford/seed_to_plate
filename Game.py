@@ -63,7 +63,7 @@ class Game():
         for plant in self.my_plants:
             for _ in range(0, plant.days_to_harvest):
                 weather = self.get_weather()
-                print(weather)
+                print(weather.values())
                 print(plant.my_height, self.date_today)
                 plant.grow(weather)
                 self.date_today = self.date_today + timedelta(days=1)
