@@ -16,13 +16,10 @@ class Game():
 
     def choose_plant(self, plant_db, plant_type):
         choices = [plant_db[plant_type][data]['name'] for data in plant_db[plant_type]]
-        keys = [plant_db[plant_type][data] for data in plant_db[plant_type]]
         choice = input('pick plant a plant from\n' + str(choices) + '\n >>> ')
         while choice not in choices:
             choice = input('choose again\n pick plant a plant from\n' + str(choices) + '\n >>> ')
-        key = keys[choices.index(choice)]
-        plant_data = plant_db[plant_type][str(key)]
-        return plant_data
+        return plant_db[plant_type][str(choices.index(choice))]
 
     def get_weather(self):
         weather_dict = {
@@ -38,7 +35,6 @@ class Game():
         plant_db = read_data('plant.json')
         plant_type = self.choose_plant_type(plant_db)
         plant_data = self.choose_plant(plant_db, plant_type)
-        print(plant_data)
         self.current_plants.append(eval(f'{plant_type}({plant_data})'))
 
     def set_time(self):
