@@ -1,6 +1,7 @@
-from Data_Handler import read_data, random
+from Data_Handler import read_data
 from datetime import datetime, timedelta
 from Plant_Handler import Tuber, Fruit
+import random
 
 class Game():
     def __init__(self):

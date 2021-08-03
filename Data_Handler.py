@@ -1,4 +1,4 @@
-import json, random
+import json
 
 plant_dict = {
     'Fruit': {0: {'name': 'pea', 'snow_min_temp': -15, 'min_temp': -2, 'ideal_temp': 10, 'max_temp': 21, 'ideal_sunlight': 5, 'ideal_branches': 74.8, 'final_height': 0.9114, 'days_to_flower': 91, 'days_to_fruit': 94, 'days_to_harvest': 142, 'ideal_water': 0.114}},
