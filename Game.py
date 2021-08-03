@@ -49,7 +49,7 @@ class Game():
 
     def main_game_loop(self):
         for plant in self.current_plants:
-            for day in plant.days_to_harvest:
+            for _ in range(0, plant.days_to_harvest):
                 print(plant.my_height, self.date_today)
                 plant.grow(self.weather)
                 self.date_today = self.date_today + timedelta(days=1)
@@ -58,10 +58,12 @@ class Game():
 if __name__ ==  "__main__":
     my_game = Game()
     playing = input('Do you want to add a plant(y/n)\n >>> ')
-    while (playing != 'n') and (playing != 'y'):
-        print('Not a valid input please try again')
+    while playing != 'n':
+        while playing != 'y':
+            print('Not a valid input please try again')
+        if playing == 'y':
+            my_game.add_plant()
         playing = input('Do you want to add a plant(y/n)\n >>> ')
-    if playing == 'y':
-        my_game.add_plant()
+    if playing == 'n':
         my_game.main_game_loop()
     print('The Game has ended')
