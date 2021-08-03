@@ -30,6 +30,7 @@ class Game():
                 'rainfall': random.uniform(0, 0.13143)
             }
         }
+        return weather_dict
 
     def add_plant(self): 
         plant_db = read_data('plant.json')
@@ -50,6 +51,7 @@ class Game():
     def main_game_loop(self):
         for plant in self.current_plants:
             for _ in range(0, plant.days_to_harvest):
+                print(self.weather)
                 print(plant.my_height, self.date_today)
                 plant.grow(self.weather)
                 self.date_today = self.date_today + timedelta(days=1)
