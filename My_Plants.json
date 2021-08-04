@@ -1,0 +1,10 @@
+{
+  "Plant_0": {
+    "type": "Fruit",
+    "name": "pea",
+    "height": 0.3,
+    "branches": 169,
+    "flowers": 9,
+    "fruit": 61
+  }
+}

@@ -109,16 +109,18 @@ class Fruit(Plant):
             if (self.age < self.days_to_flower) and (self.my_height > 0):
                 self.add_branches()           
             elif self.days_to_fruit > self.age >= self.days_to_flower:
+                #value of flowers changes
                 self.add_flowers()
-            elif self.age >= self.days_to_fruit:
+            elif self.age == self.days_to_fruit:
                 self.add_fruit()
     
     def save_game_state(self):
-        return {'height': round(self.my_height, 2), 'branches': self.my_branches, 'flowers': self.my_flowers, 'fruit': self.my_fruit}
+        return {'type': self.__class__.__name__, 'name': self.name, 'height': round(self.my_height, 2), 'branches': self.my_branches, 'flowers': self.my_flowers, 'fruit': self.my_fruit}
 
     def add_fruit(self):
         self.my_fruit = self.pollinated_flowers
         self.my_flowers -= self.pollinated_flowers
+        self.pollinated_flowers = 0
 
     def add_flowers(self):
         self.my_flowers = round(self.my_branches / uniform(1.5, 2.5))

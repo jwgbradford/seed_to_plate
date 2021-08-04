@@ -66,6 +66,8 @@ class Game():
                 plant.grow(weather)
                 print(f'Plant_{i}: {plant.save_game_state()}')
             self.date += timedelta(days=1)
+        my_plants = {f'Plant_{i}': plant.save_game_state() for i, plant in enumerate(self.my_plants)}
+        write_data(my_plants, 'My_Plants.json')
 
 if __name__ ==  "__main__":
     my_game = Game()
