@@ -4,9 +4,10 @@ class Plant():
     def __init__(self, plant_data):
         self.set_attributes(plant_data)
         self.daily_growth_rate = self.final_height/self.days_to_harvest
-        self.my_flowers, self.my_fruit, self.pollinated_flowers, self.health = 0, 0, 0, 0
-        self.my_height, self.stored_water, self.my_branches, self.age = 0, 0, 0, 0
+        self.my_flowers, self.my_fruit, self.pollinated_flowers = 0, 0, 0
+        self.my_height, self.stored_water, self.age = 0, 0, 0
         self.sun_recovery_day, self.water_recovery_day, self.temp_recovery_day = 0, 0, 0
+        self.my_branches = 1
         self.rate_of_bifurication = self.set_bifurication_rate()
 
     def set_attributes(self, plant_model):
@@ -54,6 +55,8 @@ class Plant():
                 growth_from_temp = 1 - (self.ideal_temp - temp) / (self.ideal_temp - self.snow_min_temp)
             else:
                 growth_from_temp = 1 - (self.ideal_temp - temp) / (self.ideal_temp - self.min_temp)
+        else:
+            growth_from_temp = 1
         if (self.temp_recovery_day > 0) and (growth_from_temp > 0):
             self.temp_recovery_day -= 1
             growth_from_temp = 0
@@ -110,22 +113,32 @@ class Fruit(Plant):
             elif self.age >= self.days_to_fruit:
                 self.add_fruit()
     
+    def save_game_state(self):
+        return {'height': round(self.my_height, 2), 'branches': self.my_branches, 'flowers': self.my_flowers, 'fruit': self.my_fruit}
+
+    def add_fruit(self):
+        self.my_fruit = self.pollinated_flowers
+        self.my_flowers -= self.pollinated_flowers
+
     def add_flowers(self):
-        self.my_flowers = self.my_branches
-        pollinated_flowers = self.pollinate_flowers(self.my_flowers)
-        if pollinated_flowers < self.pollinated_flowers:
-            self.pollinated_flowers += pollinated_flowers
+        self.my_flowers = round(self.my_branches / uniform(1.5, 2.5))
+        new_pollinated_flowers = self.pollinate_flowers(self.my_flowers)
+        if (self.pollinated_flowers + new_pollinated_flowers) < self.my_flowers:
+            self.pollinated_flowers += new_pollinated_flowers
+        else:
+            self.pollinated_flowers = self.my_flowers
 
     def add_branches(self):
-        branching = uniform(0,1)
-        if branching > self.rate_of_bifurication:
-            self.my_branches += 1
+        for i in range(self.my_branches):
+            branching = uniform(0,1)
+            if branching > self.rate_of_bifurication:
+                self.my_branches += 1
 
     def pollinate_flowers(self, my_flowers):
         ideal_current_height = self.daily_growth_rate * self.age
-        self.health = self.my_height / ideal_current_height
-        for flower in range(0, my_flowers):
-            if self.health < uniform(0,1):
+        health = self.my_height / ideal_current_height
+        for _ in range(my_flowers):
+            if health < uniform(0,1):
                 my_flowers -= 1
         return my_flowers
 

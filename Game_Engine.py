@@ -1,4 +1,4 @@
-from Data_Handler import read_data
+from Data_Handler import read_data, write_data
 from datetime import datetime, timedelta
 from Plant_Handler import Tuber, Fruit
 import random
@@ -8,16 +8,17 @@ class Game():
         self.my_plants = []
 
     def run(self):
-        self.date_today = self.set_time()
-        playing = input('Do you want to add a plant(y/n)\n >>> ')
+        self.date = self.set_time()
+        playing = 'z'
         while playing != 'n':
+            playing = input('Do you want to add a plant(y/n)\n >>> ').lower()
+            if playing == 'n':
+                break
             while playing != 'y':
                 print('Not a valid input please try again')
-            if playing == 'y':
-                self.add_plant()
-            playing = input('Do you want to add a plant(y/n)\n >>> ')
-        if playing == 'n':
-            self.main_game_loop()
+                playing = input('Do you want to add a plant(y/n)\n >>> ').lower()
+            self.add_plant()
+        self.main_game_loop()
 
     def choose_plant_type(self, plant_db):
         plant_type = str(input(str(plant_db.keys()) + '\n enter type of plant\n>>> '))
@@ -58,18 +59,13 @@ class Game():
         return datetime.strptime(str_today, "%Y/%m/%d")
 
     def main_game_loop(self):
-        # for each day we have weather, we want to grow our plants
-        # for testing purposes lets run over 200 days
-        days_to_run = 200
-        for _ in range(days_to_run):
-            # all plants receive the same weather
+        for _ in range(200):
             weather = self.get_weather()
-            # grow each plant by one day
-            for plant in self.my_plants:
-                print(weather.values())
-                print(plant.my_height, self.date_today)
+            print(self.date)
+            for  i, plant in enumerate(self.my_plants):
                 plant.grow(weather)
-                self.date_today = self.date_today + timedelta(days=1)
+                print(f'Plant_{i}: {plant.save_game_state()}')
+            self.date += timedelta(days=1)
 
 if __name__ ==  "__main__":
     my_game = Game()
