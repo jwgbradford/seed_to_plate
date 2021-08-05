@@ -1,24 +1,38 @@
+from os import read
 from Data_Handler import read_data, write_data
 from datetime import datetime, timedelta
 from Plant_Handler import Tuber, Fruit
-import random
+import random, os.path
 
 class Game():
     def __init__(self):
         self.my_plants = []
+        self.date = self.set_time()
 
     def run(self):
-        self.date = self.set_time()
-        playing = 'z'
-        while playing != 'n':
-            playing = input('Do you want to add a plant(y/n)\n >>> ').lower()
-            if playing == 'n':
-                break
-            while playing != 'y':
-                print('Not a valid input please try again')
-                playing = input('Do you want to add a plant(y/n)\n >>> ').lower()
-            self.add_plant()
+        game_type = input('Do you want a (n)ew game or (l)oad a game?\n >>> ').lower()
+        if game_type == 'l':
+            self.load_game()
+        elif game_type == 'n':
+            new_plant = input('Do you want to add a plant(y/any_key)\n >>> ').lower()
+            while new_plant == 'y':
+                self.add_plant()
+                new_plant = input('Do you want to add a plant(y/any_key)\n >>> ').lower()
+        else:
+            self.run()
+            return
         self.main_game_loop()
+
+    def load_game(self):
+        wanted_file = input('enter file name to load\n >>> ')
+        while not os.path.isfile(wanted_file):
+            wanted_file = input(' enter valid file name\n >>> ')
+        plant_dict = read_data(wanted_file)
+        for plant in plant_dict:
+            current_plant_dict = plant_dict[plant]
+            plant_attrs = read_data('plant.json')[current_plant_dict['type']][str(current_plant_dict['key'])]
+            current_plant_dict.update(plant_attrs)
+            self.my_plants.append(eval(f"{current_plant_dict['type']}({current_plant_dict}, {current_plant_dict['key']})"))
 
     def choose_plant_type(self, plant_db):
         plant_type = str(input(str(plant_db.keys()) + '\n enter type of plant\n>>> '))
@@ -31,7 +45,7 @@ class Game():
         choice = input('pick plant a plant from\n' + str(choices) + '\n >>> ')
         while choice not in choices:
             choice = input('choose again\n pick plant a plant from\n' + str(choices) + '\n >>> ')
-        return plant_db[plant_type][str(choices.index(choice))]
+        return str(choices.index(choice))
 
     def get_weather(self):
         weather_dict = {
@@ -45,8 +59,10 @@ class Game():
     def add_plant(self): 
         plant_db = read_data('plant.json')
         plant_type = self.choose_plant_type(plant_db)
-        plant_data = self.choose_plant(plant_db, plant_type)
-        self.my_plants.append(eval(f'{plant_type}({plant_data})'))
+        plant_key = self.choose_plant(plant_db, plant_type)
+        plant_data = plant_db[plant_type][plant_key]
+        # eval turning string to python command
+        self.my_plants.append(eval(f'{plant_type}({plant_data}, {plant_key})'))
 
     def set_time(self):
         clock_type = input('Do you wish for realistic time(0) or virtual time(1)\n >>> ')
@@ -66,7 +82,9 @@ class Game():
                 plant.grow(weather)
                 print(f'Plant_{i}: {plant.save_game_state()}')
             self.date += timedelta(days=1)
-        my_plants = {f'Plant_{i}': plant.save_game_state() for i, plant in enumerate(self.my_plants)}
+            my_plants = {}
+        for i, plant in enumerate(self.my_plants):
+            my_plants[f'Plant_{i}'] = plant.save_game_state()
         write_data(my_plants, 'My_Plants.json')
 
 if __name__ ==  "__main__":

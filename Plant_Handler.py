@@ -1,13 +1,13 @@
 from random import uniform
 
 class Plant():
-    def __init__(self, plant_data):
-        self.set_attributes(plant_data)
-        self.daily_growth_rate = self.final_height/self.days_to_harvest
+    def __init__(self, plant_data, plant_key):
         self.my_flowers, self.my_fruit, self.pollinated_flowers = 0, 0, 0
         self.my_height, self.stored_water, self.age = 0, 0, 0
         self.sun_recovery_day, self.water_recovery_day, self.temp_recovery_day = 0, 0, 0
-        self.my_branches = 1
+        self.my_branches, self.my_key = 1, plant_key
+        self.set_attributes(plant_data)
+        self.daily_growth_rate = self.final_height/self.days_to_harvest
         self.rate_of_bifurication = self.set_bifurication_rate()
 
     def set_attributes(self, plant_model):
@@ -108,14 +108,14 @@ class Fruit(Plant):
         if (self.sun_recovery_day + self.water_recovery_day + self.temp_recovery_day) == 0:
             if (self.age < self.days_to_flower) and (self.my_height > 0):
                 self.add_branches()           
-            elif self.days_to_fruit > self.age >= self.days_to_flower:
+            elif self.age== self.days_to_flower:
                 #value of flowers changes
                 self.add_flowers()
             elif self.age == self.days_to_fruit:
                 self.add_fruit()
     
     def save_game_state(self):
-        return {'type': self.__class__.__name__, 'name': self.name, 'height': round(self.my_height, 2), 'branches': self.my_branches, 'flowers': self.my_flowers, 'fruit': self.my_fruit}
+        return {'key': self.my_key,'type': self.__class__.__name__, 'name': self.name, 'age': self.age, 'my_height': round(self.my_height, 2), 'my_branches': self.my_branches, 'my_flowers': self.my_flowers, 'my_fruit': self.my_fruit}
 
     def add_fruit(self):
         self.my_fruit = self.pollinated_flowers
