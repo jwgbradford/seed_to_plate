@@ -24,10 +24,10 @@ class Game():
         self.main_game_loop()
 
     def load_game(self):
-        wanted_file = input('enter file name to load\n >>> ')
-        while not os.path.isfile(wanted_file):
-            wanted_file = input(' enter valid file name\n >>> ')
-        plant_dict = read_data(wanted_file)
+        save_data_file = input('enter file name to load\n >>> ')
+        while not os.path.isfile(save_data_file):
+            save_data_file = input('enter valid file name\n >>> ')
+        plant_dict = read_data(save_data_file)
         for plant in plant_dict:
             current_plant_dict = plant_dict[plant]
             plant_attrs = read_data('plant.json')[current_plant_dict['type']][str(current_plant_dict['key'])]
@@ -85,7 +85,7 @@ class Game():
             my_plants = {}
         for i, plant in enumerate(self.my_plants):
             my_plants[f'Plant_{i}'] = plant.save_game_state()
-        write_data(my_plants, 'My_Plants.json')
+        write_data(my_plants, 'my_save.json')
 
 if __name__ ==  "__main__":
     my_game = Game()
