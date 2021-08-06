@@ -36,7 +36,7 @@ class Plant():
             rate_of_bifurication += 0.0001
         return rate_of_bifurication
 
-    def grow(self, weather_today):
+    def grow(self, weather_today, modifiers):
         self.age += 1
         sunlight_modifier = self.growth_modifier_sunlight(weather_today['sun'])
         hydration_modifier = self.growth_modifier_hydration(weather_today['rainfall'])
