@@ -115,7 +115,7 @@ class Game():
 
     def grow_plants(self, modifiers = {}):
         for i, plant in enumerate(self.my_plants):
-            plant.grow(self.get_weather, modifiers)
+            plant.grow(self.get_weather(), modifiers)
             print(f'Plant_{i}: {plant.save_game_state()}')
 
     def main_game_loop(self):

@@ -15,6 +15,7 @@ class Plant():
 
     def set_base_attributes(self, plant_model):
         base_model = read_data('plant.json')[plant_model['type']][plant_model['key']]
+        self.my_key = plant_model['key']
         for key in base_model:
             setattr(self, key, base_model[key])
         self.rate_of_bifurication = self.set_bifurication_rate()
@@ -48,6 +49,7 @@ class Plant():
 
     def grow(self, weather_today, modifiers):
         self.age += 1
+        print(weather_today)
         sunlight_modifier = self.growth_modifier_sunlight(weather_today['sun'])
         hydration_modifier = self.growth_modifier_hydration(weather_today['rainfall'])
         temperature_modifier = self.growth_modifier_temperature(weather_today['temp'], weather_today['type'])
