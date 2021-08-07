@@ -37,7 +37,7 @@ class Game():
 
     def save_game_state(self):
         game_id = input('enter Game ID to save in\n >>> ')
-        plants_to_write = {f'plant_{i}': [plant.save_game_state()] for i, plant in enumerate(self.my_plants)}
+        plants_to_write = {f'plant_{i}': plant.save_game_state() for i, plant in enumerate(self.my_plants)}
         save_date = str(self.get_date_today())
         dict_to_save = {'date_last_saved': save_date, 'clock_speed': self.clock_speed, 'my_plants': plants_to_write}
         write_data(dict_to_save, f'{game_id}_my_plants.json') #save dict form above in file from game_id

@@ -1,0 +1,28 @@
+{
+    "date_last_saved": "2021-08-07 00:00:00",
+    "clock_speed": 0.01,
+    "my_plants": {
+        "plant_0": {
+            "key": "0",
+            "type": "Fruit",
+            "name": "pea",
+            "age": 5,
+            "my_height": 0.01,
+            "my_branches": 1,
+            "my_flowers": 0,
+            "my_fruit": 0,
+            "rate_of_bifurication": 0.9278999999999141
+        },
+        "plant_1": {
+            "key": "0",
+            "type": "Fruit",
+            "name": "pea",
+            "age": 5,
+            "my_height": 0.01,
+            "my_branches": 4,
+            "my_flowers": 0,
+            "my_fruit": 0,
+            "rate_of_bifurication": 0.938099999999913
+        }
+    }
+}
