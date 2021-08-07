@@ -28,23 +28,25 @@ class Game():
 
     def load_game_state(self):
         game_id = input('enter Game ID to load\n >>> ')
-        while not os.path.isfile(f'Games/{game_id}.json'):
+        while not os.path.isfile(f'{game_id}_my_plants.json'):
             game_id = input('enter valid ID name\n >>> ')
-        self.load_plant_data(read_data(f'Games/{game_id}/Plants.json')['plants'])
-        self.clock_type = read_data(f'Games/{game_id}/Plants.json')['clock_type']
-        self.saved_day = read_data(f'Games/{game_id}/Plants.json')['saved_day']
+        saved_data = read_data(f'{game_id}_my_plants.json') # we only want to read the file once
+        self.load_plant_data(saved_data['my_plants'])
+        self.clock_type = saved_data['clock_type']
+        self.date_last_saved = saved_data['date_last_saved']
 
     def save_game_state(self):
         game_id = input('enter Game ID to save in\n >>> ')
-        plants_to_write = {f'Plant_{i}': [plant.save_game_state()] for i, plant in enumerate(self.my_plants)}
-        dict_to_save = {'current_day': self.get_date_today, 'game_mode': self.game_mode, 'plants': plants_to_write}
-        write_data(dict_to_save, f'Games/{game_id}.json') #save dict form above in file from game_id
+        plants_to_write = {f'plant_{i}': [plant.save_game_state()] for i, plant in enumerate(self.my_plants)}
+        dict_to_save = {'current_day': self.get_date_today, 'game_mode': self.game_mode, 'my_plants': plants_to_write}
+        write_data(dict_to_save, f'{game_id}.json') #save dict form above in file from game_id
 
     def load_plant_data(self, plant_dict):
-        for plant in plant_dict:
-            current_plant_dict = plant_dict[plant]
-            current_plant_dict.update(plant_dict[current_plant_dict['type']][str(current_plant_dict['key'])])
-            self.my_plants.append(eval(f"{current_plant_dict['type']}({current_plant_dict}, {current_plant_dict['key']})"))
+        for plant_data in plant_dict.values(): # load the values from the dictionary
+            print(plant_data)
+            # current_plant_dict.update(plant_dict[current_plant_dict['type']][str(current_plant_dict['key'])])
+            self.my_plants.append(eval(f"{plant_data['type']}({plant_data}, {plant_data['key']})"))
+        print(self.my_plants)
 
     def choose_plant_type(self, plant_db):
         plant_type = str(input(str(plant_db.keys()) + '\n enter type of plant\n>>> '))
@@ -80,7 +82,7 @@ class Game():
         clock_type = self.set_clock_type()
         self.current_day = self.get_date_today()
         self.clock_speed = self.set_clock_speed(clock_type)
-        self.saved_day = self.current_day
+        self.date_last_saved = self.current_day
 
     def set_clock_type(self):
         clock_type = input('Do you wish for realistic time(0) or virtual time(1)\n >>> ')
@@ -99,7 +101,7 @@ class Game():
             return abs(float(input('How many minutes in real time, does 1 day virtual time last?\n >>> ')))
 
     def get_missed_days(self):
-        days_difference = abs((self.get_date_today() - self.saved_day).days)
+        days_difference = abs((self.get_date_today() - self.date_last_saved).days)
         days_difference_by_clock_speed = (days_difference * 1440) / self.clock_speed
         return days_difference_by_clock_speed
 
