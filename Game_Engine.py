@@ -74,9 +74,11 @@ class Game():
         plant_db = read_data('plant.json')
         plant_type = self.choose_plant_type(plant_db)
         plant_key = self.choose_plant(plant_db, plant_type)
-        plant_data = plant_db[plant_type][plant_key]
+        plant_data = {'type' : plant_type,
+            'key' : plant_key}
+        #plant_data = plant_db[plant_type][plant_key]
         # eval turning string to python command
-        self.my_plants.append(eval(f'{plant_type}({plant_data}, {plant_key})'))
+        self.my_plants.append(eval(f'{plant_type}({plant_data})'))
 
     def set_clock(self):
         clock_type = self.set_clock_type()

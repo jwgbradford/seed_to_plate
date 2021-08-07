@@ -3,20 +3,24 @@ from Data_Handler import read_data
 
 class Plant():
     def __init__(self, plant_data):
+        self.set_independant_attributes()
+        self.set_base_attributes(plant_data)
+        self.set_saved_attributes(plant_data)
+
+    def set_independant_attributes(self):
         self.my_flowers, self.my_fruit, self.pollinated_flowers = 0, 0, 0
         self.my_height, self.stored_water, self.age = 0, 0, 0
         self.sun_recovery_day, self.water_recovery_day, self.temp_recovery_day = 0, 0, 0
-        self.my_branches, self.my_key = 1, plant_data['key']
-        self.set_attributes(plant_data)
-        self.daily_growth_rate = self.final_height/self.days_to_harvest
-        self.rate_of_bifurication = self.set_bifurication_rate()
+        self.my_branches = 1
 
-    def set_attributes(self, plant_model):
-        # set base attributes
+    def set_base_attributes(self, plant_model):
         base_model = read_data('plant.json')[plant_model['type']][plant_model['key']]
         for key in base_model:
             setattr(self, key, base_model[key])
-        # set additional attributed from saved data
+        self.rate_of_bifurication = self.set_bifurication_rate()
+        self.daily_growth_rate = self.final_height/self.days_to_harvest
+
+    def set_saved_attributes(self, plant_model):
         for key in plant_model:
             setattr(self, key, plant_model[key])
 
@@ -121,7 +125,15 @@ class Fruit(Plant):
                 self.add_fruit()
     
     def save_game_state(self):
-        return {'key': self.my_key,'type': self.__class__.__name__, 'name': self.name, 'age': self.age, 'my_height': round(self.my_height, 2), 'my_branches': self.my_branches, 'my_flowers': self.my_flowers, 'my_fruit': self.my_fruit}
+        return {'key': self.my_key,
+                'type': self.__class__.__name__, 
+                'name': self.name, 
+                'age': self.age, 
+                'my_height': round(self.my_height, 2), 
+                'my_branches': self.my_branches, 
+                'my_flowers': self.my_flowers, 
+                'my_fruit': self.my_fruit,
+                'rate_of_bifurication' : self.rate_of_bifurication}
 
     def add_fruit(self):
         self.my_fruit = self.pollinated_flowers
