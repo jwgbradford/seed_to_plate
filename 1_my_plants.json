@@ -3,7 +3,7 @@
     "clock_type" : "1",
     "my_plants" : {
         "Plant_0": {
-            "key": 0,
+            "key": "0",
             "type": "Fruit",
             "name": "pea",
             "age": 400,
@@ -13,7 +13,7 @@
             "my_fruit": 11
         },
         "Plant_1": {
-            "key": 0,
+            "key": "0",
             "type": "Fruit",
             "name": "pea",
             "age": 400,
@@ -23,7 +23,7 @@
             "my_fruit": 20
         },
         "Plant_2": {
-            "key": 0,
+            "key": "0",
             "type": "Fruit",
             "name": "pea",
             "age": 400,

@@ -43,9 +43,9 @@ class Game():
 
     def load_plant_data(self, plant_dict):
         for plant_data in plant_dict.values(): # load the values from the dictionary
-            print(plant_data)
+            print('loading data...')
             # current_plant_dict.update(plant_dict[current_plant_dict['type']][str(current_plant_dict['key'])])
-            self.my_plants.append(eval(f"{plant_data['type']}({plant_data}, {plant_data['key']})"))
+            self.my_plants.append(eval(f"{plant_data['type']}({plant_data})"))
         print(self.my_plants)
 
     def choose_plant_type(self, plant_db):

@@ -1,16 +1,22 @@
 from random import uniform
+from Data_Handler import read_data
 
 class Plant():
-    def __init__(self, plant_data, plant_key):
+    def __init__(self, plant_data):
         self.my_flowers, self.my_fruit, self.pollinated_flowers = 0, 0, 0
         self.my_height, self.stored_water, self.age = 0, 0, 0
         self.sun_recovery_day, self.water_recovery_day, self.temp_recovery_day = 0, 0, 0
-        self.my_branches, self.my_key = 1, plant_key
+        self.my_branches, self.my_key = 1, plant_data['key']
         self.set_attributes(plant_data)
         self.daily_growth_rate = self.final_height/self.days_to_harvest
         self.rate_of_bifurication = self.set_bifurication_rate()
 
     def set_attributes(self, plant_model):
+        # set base attributes
+        base_model = read_data('plant.json')[plant_model['type']][plant_model['key']]
+        for key in base_model:
+            setattr(self, key, base_model[key])
+        # set additional attributed from saved data
         for key in plant_model:
             setattr(self, key, plant_model[key])
 
@@ -101,8 +107,8 @@ class Plant():
         return growth_from_sunlight
 
 class Fruit(Plant):
-    def __init_(self, plant_key):
-        super().__init__(plant_key)
+    def __init_(self, plant_data):
+        super().__init__(plant_data)
 
     def plant_type_growth(self):
         if (self.sun_recovery_day + self.water_recovery_day + self.temp_recovery_day) == 0:
