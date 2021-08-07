@@ -32,14 +32,15 @@ class Game():
             game_id = input('enter valid ID name\n >>> ')
         saved_data = read_data(f'{game_id}_my_plants.json') # we only want to read the file once
         self.load_plant_data(saved_data['my_plants'])
-        self.clock_type = saved_data['clock_type']
+        self.clock_speed = saved_data['clock_speed']
         self.date_last_saved = saved_data['date_last_saved']
 
     def save_game_state(self):
         game_id = input('enter Game ID to save in\n >>> ')
         plants_to_write = {f'plant_{i}': [plant.save_game_state()] for i, plant in enumerate(self.my_plants)}
-        dict_to_save = {'current_day': self.get_date_today, 'game_mode': self.game_mode, 'my_plants': plants_to_write}
-        write_data(dict_to_save, f'{game_id}.json') #save dict form above in file from game_id
+        save_date = str(self.get_date_today())
+        dict_to_save = {'date_last_saved': save_date, 'clock_speed': self.clock_speed, 'my_plants': plants_to_write}
+        write_data(dict_to_save, f'{game_id}_my_plants.json') #save dict form above in file from game_id
 
     def load_plant_data(self, plant_dict):
         for plant_data in plant_dict.values(): # load the values from the dictionary
@@ -120,14 +121,13 @@ class Game():
 
     def main_game_loop(self):
         self.catch_up_days()
-        playing = True
-        while playing:
+        #playing = True
+        #while playing:
+        for _ in range(5):
             modifiers = {}
-            threading.Event().wait(self.clock_speed/60)
+            # delay (in sec) for clock speed (in min)
+            threading.Event().wait(self.clock_speed * 60)
             self.grow_plants(modifiers)
-            # delay for clock speed
-        
-        #here you can add modifers
         self.save_game_state()
 
 if __name__ ==  "__main__":

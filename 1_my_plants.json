@@ -1,6 +1,6 @@
 {
     "date_last_saved" : "01/01/2020",
-    "clock_type" : "1",
+    "clock_speed" : "0.1",
     "my_plants" : {
         "Plant_0": {
             "key": "0",
