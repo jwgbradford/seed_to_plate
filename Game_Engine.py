@@ -9,18 +9,21 @@ class Game():
         self.my_plants = []
 
     def run(self):
-        game_type = input('Do you want a (n)ew game or (l)oad a game?\n >>> ').lower()
-        if game_type == 'l':
-            self.load_game_state()
-        elif game_type == 'n':
-            new_plant = 'y'
-            while new_plant == 'y':
-                self.add_plant()
-                new_plant = input('Do you want to add another plant(y) or play the game (any key)\n >>> ').lower()
-            self.set_clock()
-        else:
-            self.run()
-            return
+        game_set = False
+        while not game_set:
+            game_type = input('Do you want a (n)ew game or (l)oad a game?\n >>> ').lower()[0]
+            if game_type == 'l':
+                self.load_game_state()
+                game_set = True
+            elif game_type == 'n':
+                new_plant = 'p'
+                while new_plant == 'p':
+                    self.add_plant()
+                    new_plant = input('Do you want to add another (p)lant or play the game (any key)\n >>> ').lower()[0]
+                self.set_clock()
+                game_set = True
+            else:
+                print('Invaild entry, plese enter n / l')
         self.main_game_loop()
 
     def load_game_state(self):
