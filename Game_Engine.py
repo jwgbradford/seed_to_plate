@@ -2,9 +2,9 @@ from Data_Handler import read_data, write_data
 from Plant_Handler import Tuber, Fruit
 from datetime import datetime
 import random, os, threading
-
 class Game():
     def __init__(self):
+        self.playing = ''
         self.my_plants = []
 
     def run(self):
@@ -113,10 +113,11 @@ class Game():
 
     def main_game_loop(self):
         self.catch_up_days()
-        for _ in range(5):
+        while self.playing == '':
             modifiers = {}
             threading.Event().wait(self.clock_speed * 60)
             self.grow_plants(modifiers)
+            self.playing = input('press enter to cntinue and any other key to stop')
         self.save_game_state()
 
 if __name__ ==  "__main__":
