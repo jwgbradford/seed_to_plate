@@ -13,6 +13,20 @@
             "days_to_fruit": 94,
             "days_to_harvest": 142,
             "ideal_water": 0.114
+        },
+        "1": {
+            "name": "tomato",
+            "snow_min_temp": "?",
+            "min_temp": 16,
+            "ideal_temp": 21,
+            "max_temp": 27,
+            "ideal_sunlight": 8,
+            "ideal_branches": 100,
+            "final_height": 1.8,
+            "days_to_flower": 45,
+            "days_to_fruit": 80,
+            "days_to_harvest": 120,
+            "ideal_water": 0.25
         }
     },
     "Tuber": {
