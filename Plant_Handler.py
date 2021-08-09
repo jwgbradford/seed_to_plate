@@ -174,3 +174,11 @@ class Tuber(Plant):
         elif self.days_to_flower+14 < self.age < self.days_to_havest:
             self.health = self.my_height / (self.daily_growth_rate * self.age)
             self.tuber_size += self.health
+
+    def save_game_state(self):
+        return {'key': self.my_key,
+                'type': self.__class__.__name__, 
+                'name': self.name, 
+                'age': self.age, 
+                'my_height': round(self.my_height, 2), 
+                'rate_of_bifurication' : self.rate_of_bifurication}
