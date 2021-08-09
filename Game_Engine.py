@@ -32,12 +32,12 @@ class Game():
         saved_data = read_data(f'{game_id}_my_plants.json') # we only want to read the file once
         self.load_plant_data(saved_data['my_plants'])
         self.clock_speed = saved_data['clock_speed']
-        self.date_last_saved = saved_data['date_last_saved']
+        self.date_last_saved = datetime.strptime(saved_data['date_last_saved'], "%Y/%m/%d")
 
     def save_game_state(self):
-        game_id = input('enter Game ID to save in\n >>> ')
+        save_date = datetime.today().strftime("%Y/%m/%d")
+        game_id = input('Enter a number to save game state into\n >>> ')
         plants_to_write = {f'plant_{i}': plant.save_game_state() for i, plant in enumerate(self.my_plants)}
-        save_date = str(self.get_date_today())
         dict_to_save = {'date_last_saved': save_date, 'clock_speed': self.clock_speed, 'my_plants': plants_to_write}
         write_data(dict_to_save, f'{game_id}_my_plants.json') #save dict form above in file from game_id
 
@@ -81,10 +81,8 @@ class Game():
         self.my_plants.append(eval(f'{plant_type}({plant_data})'))
 
     def set_clock(self):
-        clock_type = self.set_clock_type()
-        self.current_day = self.get_date_today()
-        self.clock_speed = self.set_clock_speed(clock_type)
-        self.date_last_saved = self.current_day
+        self.clock_speed = self.set_clock_speed(self.set_clock_type())
+        self.date_last_saved = datetime.strptime(datetime.now().strftime("%Y/%m/%d"), "%Y/%m/%d")
 
     def set_clock_type(self):
         clock_type = input('Do you wish for realistic time(0) or virtual time(1)\n >>> ')
@@ -92,20 +90,14 @@ class Game():
             clock_type = input('Do you wish for realistic time(0) or vitual time(1)\n>>> ')
         return clock_type
 
-    def get_date_today(self):
-        str_today = datetime.now().strftime("%Y/%m/%d")
-        return datetime.strptime(str_today, "%Y/%m/%d")
-
     def set_clock_speed(self, clock_type):
         if clock_type == '0':
             return 1440 # 24hours * 60minutes
-        else:
-            return abs(float(input('How many minutes in real time, does 1 day virtual time last?\n >>> ')))
+        return abs(float(input('How many minutes in real time, does 1 day virtual time last?\n >>> ')))
 
     def get_missed_days(self):
-        days_difference = abs((self.get_date_today() - self.date_last_saved).days)
-        days_difference_by_clock_speed = (days_difference * 1440) / self.clock_speed
-        return days_difference_by_clock_speed
+        todays_date = datetime.strptime(datetime.now().strftime("%Y/%m/%d"), "%Y/%m/%d")
+        return ((todays_date.day - self.date_last_saved.day) * 1440) / self.clock_speed
 
     def catch_up_days(self):
         days_to_run = self.get_missed_days()
@@ -114,17 +106,15 @@ class Game():
             days_to_run -= 1
 
     def grow_plants(self, modifiers = {}):
+        weather_today = self.get_weather()
         for i, plant in enumerate(self.my_plants):
-            plant.grow(self.get_weather(), modifiers)
+            plant.grow(weather_today, modifiers)
             print(f'Plant_{i}: {plant.save_game_state()}')
 
     def main_game_loop(self):
         self.catch_up_days()
-        #playing = True
-        #while playing:
         for _ in range(5):
             modifiers = {}
-            # delay (in sec) for clock speed (in min)
             threading.Event().wait(self.clock_speed * 60)
             self.grow_plants(modifiers)
         self.save_game_state()
