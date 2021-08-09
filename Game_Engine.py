@@ -1,6 +1,6 @@
 from os import read
 from Data_Handler import read_data, write_data
-from datetime import datetime, timedelta
+import datetime as dt
 from Plant_Handler import Tuber, Fruit
 import random, os, threading
 
@@ -10,6 +10,7 @@ class Game():
 
     def run(self):
         game_set = False
+        self.dt_ftp = self.get_date_today()
         while not game_set:
             game_type = input('Do you want a (n)ew game or (l)oad a game?\n >>> ').lower()[0]
             if game_type == 'l':
@@ -83,9 +84,8 @@ class Game():
 
     def set_clock(self):
         clock_type = self.set_clock_type()
-        self.current_day = self.get_date_today()
         self.clock_speed = self.set_clock_speed(clock_type)
-        self.date_last_saved = self.current_day
+        self.date_last_saved = self.dt_ftp
 
     def set_clock_type(self):
         clock_type = input('Do you wish for realistic time(0) or virtual time(1)\n >>> ')
@@ -94,8 +94,8 @@ class Game():
         return clock_type
 
     def get_date_today(self):
-        str_today = datetime.now().strftime("%Y/%m/%d")
-        return datetime.strptime(str_today, "%Y/%m/%d")
+        str_today = dt.datetime.now().strftime("%Y/%m/%d")
+        return dt.datetime.strptime(str_today, "%Y/%m/%d")
 
     def set_clock_speed(self, clock_type):
         if clock_type == '0':
@@ -104,8 +104,12 @@ class Game():
             return abs(float(input('How many minutes in real time, does 1 day virtual time last?\n >>> ')))
 
     def get_missed_days(self):
-        days_difference = abs((self.get_date_today() - self.date_last_saved).days)
-        days_difference_by_clock_speed = (days_difference * 1440) / self.clock_speed
+        print('days')
+        ds_ftp = dt.datetime.strptime(self.date_last_saved, "%Y-%m-%d %H:%M:%S")
+        delta =  dt.timedelta.days(self.dt_ftp - ds_ftp)
+        #days_difference = abs((self.current_day - self.date_last_saved).days)
+        #days_difference_by_clock_speed = (days_difference * 1440) / self.clock_speed
+        i = input()
         return days_difference_by_clock_speed
 
     def catch_up_days(self):
