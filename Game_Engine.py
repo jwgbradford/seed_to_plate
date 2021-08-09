@@ -1,4 +1,3 @@
-from os import read
 from Data_Handler import read_data, write_data
 from datetime import datetime, timedelta
 from Plant_Handler import Tuber, Fruit
