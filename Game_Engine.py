@@ -1,6 +1,6 @@
 from Data_Handler import read_data, write_data
-from datetime import datetime, timedelta
 from Plant_Handler import Tuber, Fruit
+from datetime import datetime
 import random, os, threading
 
 class Game():
@@ -27,9 +27,9 @@ class Game():
 
     def load_game_state(self):
         game_id = input('enter Game ID to load\n >>> ')
-        while not os.path.isfile(f'{game_id}_my_plants.json'):
+        while not os.path.isfile(f'Game{game_id}.json'):
             game_id = input('enter valid ID name\n >>> ')
-        saved_data = read_data(f'{game_id}_my_plants.json') # we only want to read the file once
+        saved_data = read_data(f'Game{game_id}.json') # we only want to read the file once
         self.load_plant_data(saved_data['my_plants'])
         self.clock_speed = saved_data['clock_speed']
         self.date_last_saved = datetime.strptime(saved_data['date_last_saved'], "%Y/%m/%d")
@@ -39,7 +39,7 @@ class Game():
         game_id = input('Enter a number to save game state into\n >>> ')
         plants_to_write = {f'plant_{i}': plant.save_game_state() for i, plant in enumerate(self.my_plants)}
         dict_to_save = {'date_last_saved': save_date, 'clock_speed': self.clock_speed, 'my_plants': plants_to_write}
-        write_data(dict_to_save, f'{game_id}_my_plants.json') #save dict form above in file from game_id
+        write_data(dict_to_save, f'Game{game_id}.json') #save dict form above in file from game_id
 
     def load_plant_data(self, plant_dict):
         for plant_data in plant_dict.values(): # load the values from the dictionary
