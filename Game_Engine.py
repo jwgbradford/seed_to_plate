@@ -115,8 +115,9 @@ class Game():
             days_to_run -= 1
 
     def grow_plants(self, modifiers = {}):
+        weather_today = self.get_weather()
         for i, plant in enumerate(self.my_plants):
-            plant.grow(self.get_weather(), modifiers)
+            plant.grow(weather_today, modifiers)
             print(f'Plant_{i}: {plant.save_game_state()}')
 
     def main_game_loop(self):
