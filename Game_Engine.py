@@ -9,7 +9,6 @@ class Game():
 
     def run(self):
         game_set = False
-        self.dt_ftp = self.get_date_today()
         while not game_set:
             game_type = input('Do you want a (n)ew game or (l)oad a game?\n >>> ').lower()[0]
             if game_type == 'l':
