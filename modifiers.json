@@ -4,3 +4,29 @@
     "type1": {"name": "name", "effect":"effect"},
     "type1": {"name": "name", "effect":"effect"}
 }
+
+# suggested dict #
+{"modifiers": {
+    "m01" : {
+        "type" : "temp",
+        "name" : "straw",
+        "description" : "helps keep plants warm a little bit",
+        "uses" : 5,
+        "power" : 0.25
+        },
+    "m02" :{
+        "type" : "temp",
+        "name" : "fan",
+        "description" : "helps keep plants cool a little bit",
+        "uses" : 5,
+        "power" : -0.25
+        },
+    "m03" : {
+        "type" : "water",
+        "name" : "watering can",
+        "description" : "helps keep plants watered a little bit",
+        "uses" : 1,
+        "power" : 0.25
+        },
+    }
+}
