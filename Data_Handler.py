@@ -41,10 +41,11 @@ plant_dict = {
             'ideal_sunlight': 8, 
             'ideal_branches': 7, 
             'final_height': 1,
-            'days_to_flower': 50, 
-            'days_to_fruit': 120, 
-            'days_to_harvest': 75,  
-            'ideal_water': 0.1311
+            'days_to_flower': 56, 
+            'days_to_fruit': 70, 
+            'days_to_harvest': 84,  
+            'ideal_water': 0.1311,
+            'ideal_tubers': 10
         }
     }
 }

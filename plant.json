@@ -42,7 +42,8 @@
             "days_to_flower": 50,
             "days_to_fruit": 120,
             "days_to_harvest": 75,
-            "ideal_water": 0.1311
+            "ideal_water": 0.1311,
+            "ideal_tubers": 10
         }
     }
 }

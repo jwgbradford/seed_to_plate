@@ -117,7 +117,7 @@ class Game():
             modifiers = {}
             threading.Event().wait(self.clock_speed * 60)
             self.grow_plants(modifiers)
-            self.playing = input('press enter to cntinue and any other key to stop')
+            self.playing = input('press enter to continue and any other key to stop')
         self.save_game_state()
 
 if __name__ ==  "__main__":

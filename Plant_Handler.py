@@ -21,6 +21,12 @@ class Plant():
         self.rate_of_bifurication = self.set_bifurication_rate()
         self.daily_growth_rate = self.final_height/self.days_to_harvest
 
+    def add_branches(self):
+        for i in range(self.my_branches):
+            branching = uniform(0,1)
+            if branching > self.rate_of_bifurication:
+                self.my_branches += 1
+
     def set_saved_attributes(self, plant_model):
         for key in plant_model:
             setattr(self, key, plant_model[key])
@@ -150,12 +156,6 @@ class Fruit(Plant):
         else:
             self.pollinated_flowers = self.my_flowers
 
-    def add_branches(self):
-        for i in range(self.my_branches):
-            branching = uniform(0,1)
-            if branching > self.rate_of_bifurication:
-                self.my_branches += 1
-
     def pollinate_flowers(self, my_flowers):
         ideal_current_height = self.daily_growth_rate * self.age
         health = self.my_height / ideal_current_height
@@ -167,11 +167,15 @@ class Fruit(Plant):
 class Tuber(Plant):
     def __init__(self, plant_key):
         super().__init__(plant_key)
+        self.current_tubers = 0
+        self.tuber_size = 0
 
     def plant_type_growth(self):
-        if (self.days_to_flower <= self.age <= (self.days_to_flower+14)): # small tubers grow when plant flowers
-            self.current_small_poatos = int((self.ideal_potaoes / 14) * self.age)
-        elif self.days_to_flower+14 < self.age < self.days_to_havest:
+        if 0 < self.age <= self.days_to_flower:
+            self.add_branches()
+        elif (self.days_to_flower <= self.age <= (self.days_to_fruit)): # small tubers grow when plant flowers
+            self.current_tubers = int((self.ideal_tubers * (self.days_to_fruit - self.days_to_flower)) * self.age)
+        elif self.days_to_fruit < self.age < self.days_to_havest:
             self.health = self.my_height / (self.daily_growth_rate * self.age)
             self.tuber_size += self.health
 
@@ -180,5 +184,8 @@ class Tuber(Plant):
                 'type': self.__class__.__name__, 
                 'name': self.name, 
                 'age': self.age, 
+                'tuber_size': self.tuber_size,
+                'my_branches': self.my_branches,
+                'current_tubers': self.current_tubers,
                 'my_height': round(self.my_height, 2), 
                 'rate_of_bifurication' : self.rate_of_bifurication}
