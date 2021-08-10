@@ -59,7 +59,9 @@ class Plant():
         sunlight_modifier = self.growth_modifier_sunlight(weather_today['sun'])
         hydration_modifier = self.growth_modifier_hydration(weather_today['rainfall'])
         temperature_modifier = self.growth_modifier_temperature(weather_today['temp'], weather_today['type'])
-        self.my_height += self.daily_growth_rate * temperature_modifier * hydration_modifier * sunlight_modifier
+        self.health = self.my_height / (self.daily_growth_rate * self.age)
+        if self.age < self.days_to_harvest:
+            self.my_height += self.daily_growth_rate * temperature_modifier * hydration_modifier * sunlight_modifier
         self.plant_type_growth()
 
     def plant_type_growth(self):
@@ -157,10 +159,8 @@ class Fruit(Plant):
             self.pollinated_flowers = self.my_flowers
 
     def pollinate_flowers(self, my_flowers):
-        ideal_current_height = self.daily_growth_rate * self.age
-        health = self.my_height / ideal_current_height
         for _ in range(my_flowers):
-            if health < uniform(0,1):
+            if self.health < uniform(0,1):
                 my_flowers -= 1
         return my_flowers
 
@@ -175,8 +175,7 @@ class Tuber(Plant):
             self.add_branches()
         elif (self.days_to_flower <= self.age <= (self.days_to_fruit)): # small tubers grow when plant flowers
             self.current_tubers = self.ideal_tubers * ( (self.age - self.days_to_flower) / (self.days_to_fruit - self.days_to_flower) )
-        elif self.days_to_fruit < self.age < self.days_to_havest:
-            self.health = self.my_height / (self.daily_growth_rate * self.age)
+        elif self.days_to_fruit < self.age < self.days_to_harvest:
             self.tuber_size += self.health
 
     def save_game_state(self):
