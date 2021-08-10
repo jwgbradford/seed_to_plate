@@ -174,7 +174,7 @@ class Tuber(Plant):
         if 0 < self.age <= self.days_to_flower:
             self.add_branches()
         elif (self.days_to_flower <= self.age <= (self.days_to_fruit)): # small tubers grow when plant flowers
-            self.current_tubers = int((self.ideal_tubers * (self.days_to_fruit - self.days_to_flower)) * self.age)
+            self.current_tubers = self.ideal_tubers * ( (self.age - self.days_to_flower) / (self.days_to_fruit - self.days_to_flower) )
         elif self.days_to_fruit < self.age < self.days_to_havest:
             self.health = self.my_height / (self.daily_growth_rate * self.age)
             self.tuber_size += self.health
