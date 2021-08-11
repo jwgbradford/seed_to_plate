@@ -104,11 +104,10 @@ class Game():
 
     def grow_plants(self):
         weather_today = self.get_weather()
-        modifiers = self.get_modifiers()
         for i, plant in enumerate(self.my_plants):
-            plant.grow(weather_today, modifiers)
-            self.update_score(plant.reset_health())
+            plant.grow(weather_today, self.get_modifiers())
             print(f'Plant_{i}: {plant.save_game_state()}')
+            self.update_score(plant.reset_health())
 
     def get_weather(self):
         weather_dict = {
@@ -120,7 +119,24 @@ class Game():
         return weather_dict
 
     def get_modifiers(self):
-        self.plant_modifiers.values()[]
+        choices = {key: [self.plant_modifiers[key]['name'], self.plant_modifiers[key]['description']] for key in self.plant_modifiers}
+        again = 'y'
+        chosen_modifiers = []
+        while again == 'y':
+            print(choices)
+            choice = input('pick a modifer key to add to your inventory\n >>>')
+            while choice not in choices.keys():
+                choice = input('pick a real modifer key to add to your inventory\n >>>')
+            chosen_modifiers.append(choice)
+            chosen_type = self.plant_modifiers[choice]['type']
+            del_modifiers = []
+            for key in self.plant_modifiers:
+                if self.plant_modifiers[key]['type'] == chosen_type:
+                    del_modifiers.append(key)
+            for modifer_to_delete in del_modifiers:
+                del self.plant_modifiers[modifer_to_delete]
+            again = input('do you want to pick another modifier (y/n)').lower()
+        return chosen_modifiers
 
     def update_score(self, plant_health):
         if plant_health >= 1:
