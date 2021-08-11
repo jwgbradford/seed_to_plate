@@ -1,40 +1,40 @@
 {
-"temp":{
-        "m01": {
+    "temp":{
+        "mt01": {
             "name" : "straw",
             "description" : "helps keep plants warm a little bit",
             "uses" : 5,
             "power" : 0.25
         },
-        "m02":{
+        "mt02":{
             "name" : "fan",
             "description" : "helps keep plants cool a little bit",
             "uses" : 5,
             "power" : -0.25
         }
-    }
+    },
     "water":{
-        "m03": {
+        "mw01": {
             "name" : "watering can",
             "description" : "helps keep plants watered a little bit",
             "uses" : 1,
             "power" : 0.2
         },
-        "m04":{
+        "mw02":{
             "name":  "umbrella",
             "description": "blocks rainfall",
             "uses": 3,
             "power": 0.25
         }
-    }
+    },
     "sun":{
-        "m05":{
+        "ms01":{
             "name":  "lamp",
             "description": "creates more sunlight",
             "uses": 3,
             "power": 0.25
         },
-        "m06":{
+        "ms02":{
             "name":  "sun shade",
             "description": "blocks light",
             "uses": 3,

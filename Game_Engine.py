@@ -45,7 +45,6 @@ class Game():
             print('loading data...')
             # current_plant_dict.update(plant_dict[current_plant_dict['type']][str(current_plant_dict['key'])])
             self.my_plants.append(eval(f"{plant_data['type']}({plant_data})"))
-        print(self.my_plants)
 
     def add_plant(self): 
         plant_db = read_data('plant.json')
@@ -107,7 +106,7 @@ class Game():
         for i, plant in enumerate(self.my_plants):
             plant.grow(weather_today, self.get_modifiers())
             print(f'Plant_{i}: {plant.save_game_state()}')
-            self.update_score(plant.reset_health())
+            #self.update_score(plant.reset_health())
 
     def get_weather(self):
         weather_dict = {
@@ -119,23 +118,25 @@ class Game():
         return weather_dict
 
     def get_modifiers(self):
-        choices = {key: [self.plant_modifiers[key]['name'], self.plant_modifiers[key]['description']] for key in self.plant_modifiers}
-        again = 'y'
-        chosen_modifiers = []
-        while again == 'y':
-            print(choices)
+        pick_modifiers, choices = 'y', []
+        modifier_options = dict(self.plant_modifiers)
+        chosen_modifiers = {'temp': 0, 'sun': 0, 'water': 0}
+        while pick_modifiers == 'y':
+            for modifier_type in modifier_options:
+                for modifier_key in modifier_options[modifier_type]:
+                    modifier = modifier_options[modifier_type][modifier_key]
+                    print(modifier['name']+': '+modifier['description']+' ('+modifier_key+')')
+                    choices.append([modifier_key, modifier_type])
             choice = input('pick a modifer key to add to your inventory\n >>>')
-            while choice not in choices.keys():
+            while choice not in [option[0] for option in choices]:
                 choice = input('pick a real modifer key to add to your inventory\n >>>')
-            chosen_modifiers.append(choice)
-            chosen_type = self.plant_modifiers[choice]['type']
-            del_modifiers = []
-            for key in self.plant_modifiers:
-                if self.plant_modifiers[key]['type'] == chosen_type:
-                    del_modifiers.append(key)
-            for modifer_to_delete in del_modifiers:
-                del self.plant_modifiers[modifer_to_delete]
-            again = input('do you want to pick another modifier (y/n)').lower()
+            for modifier_type in modifier_options:
+                if choice[1] == modifier_type[0]:
+                    chosen_modifier_type = modifier_type
+            chosen_modifier = modifier_options[chosen_modifier_type][choice]
+            chosen_modifiers[chosen_modifier_type] = chosen_modifier['power']
+            del modifier_options[chosen_modifier_type]
+            pick_modifiers = input('do you wish for another modifer (y/n) ')
         return chosen_modifiers
 
     def update_score(self, plant_health):

@@ -13,39 +13,6 @@
             "my_flowers": 0,
             "my_fruit": 0,
             "rate_of_bifurication": 0.9363999999999132
-        },
-        "plant_1": {
-            "key": "1",
-            "type": "Fruit",
-            "name": "tomato",
-            "age": 3,
-            "my_height": 0.0,
-            "my_branches": 1,
-            "my_flowers": 0,
-            "my_fruit": 0,
-            "rate_of_bifurication": 0.8528999999999224
-        },
-        "plant_2": {
-            "key": "0",
-            "type": "Tuber",
-            "name": "potato",
-            "age": 3,
-            "tuber_size": 0,
-            "my_branches": 1,
-            "current_tubers": 0,
-            "my_height": 0.01,
-            "rate_of_bifurication": 0.9301999999999139
-        },
-        "plant_3": {
-            "key": "0",
-            "type": "Tuber",
-            "name": "potato",
-            "age": 3,
-            "tuber_size": 0,
-            "my_branches": 1,
-            "current_tubers": 0,
-            "my_height": 0.01,
-            "rate_of_bifurication": 0.9302999999999139
         }
     }
 }
