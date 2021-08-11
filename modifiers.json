@@ -1,44 +1,44 @@
 {
-    "m01": {
-        "type" : "temp",
-        "name" : "straw",
-        "description" : "helps keep plants warm a little bit",
-        "uses" : 5,
-        "power" : 0.25
-    },
-    "m02":{
-        "type" : "temp",
-        "name" : "fan",
-        "description" : "helps keep plants cool a little bit",
-        "uses" : 5,
-        "power" : -0.25
-    },
-    "m03": {
-        "type" : "water",
-        "name" : "watering can",
-        "description" : "helps keep plants watered a little bit",
-        "uses" : 1,
-        "power" : 0.2
-    },
-    "m04":{
-        "type": "water",
-        "name":  "umbrella",
-        "description": "blocks rainfall",
-        "uses": 3,
-        "power": 0.25
-    },
-    "m05":{
-        "type": "sun",
-        "name":  "lamp",
-        "description": "creates more sunlight",
-        "uses": 3,
-        "power": 0.25
-    },
-    "m06":{
-        "type": "sun",
-        "name":  "sun shade",
-        "description": "blocks light",
-        "uses": 3,
-        "power": 0.25
+"temp":{
+        "m01": {
+            "name" : "straw",
+            "description" : "helps keep plants warm a little bit",
+            "uses" : 5,
+            "power" : 0.25
+        },
+        "m02":{
+            "name" : "fan",
+            "description" : "helps keep plants cool a little bit",
+            "uses" : 5,
+            "power" : -0.25
+        }
+    }
+    "water":{
+        "m03": {
+            "name" : "watering can",
+            "description" : "helps keep plants watered a little bit",
+            "uses" : 1,
+            "power" : 0.2
+        },
+        "m04":{
+            "name":  "umbrella",
+            "description": "blocks rainfall",
+            "uses": 3,
+            "power": 0.25
+        }
+    }
+    "sun":{
+        "m05":{
+            "name":  "lamp",
+            "description": "creates more sunlight",
+            "uses": 3,
+            "power": 0.25
+        },
+        "m06":{
+            "name":  "sun shade",
+            "description": "blocks light",
+            "uses": 3,
+            "power": 0.25
+        }
     }
 }
