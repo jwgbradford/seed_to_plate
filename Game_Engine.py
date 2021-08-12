@@ -113,7 +113,7 @@ class Game():
             else:
                 plant.grow(weather_today, {'temp': 0, 'sun': 0, 'water': 0})
             print(f'Plant_{i}: {plant.save_game_state()}')
-            #self.update_score(plant.reset_health())
+            self.update_score(plant.reset_health())
 
     def get_weather(self):
         weather_dict = {
