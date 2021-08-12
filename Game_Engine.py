@@ -48,8 +48,7 @@ class Game():
             # current_plant_dict.update(plant_dict[current_plant_dict['type']][str(current_plant_dict['key'])])
             self.my_plants.append(eval(f"{plant_data['type']}({plant_data})"))
 
-    def add_plant(self): 
-        plant_db = read_data('plant.json')
+    def add_plant(self, plant_db): 
         plant_type = self.choose_plant_type(plant_db)
         plant_key = self.choose_plant(plant_db, plant_type)
         plant_data = {'type' : plant_type, 'key' : plant_key}
