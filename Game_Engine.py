@@ -152,13 +152,13 @@ class Game():
         return chosen_modifiers
 
     def delete_invetory_item(self, modifier_type, modifier_uid):
-        if self.plant_modifiers[modifier_type][modifier_uid]['uses'] == 0:
-            del self.plant_modifiers[modifier_type][modifier_uid]
-        else:
-            self.plant_modifiers[modifier_type][modifier_uid]['uses'] -= 1
+        self.inventory[modifier_type][modifier_uid]['uses'] -= 1
+        if self.inventory[modifier_type][modifier_uid]['uses'] == 0:
+            del self.inventory[modifier_type][modifier_uid]
 
     def add_inventory_items(self):
-        add_item, choices = input(' do you wish to buy a modifier (y/any) '), []
+        add_item = [] 
+        choices = input(' do you wish to buy a modifier (y/any) ')
         while add_item == 'y':
             for modifier_type in self.plant_modifiers:
                 for modifier_key in self.plant_modifiers[modifier_type]:
@@ -172,6 +172,7 @@ class Game():
                 if choice[1] == modifier_type[0]:
                     chosen_modifier_type = modifier_type
             if self.plant_modifiers[chosen_modifier_type][choice]['cost'] > self.sore:
+                print('cost_to_much')
                 continue
             self.inventory[chosen_modifier_type][choice] = self.plant_modifiers[chosen_modifier_type][choice]
 
