@@ -1,0 +1,65 @@
+{
+    "date_last_saved": "2021/08/12",
+    "clock_speed": 0.01,
+    "score": 0.3519820533001634,
+    "my_plants": {
+        "plant_0": {
+            "key": "0",
+            "type": "Fruit",
+            "name": "pea",
+            "age": 3,
+            "my_height": 0.01,
+            "my_branches": 1,
+            "my_flowers": 0,
+            "my_fruit": 0,
+            "rate_of_bifurication": 0.9341999999999134
+        },
+        "plant_1": {
+            "key": "1",
+            "type": "Fruit",
+            "name": "tomato",
+            "age": 3,
+            "my_height": 0.0,
+            "my_branches": 1,
+            "my_flowers": 0,
+            "my_fruit": 0,
+            "rate_of_bifurication": 0.8537999999999223
+        }
+    },
+    "my_inventory": {
+        "temp": {
+            "mt01": {
+                "name": "straw",
+                "description": "helps keep plants warm a little bit",
+                "price": 1,
+                "uses": 3,
+                "power": 0.25
+            },
+            "mt02": {
+                "name": "fan",
+                "description": "helps keep plants cool a little bit",
+                "price": 1,
+                "uses": 5,
+                "power": -0.25
+            }
+        },
+        "water": {
+            "mw02": {
+                "name": "umbrella",
+                "description": "blocks rainfall",
+                "price": 1,
+                "uses": 3,
+                "power": 0.25
+            }
+        },
+        "sun": {
+            "ms02": {
+                "name": "sun shade",
+                "description": "blocks light",
+                "price": 1,
+                "uses": 3,
+                "power": 0.25
+            }
+        }
+    }
+}
