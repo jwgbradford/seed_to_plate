@@ -161,8 +161,8 @@ class Game():
         return chosen_modifiers
 
     def add_inventory_items(self):
-        add_item = [] 
-        choices = input(' do you wish to buy a modifier (y/any) ')
+        add_item = input(' do you wish to buy a modifier (y/any) ')
+        choices = []
         while add_item == 'y':
             for modifier_type in self.plant_modifiers:
                 for modifier_key in self.plant_modifiers[modifier_type]:
@@ -175,10 +175,15 @@ class Game():
             for modifier_type in self.plant_modifiers:
                 if choice[1] == modifier_type[0]:
                     chosen_modifier_type = modifier_type
-            if self.plant_modifiers[chosen_modifier_type][choice]['cost'] > self.sore:
+            if self.plant_modifiers[chosen_modifier_type][choice]['price'] > self.score:
                 print('cost_to_much')
+                add_item = input(' do you wish to try again (y/any) ').lower()[0]
                 continue
-            self.inventory[chosen_modifier_type][choice] = self.plant_modifiers[chosen_modifier_type][choice]
+            if self.inventory[chosen_modifier_type].has_key(choice):
+                self.inventory[chosen_modifier_type][choice]['uses'] += self.plant_modifiers[chosen_modifier_type][choice]['uses']
+            else:
+                self.inventory[chosen_modifier_type][choice] = self.plant_modifiers[chosen_modifier_type][choice]
+            add_item = input(' do you wish to but something else (y/any) ').lower()[0]
 
     def save_game_state(self):
         save_date = datetime.today().strftime("%Y/%m/%d")

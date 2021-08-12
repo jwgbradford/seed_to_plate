@@ -1,3 +1,0 @@
- - know how many of a thing you are buying
- - if not in inventory add to inventory
- - increase amount of it you have if in inventory
