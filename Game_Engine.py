@@ -39,6 +39,7 @@ class Game():
             game_id = input('enter valid ID name\n >>> ')
         saved_data = read_data(f'Game{game_id}.json') # we only want to read the file once
         self.load_plant_data(saved_data['my_plants'])
+        self.inventory = saved_data['my_inventory']
         self.clock_speed, self.score = saved_data['clock_speed'], saved_data['score'] 
         self.date_last_saved = datetime.strptime(saved_data['date_last_saved'], "%Y/%m/%d")
 
@@ -82,7 +83,10 @@ class Game():
     def set_clock_speed(self, clock_type):
         if clock_type == '0':
             return 1440 # 24hours * 60minutes
-        return abs(float(input('How many minutes in real time, does 1 day virtual time last?\n >>> ')))
+        speed = 0
+        while speed == 0:
+            speed = abs(float(input('How many minutes in real time, does 1 day virtual time last?\n >>> ')))
+        return speed
 
     def main_game_loop(self):
         self.catch_up_days()
@@ -113,7 +117,7 @@ class Game():
             else:
                 plant.grow(weather_today, {'temp': 0, 'sun': 0, 'water': 0})
             print(f'Plant_{i}: {plant.save_game_state()}')
-            self.update_score(plant.reset_health())
+            self.score += plant.health
 
     def get_weather(self):
         weather_dict = {
@@ -123,6 +127,11 @@ class Game():
             'rainfall': random.uniform(0, 0.13143)
             }
         return weather_dict
+
+    def delete_invetory_item(self, modifier_type, modifier_uid):
+        self.inventory[modifier_type][modifier_uid]['uses'] -= 1
+        if self.inventory[modifier_type][modifier_uid]['uses'] == 0:
+            del self.inventory[modifier_type][modifier_uid]
 
     def get_modifiers(self):
         pick_modifiers, choices = 'n', []
@@ -143,18 +152,13 @@ class Game():
                     chosen_modifier_type = modifier_type
             chosen_modifier = modifier_options[chosen_modifier_type][choice]
             chosen_modifiers[chosen_modifier_type] = chosen_modifier['power']
-            self.delete_inventory_item(chosen_modifier_type, choice)
+            self.delete_invetory_item(chosen_modifier_type, choice)
             del modifier_options[chosen_modifier_type]
             if len(modifier_options) > 0:
                 pick_modifiers = input('do you wish for another modifer (y/any) ')
             else:
                 pick_modifiers == 'n'
         return chosen_modifiers
-
-    def delete_invetory_item(self, modifier_type, modifier_uid):
-        self.inventory[modifier_type][modifier_uid]['uses'] -= 1
-        if self.inventory[modifier_type][modifier_uid]['uses'] == 0:
-            del self.inventory[modifier_type][modifier_uid]
 
     def add_inventory_items(self):
         add_item = [] 
@@ -176,10 +180,6 @@ class Game():
                 continue
             self.inventory[chosen_modifier_type][choice] = self.plant_modifiers[chosen_modifier_type][choice]
 
-    def update_score(self, plant_health):
-        if plant_health >= 1:
-            self.score += 1
-
     def save_game_state(self):
         save_date = datetime.today().strftime("%Y/%m/%d")
         game_id = input('Enter a number to save game state into\n >>> ')
@@ -188,7 +188,8 @@ class Game():
                         'date_last_saved': save_date,
                         'clock_speed': self.clock_speed,
                         'score': self.score,
-                        'my_plants': plants_to_write
+                        'my_plants': plants_to_write,
+                        'my_inventory' : self.inventory
                         }
         write_data(dict_to_save, f'Game{game_id}.json') #save dict form above in file from game_id
 
