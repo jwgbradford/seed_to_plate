@@ -86,7 +86,9 @@ class Game():
 
     def main_game_loop(self):
         self.catch_up_days()
+        self.inventory = dict(self.plant_modifiers)
         while self.playing == '': # just set playing = '' here
+            self.add_inventory_items()
             threading.Event().wait(self.clock_speed * 60)
             self.grow_plants(game_mode='normal')
             self.playing = input('press enter to continue and any other key to stop')
@@ -124,7 +126,7 @@ class Game():
 
     def get_modifiers(self):
         pick_modifiers, choices = 'n', []
-        modifier_options = dict(self.plant_modifiers)
+        modifier_options = dict(self.inventory)
         chosen_modifiers = {'temp': 0, 'sun': 0, 'water': 0}
         pick_modifiers = input('do you wish to pick a modifer (y/any) ')
         while pick_modifiers == 'y':
@@ -133,20 +135,45 @@ class Game():
                     modifier = modifier_options[modifier_type][modifier_key]
                     print(modifier['name']+': '+modifier['description']+' ('+modifier_key+')')
                     choices.append([modifier_key, modifier_type])
-            choice = input('pick a modifer key to add to your inventory\n >>>')
+            choice = input('pick a modifer key to use\n >>>')
             while choice not in [option[0] for option in choices]:
-                choice = input('pick a real modifer key to add to your inventory\n >>>')
+                choice = input('pick a real modifer key to use\n >>>')
             for modifier_type in modifier_options:
                 if choice[1] == modifier_type[0]:
                     chosen_modifier_type = modifier_type
             chosen_modifier = modifier_options[chosen_modifier_type][choice]
             chosen_modifiers[chosen_modifier_type] = chosen_modifier['power']
+            self.delete_inventory_item(chosen_modifier_type, choice)
             del modifier_options[chosen_modifier_type]
             if len(modifier_options) > 0:
                 pick_modifiers = input('do you wish for another modifer (y/any) ')
             else:
                 pick_modifiers == 'n'
         return chosen_modifiers
+
+    def delete_invetory_item(self, modifier_type, modifier_uid):
+        if self.plant_modifiers[modifier_type][modifier_uid]['uses'] == 0:
+            del self.plant_modifiers[modifier_type][modifier_uid]
+        else:
+            self.plant_modifiers[modifier_type][modifier_uid]['uses'] -= 1
+
+    def add_inventory_items(self):
+        add_item, choices = input(' do you wish to buy a modifier (y/any) '), []
+        while add_item == 'y':
+            for modifier_type in self.plant_modifiers:
+                for modifier_key in self.plant_modifiers[modifier_type]:
+                    modifier = self.plant_modifiers[modifier_type][modifier_key]
+                    print(modifier['name']+': '+modifier['description']+' ('+modifier_key+')')
+                    choices.append([modifier_key, modifier_type])
+            choice = input('pick a modifer key to add to your inventory\n >>>')
+            while choice not in [option[0] for option in choices]:
+                choice = input('pick a real modifer key to add to your inventory\n >>>')
+            for modifier_type in self.plant_modifiers:
+                if choice[1] == modifier_type[0]:
+                    chosen_modifier_type = modifier_type
+            if self.plant_modifiers[chosen_modifier_type][choice]['cost'] > self.sore:
+                continue
+            self.inventory[chosen_modifier_type][choice] = self.plant_modifiers[chosen_modifier_type][choice]
 
     def update_score(self, plant_health):
         if plant_health >= 1:
