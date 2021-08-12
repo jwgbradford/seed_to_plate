@@ -18,9 +18,10 @@ class Game():
                 self.load_game_state()
                 game_set = True
             elif game_type == 'n':
+                plant_db = read_data('plant.json')
                 new_plant = 'p'
                 while new_plant == 'p':
-                    self.add_plant()
+                    self.add_plant(plant_db)
                     new_plant = input('Do you want to add another (p)lant or play the game (any key)\n >>> ').lower()[0]
                 self.set_clock()
                 game_set = True

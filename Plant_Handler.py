@@ -164,10 +164,8 @@ class Fruit(Plant):
             self.pollinated_flowers = self.my_flowers
 
     def pollinate_flowers(self, my_flowers):
-        ideal_current_height = self.daily_growth_rate * self.age
-        health = self.my_height / ideal_current_height
         for _ in range(my_flowers):
-            if health < uniform(0,1):
+            if self.health < uniform(0,1):
                 my_flowers -= 1
         return my_flowers
 
@@ -182,8 +180,7 @@ class Tuber(Plant):
             self.add_branches()
         elif (self.days_to_flower <= self.age <= (self.days_to_fruit)): # small tubers grow when plant flowers
             self.current_tubers = self.ideal_tubers * ( (self.age - self.days_to_flower) / (self.days_to_fruit - self.days_to_flower) )
-        elif self.days_to_fruit < self.age < self.days_to_havest:
-            self.health = self.my_height / (self.daily_growth_rate * self.age)
+        elif self.days_to_fruit < self.age < self.days_to_harvest:
             self.tuber_size += self.health
 
     def save_game_state(self):
