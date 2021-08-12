@@ -6,14 +6,15 @@ class Game():
     
     def __init__(self):
         self.score = 0
-        self.playing = '' # not sure this needs to be self.playing, could it be a local var in main_loop?
         self.my_plants = []
 
     def run(self):
         game_set = False
         self.set_modifiers()
         while not game_set:
-            game_type = input('Do you want a (n)ew game or (l)oad a game?\n >>> ').lower()[0]
+            game_type = input('Do you want a (n)ew game or (l)oad a game?\n >>> ').lower()
+            if len(game_type) > 0:
+                game_type = game_type[0]
             if game_type == 'l':
                 self.load_game_state()
                 game_set = True
@@ -22,7 +23,9 @@ class Game():
                 new_plant = 'p'
                 while new_plant == 'p':
                     self.add_plant(plant_db)
-                    new_plant = input('Do you want to add another (p)lant or play the game (any key)\n >>> ').lower()[0]
+                    new_plant = input('Do you want to add another (p)lant or play the game (any key)\n >>> ').lower()
+                    if len(new_plant) > 0:
+                        new_plant = new_plant[0]
                 self.set_clock()
                 game_set = True
             else:
@@ -91,11 +94,14 @@ class Game():
     def main_game_loop(self):
         self.catch_up_days()
         self.inventory = dict(self.plant_modifiers)
-        while self.playing == '': # just set playing = '' here
+        playing = True
+        while playing:
             self.add_inventory_items()
             threading.Event().wait(self.clock_speed * 60)
             self.grow_plants(game_mode='normal')
-            self.playing = input('press enter to continue and any other key to stop')
+            still_playing = input('press enter to continue and any other key to stop')
+            if still_playing != '':
+                playing = False
         self.save_game_state()
 
     def catch_up_days(self):
@@ -162,8 +168,10 @@ class Game():
 
     def add_inventory_items(self):
         add_item = input(' do you wish to buy a modifier (y/any) ')
+        if len(add_item) == 0:
+            add_item = 'z'
         choices = []
-        while add_item == 'y':
+        while add_item[0] == 'y':
             for modifier_type in self.plant_modifiers:
                 for modifier_key in self.plant_modifiers[modifier_type]:
                     modifier = self.plant_modifiers[modifier_type][modifier_key]
@@ -177,13 +185,17 @@ class Game():
                     chosen_modifier_type = modifier_type
             if self.plant_modifiers[chosen_modifier_type][choice]['price'] > self.score:
                 print('cost_to_much')
-                add_item = input(' do you wish to try again (y/any) ').lower()[0]
+                add_item = input(' do you wish to try again (y) / anykey\n >>>').lower()
+                if len(add_item) == 0:
+                    add_item = 'z'
                 continue
             if self.inventory[chosen_modifier_type].has_key(choice):
                 self.inventory[chosen_modifier_type][choice]['uses'] += self.plant_modifiers[chosen_modifier_type][choice]['uses']
             else:
                 self.inventory[chosen_modifier_type][choice] = self.plant_modifiers[chosen_modifier_type][choice]
-            add_item = input(' do you wish to but something else (y/any) ').lower()[0]
+            add_item = input(' do you wish to buy something else (y) / any key\n >>>').lower()
+            if len(add_item) == 0:
+                add_item = 'z'
 
     def save_game_state(self):
         save_date = datetime.today().strftime("%Y/%m/%d")
