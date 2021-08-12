@@ -3,6 +3,7 @@ from Plant_Handler import Tuber, Fruit
 from datetime import datetime
 import random, os, threading
 class Game():
+    
     def __init__(self):
         self.score = 0
         self.playing = '' # not sure this needs to be self.playing, could it be a local var in main_loop?

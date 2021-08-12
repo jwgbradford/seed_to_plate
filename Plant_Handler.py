@@ -21,11 +21,6 @@ class Plant():
         self.rate_of_bifurication = self.set_bifurication_rate()
         self.daily_growth_rate = self.final_height/self.days_to_harvest
 
-    def apply_modifier(self, actual, ideal, modifier_value):
-        modifier_effect = (ideal-actual ) * modifier_value
-        effective = actual + modifier_effect
-        return effective
-
     def add_branches(self):
         for i in range(self.my_branches):
             branching = uniform(0,1)
@@ -69,7 +64,13 @@ class Plant():
     def plant_type_growth(self):
         pass
 
-    def growth_modifier_temperature(self, temp, modifier, modifer_temp):
+    def apply_modifier(self, actual, ideal, modifier_value):
+        modifier_effect = (ideal - actual ) * modifier_value
+        effective = actual + modifier_effect
+        return effective
+
+    def growth_modifier_temperature(self, actual_temp, modifier, modifier_temp):
+        temp = self.apply_modifier(actual_temp, self.ideal_temp, modifier_temp)
         if temp > self.ideal_temp:
             growth_from_temp = 1 - (temp - self.ideal_temp) / (self.max_temp - self.ideal_temp)
         elif temp < self.ideal_temp:
@@ -87,7 +88,8 @@ class Plant():
             self.temp_recovery_day += 1
         return growth_from_temp
 
-    def growth_modifier_hydration(self, rainfall, modifier_water):
+    def growth_modifier_hydration(self, actual_rainfall, modifier_water):
+        rainfall = self.apply_modifier(actual_rainfall, self.ideal_water, modifier_water)
         self.stored_water += rainfall # put rainfall in soil
         growth_from_hydration = 0 
         # if there is more water in the soil than too 2 weeks worth of the plan't water consumption
@@ -108,7 +110,8 @@ class Plant():
                 self.stored_water -= self.ideal_water
         return growth_from_hydration
 
-    def growth_modifier_sunlight(self, sunlight, modifier_light):
+    def growth_modifier_sunlight(self, actual_sunlight, modifier_light):
+        sunlight = self.apply_modifier(actual_sunlight, self.ideal_sunlight, modifier_light)
         #get how much plant grows
         if sunlight == self.ideal_sunlight: 
             growth_from_sunlight = 1
