@@ -3,6 +3,7 @@
         "mt01": {
             "name" : "straw",
             "description" : "helps keep plants warm a little bit",
+            "price": 1,
             "uses" : 5,
             "power" : 0.25
         },
