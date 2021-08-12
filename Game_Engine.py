@@ -87,24 +87,28 @@ class Game():
         self.catch_up_days()
         while self.playing == '': # just set playing = '' here
             threading.Event().wait(self.clock_speed * 60)
-            self.grow_plants()
+            self.grow_plants(game_mode='normal')
             self.playing = input('press enter to continue and any other key to stop')
         self.save_game_state()
 
     def catch_up_days(self):
         days_to_run = self.get_missed_days()
         while days_to_run > 0:
-            self.grow_plants()
+            self.grow_plants(game_mode='catchup')
             days_to_run -= 1
 
     def get_missed_days(self):
         todays_date = datetime.strptime(datetime.now().strftime("%Y/%m/%d"), "%Y/%m/%d")
         return ((todays_date.day - self.date_last_saved.day) * 1440) / self.clock_speed
 
-    def grow_plants(self):
+    def grow_plants(self, game_mode):
         weather_today = self.get_weather()
+        print(weather_today)
         for i, plant in enumerate(self.my_plants):
-            plant.grow(weather_today, self.get_modifiers())
+            if game_mode == 'normal':
+                plant.grow(weather_today, self.get_modifiers())
+            else:
+                plant.grow(weather_today, {'temp': 0, 'sun': 0, 'water': 0})
             print(f'Plant_{i}: {plant.save_game_state()}')
             #self.update_score(plant.reset_health())
 
@@ -118,9 +122,10 @@ class Game():
         return weather_dict
 
     def get_modifiers(self):
-        pick_modifiers, choices = 'y', []
+        pick_modifiers, choices = 'n', []
         modifier_options = dict(self.plant_modifiers)
         chosen_modifiers = {'temp': 0, 'sun': 0, 'water': 0}
+        pick_modifiers = input('do you wish to pick a modifer (y/any) ')
         while pick_modifiers == 'y':
             for modifier_type in modifier_options:
                 for modifier_key in modifier_options[modifier_type]:
@@ -136,7 +141,10 @@ class Game():
             chosen_modifier = modifier_options[chosen_modifier_type][choice]
             chosen_modifiers[chosen_modifier_type] = chosen_modifier['power']
             del modifier_options[chosen_modifier_type]
-            pick_modifiers = input('do you wish for another modifer (y/n) ')
+            if len(modifier_options) > 0:
+                pick_modifiers = input('do you wish for another modifer (y/any) ')
+            else:
+                pick_modifiers == 'n'
         return chosen_modifiers
 
     def update_score(self, plant_health):
@@ -147,7 +155,12 @@ class Game():
         save_date = datetime.today().strftime("%Y/%m/%d")
         game_id = input('Enter a number to save game state into\n >>> ')
         plants_to_write = {f'plant_{i}': plant.save_game_state() for i, plant in enumerate(self.my_plants)}
-        dict_to_save = {'date_last_saved': save_date, 'clock_speed': self.clock_speed, 'my_plants': plants_to_write, 'score': self.score}
+        dict_to_save = {
+                        'date_last_saved': save_date,
+                        'clock_speed': self.clock_speed,
+                        'score': self.score,
+                        'my_plants': plants_to_write
+                        }
         write_data(dict_to_save, f'Game{game_id}.json') #save dict form above in file from game_id
 
 if __name__ ==  "__main__":

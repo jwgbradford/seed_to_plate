@@ -21,6 +21,11 @@ class Plant():
         self.rate_of_bifurication = self.set_bifurication_rate()
         self.daily_growth_rate = self.final_height/self.days_to_harvest
 
+    def apply_modifier(self, actual, ideal, modifier_value):
+        modifier_effect = (ideal-actual ) * modifier_value
+        effective = actual + modifier_effect
+        return effective
+
     def add_branches(self):
         for i in range(self.my_branches):
             branching = uniform(0,1)
@@ -55,7 +60,6 @@ class Plant():
 
     def grow(self, weather_today, modifiers):
         self.age += 1
-        print(weather_today, modifiers)
         sunlight_modifier = self.growth_modifier_sunlight(weather_today['sun'], modifiers['sun'])
         hydration_modifier = self.growth_modifier_hydration(weather_today['rainfall'],  modifiers['water'])
         temperature_modifier = self.growth_modifier_temperature(weather_today['temp'], weather_today['type'], modifiers['temp'])
@@ -64,7 +68,7 @@ class Plant():
 
     def plant_type_growth(self):
         pass
-    
+
     def growth_modifier_temperature(self, temp, modifier, modifer_temp):
         if temp > self.ideal_temp:
             growth_from_temp = 1 - (temp - self.ideal_temp) / (self.max_temp - self.ideal_temp)
