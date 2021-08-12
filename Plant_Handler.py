@@ -58,7 +58,9 @@ class Plant():
         sunlight_modifier = self.growth_modifier_sunlight(weather_today['sun'], modifiers['sun'])
         hydration_modifier = self.growth_modifier_hydration(weather_today['rainfall'],  modifiers['water'])
         temperature_modifier = self.growth_modifier_temperature(weather_today['temp'], weather_today['type'], modifiers['temp'])
-        self.my_height += self.daily_growth_rate * temperature_modifier * hydration_modifier * sunlight_modifier
+        self.health = self.my_height / (self.daily_growth_rate * self.age)
+        if self.age < self.days_to_harvest:
+            self.my_height += self.daily_growth_rate * temperature_modifier * hydration_modifier * sunlight_modifier
         self.plant_type_growth()
 
     def plant_type_growth(self):
