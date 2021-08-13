@@ -20,7 +20,7 @@ class Game():
                 self.load_game_state()
                 game_set = True
             elif game_type == 'n':
-                plant_db = read_data('plant.json')
+                plant_db = read_data('plant_db.json')
                 new_plant = 'p'
                 while new_plant == 'p':
                     self.add_plant(plant_db)
