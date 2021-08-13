@@ -1,18 +1,24 @@
 {
-    "date_last_saved": "2021/08/12",
+    "date_last_saved": "2021/08/13",
     "clock_speed": 0.01,
-    "score": 0,
+    "score": 7.277226186995382,
     "my_plants": {
         "plant_0": {
-            "key": "0",
+            "key": "1",
             "type": "Fruit",
-            "name": "pea",
-            "age": 3,
-            "my_height": 0.0,
-            "my_branches": 1,
-            "my_flowers": 0,
-            "my_fruit": 0,
-            "rate_of_bifurication": 0.9363999999999132
-        }
-    }
-}
+            "name": "tomato",
+            "age": 58,
+            "my_height": 0.0066360028243039266,
+            "my_branches": 2,
+            "my_produce": [],
+            "rate_of_bifurication": 0.8607999999999215
+        },
+        "plant_1": {
+            "key": "0",
+            "type": "Tuber",
+            "name": "potato",
+            "age": 58,
+            "my_height": 0.0898415181013072,
+            "my_branches": 11,
+            "my_produce": [
+                
