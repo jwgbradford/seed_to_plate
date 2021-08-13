@@ -7,12 +7,12 @@
             "key": "0",
             "type": "Fruit",
             "name": "pea",
-            "age": 3,
+            "age": 2,
             "my_height": 0.0,
             "my_branches": 1,
             "my_flowers": 0,
             "my_fruit": 0,
-            "rate_of_bifurication": 0.9363999999999132
+            "rate_of_bifurication": 0.937699999999913
         }
     }
 }

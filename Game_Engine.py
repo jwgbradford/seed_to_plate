@@ -6,27 +6,23 @@ class Game():
     
     def __init__(self):
         self.score = 0
+        self.playing = '' # not sure this needs to be self.playing, could it be a local var in main_loop?
         self.my_plants = []
-        self.inventory = {}
 
     def run(self):
         game_set = False
         self.set_modifiers()
         while not game_set:
-            game_type = input('Do you want a (n)ew game or (l)oad a game?\n >>> ').lower()
-            if len(game_type) > 0:
-                game_type = game_type[0]
+            game_type = input('Do you want a (n)ew game or (l)oad a game?\n >>> ').lower()[0]
             if game_type == 'l':
                 self.load_game_state()
                 game_set = True
             elif game_type == 'n':
-                plant_db = read_data('plant_db.json')
+                plant_db = read_data('plant.json')
                 new_plant = 'p'
                 while new_plant == 'p':
                     self.add_plant(plant_db)
-                    new_plant = input('Do you want to add another (p)lant or play the game (any key)\n >>> ').lower()
-                    if len(new_plant) > 0:
-                        new_plant = new_plant[0]
+                    new_plant = input('Do you want to add another (p)lant or play the game (any key)\n >>> ').lower()[0]
                 self.set_clock()
                 game_set = True
             else:
@@ -43,7 +39,6 @@ class Game():
             game_id = input('enter valid ID name\n >>> ')
         saved_data = read_data(f'Game{game_id}.json') # we only want to read the file once
         self.load_plant_data(saved_data['my_plants'])
-        self.inventory = saved_data['my_inventory']
         self.clock_speed, self.score = saved_data['clock_speed'], saved_data['score'] 
         self.date_last_saved = datetime.strptime(saved_data['date_last_saved'], "%Y/%m/%d")
 
@@ -87,22 +82,14 @@ class Game():
     def set_clock_speed(self, clock_type):
         if clock_type == '0':
             return 1440 # 24hours * 60minutes
-        speed = 0
-        while speed == 0:
-            speed = abs(float(input('How many minutes in real time, does 1 day virtual time last?\n >>> ')))
-        return speed
+        return abs(float(input('How many minutes in real time, does 1 day virtual time last?\n >>> ')))
 
     def main_game_loop(self):
         self.catch_up_days()
-        self.inventory = dict(self.plant_modifiers)
-        playing = True
-        while playing:
-            self.add_inventory_items()
+        while self.playing == '': # just set playing = '' here
             threading.Event().wait(self.clock_speed * 60)
             self.grow_plants(game_mode='normal')
-            still_playing = input('press enter to continue and any other key to stop')
-            if still_playing != '':
-                playing = False
+            self.playing = input('press enter to continue and any other key to stop')
         self.save_game_state()
 
     def catch_up_days(self):
@@ -124,7 +111,7 @@ class Game():
             else:
                 plant.grow(weather_today, {'temp': 0, 'sun': 0, 'water': 0})
             print(f'Plant_{i}: {plant.save_game_state()}')
-            self.score += plant.health
+            #self.update_score(plant.reset_health())
 
     def get_weather(self):
         weather_dict = {
@@ -135,14 +122,9 @@ class Game():
             }
         return weather_dict
 
-    def delete_invetory_item(self, modifier_type, modifier_uid):
-        self.inventory[modifier_type][modifier_uid]['uses'] -= 1
-        if self.inventory[modifier_type][modifier_uid]['uses'] == 0:
-            del self.inventory[modifier_type][modifier_uid]
-
     def get_modifiers(self):
         pick_modifiers, choices = 'n', []
-        modifier_options = dict(self.inventory)
+        modifier_options = dict(self.plant_modifiers)
         chosen_modifiers = {'temp': 0, 'sun': 0, 'water': 0}
         pick_modifiers = input('do you wish to pick a modifer (y/any) ')
         while pick_modifiers == 'y':
@@ -151,15 +133,14 @@ class Game():
                     modifier = modifier_options[modifier_type][modifier_key]
                     print(modifier['name']+': '+modifier['description']+' ('+modifier_key+')')
                     choices.append([modifier_key, modifier_type])
-            choice = input('pick a modifer key to use\n >>>')
+            choice = input('pick a modifer key to add to your inventory\n >>>')
             while choice not in [option[0] for option in choices]:
-                choice = input('pick a real modifer key to use\n >>>')
+                choice = input('pick a real modifer key to add to your inventory\n >>>')
             for modifier_type in modifier_options:
                 if choice[1] == modifier_type[0]:
                     chosen_modifier_type = modifier_type
             chosen_modifier = modifier_options[chosen_modifier_type][choice]
             chosen_modifiers[chosen_modifier_type] = chosen_modifier['power']
-            self.delete_invetory_item(chosen_modifier_type, choice)
             del modifier_options[chosen_modifier_type]
             if len(modifier_options) > 0:
                 pick_modifiers = input('do you wish for another modifer (y/any) ')
@@ -167,36 +148,9 @@ class Game():
                 pick_modifiers == 'n'
         return chosen_modifiers
 
-    def add_inventory_items(self):
-        add_item = input(' do you wish to buy a modifier (y/any) ')
-        if len(add_item) == 0:
-            add_item = 'z'
-        choices = []
-        while add_item[0] == 'y':
-            for modifier_type in self.plant_modifiers:
-                for modifier_key in self.plant_modifiers[modifier_type]:
-                    modifier = self.plant_modifiers[modifier_type][modifier_key]
-                    print(modifier['name']+': '+modifier['description']+' ('+modifier_key+')')
-                    choices.append([modifier_key, modifier_type])
-            choice = input('pick a modifer key to add to your inventory\n >>>')
-            while choice not in [option[0] for option in choices]:
-                choice = input('pick a real modifer key to add to your inventory\n >>>')
-            for modifier_type in self.plant_modifiers:
-                if choice[1] == modifier_type[0]:
-                    chosen_modifier_type = modifier_type
-            if self.plant_modifiers[chosen_modifier_type][choice]['price'] > self.score:
-                print('cost_to_much')
-                add_item = input(' do you wish to try again (y) / anykey\n >>>').lower()
-                if len(add_item) == 0:
-                    add_item = 'z'
-                continue
-            if self.inventory[chosen_modifier_type].has_key(choice):
-                self.inventory[chosen_modifier_type][choice]['uses'] += self.plant_modifiers[chosen_modifier_type][choice]['uses']
-            else:
-                self.inventory[chosen_modifier_type][choice] = self.plant_modifiers[chosen_modifier_type][choice]
-            add_item = input(' do you wish to buy something else (y) / any key\n >>>').lower()
-            if len(add_item) == 0:
-                add_item = 'z'
+    def update_score(self, plant_health):
+        if plant_health >= 1:
+            self.score += 1
 
     def save_game_state(self):
         save_date = datetime.today().strftime("%Y/%m/%d")
@@ -206,8 +160,7 @@ class Game():
                         'date_last_saved': save_date,
                         'clock_speed': self.clock_speed,
                         'score': self.score,
-                        'my_plants': plants_to_write,
-                        'my_inventory' : self.inventory
+                        'my_plants': plants_to_write
                         }
         write_data(dict_to_save, f'Game{game_id}.json') #save dict form above in file from game_id
 

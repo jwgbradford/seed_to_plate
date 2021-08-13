@@ -1,0 +1,3 @@
+- move the save game_score before the my_plants dict
+- need to add_modifiers after printing the weather so the player knows if they might need modifiers
+- need to allow the player to not select a modifier
