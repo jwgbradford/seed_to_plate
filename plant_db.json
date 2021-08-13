@@ -11,6 +11,8 @@
             "final_height": 0.9114,
             "days_to_flower": 91,
             "days_to_fruit": 94,
+            "min_fruit_per_branch" : 1.5,
+            "max_fruit_per_branch" : 2.5,
             "days_to_harvest": 142,
             "ideal_water": 0.114
         },
@@ -25,6 +27,8 @@
             "final_height": 1.8,
             "days_to_flower": 45,
             "days_to_fruit": 80,
+            "min_fruit_per_branch" : 0.5,
+            "max_fruit_per_branch" : 2.5,
             "days_to_harvest": 120,
             "ideal_water": 0.25
         }
