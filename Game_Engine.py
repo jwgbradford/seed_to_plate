@@ -2,8 +2,8 @@ from Data_Handler import read_data, write_data
 from Plant_Handler import Tuber, Fruit
 from datetime import datetime
 import random, os, threading
+
 class Game():
-    
     def __init__(self):
         self.score = 0
         self.my_plants = []
