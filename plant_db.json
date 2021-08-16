@@ -41,13 +41,14 @@
             "ideal_temp": 20,
             "max_temp": 35,
             "ideal_sunlight": 8,
-            "ideal_branches": 7,
+            "ideal_branches": 10,
             "final_height": 1,
             "days_to_flower": 56,
             "days_to_fruit": 70,
             "days_to_harvest": 84,
             "ideal_water": 0.1311,
-            "ideal_tubers": 10
+            "min_fruit_per_branch" : 0.8,
+            "max_fruit_per_branch" : 1.2
         }
     }
 }

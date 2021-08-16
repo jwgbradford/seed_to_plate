@@ -11,7 +11,7 @@ class Plant():
         self.my_flowers, self.my_fruit, self.pollinated_flowers = 0, 0, 0
         self.my_height, self.stored_water, self.age = 0, 0, 0
         self.sun_recovery_day, self.water_recovery_day, self.temp_recovery_day = 0, 0, 0
-        self.my_produce = []
+        self.my_produce = {}
         self.my_branches, self.expected_yield = 1, 1
 
     def set_base_attributes(self, plant_model):
@@ -78,13 +78,27 @@ class Plant():
                 self.grow_produce()
 
     def add_produce(self):
+        index = len(self.my_produce)
         for _ in range(self.my_branches):
             if self.health > uniform(0, 0.5) and len(self.my_produce) < self.expected_yield:
-                self.my_produce.append(Produce(self.health))
+                self.my_produce[index] = {
+                    "status" : "flower", 
+                    "health" : self.health, 
+                    "size" : 0
+                }
+                index += 1
 
     def grow_produce(self):
-        for produce in self.my_produce:
-            produce.grow()
+        for index in self.my_produce:
+            produce = self.my_produce[index]
+            if produce["health"] > uniform(0, 0.5):
+                if produce["status"] == 'flower':
+                    produce["status"] = 'pollinated_flower'
+                elif produce["status"] == 'pollinated_flower':
+                    produce["status"] = 'fruit'
+                else:
+                    produce["size"] += produce["health"]
+                self.my_produce[index] = produce
 
     def apply_modifier(self, actual, ideal, modifier_value):
         modifier_effect = (ideal - actual ) * modifier_value
@@ -164,18 +178,3 @@ class Fruit(Plant):
 class Tuber(Plant):
     def __init__(self, plant_data):
         super().__init__(plant_data)
-
-class Produce():
-    def __init__(self, health) -> None:
-        self.prod_status = 'flower'
-        self.health = health
-        self.prod_size = 0
-    
-    def grow(self):
-        if self.health > uniform(0, 0.5):
-            if self.prod_status == 'flower':
-                self.prod_status = 'pollinated_flower'
-            elif self.prod_status ==  'pollinated_flower':
-                self.prod_status = 'fruit'
-            else:
-                self.prod_size += self.health

@@ -1,9 +1,9 @@
 from Data_Handler import read_data, write_data
 from Plant_Handler import Tuber, Fruit
 from datetime import datetime
-import random, os, threading
+import random, os, threading, sys
+
 class Game():
-    
     def __init__(self):
         self.score = 0
         self.my_plants = []
@@ -108,8 +108,12 @@ class Game():
     def catch_up_days(self):
         days_to_run = self.get_missed_days()
         while days_to_run > 0:
-            self.grow_plants(game_mode='catchup')
-            days_to_run -= 1
+            try:
+                self.grow_plants(game_mode='catchup')
+                days_to_run -= 1
+            except KeyboardInterrupt:
+                self.save_game_state()
+                sys.exit()
 
     def get_missed_days(self):
         todays_date = datetime.strptime(datetime.now().strftime("%Y/%m/%d"), "%Y/%m/%d")
@@ -210,6 +214,7 @@ class Game():
                         'my_inventory' : self.inventory
                         }
         write_data(dict_to_save, f'Game{game_id}.json') #save dict form above in file from game_id
+
 
 if __name__ ==  "__main__":
     my_game = Game()
