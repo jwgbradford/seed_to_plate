@@ -84,19 +84,20 @@ class Plant():
                 self.my_produce[index] = {
                     "status" : "flower", 
                     "health" : self.health, 
-                    "size" : "0"
+                    "size" : 0
                 }
                 index += 1
 
     def grow_produce(self):
-        for index, produce in enumerate(self.my_produce):
+        for index in self.my_produce:
+            produce = self.my_produce[index]
             if produce["health"] > uniform(0, 0.5):
                 if produce["status"] == 'flower':
                     produce["status"] = 'pollinated_flower'
-                elif produce["status"]  ==  'pollinated_flower':
-                    produce["status"]  = 'fruit'
+                elif produce["status"] == 'pollinated_flower':
+                    produce["status"] = 'fruit'
                 else:
-                    produce["size"]  += produce["health"]
+                    produce["size"] += produce["health"]
                 self.my_produce[index] = produce
 
     def apply_modifier(self, actual, ideal, modifier_value):
