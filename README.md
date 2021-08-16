@@ -2,4 +2,4 @@
 
 Building basic game engine and data files for BSF project
 
-trying to sort out branch merging issues
+New working branch from commit e381806f
