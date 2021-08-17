@@ -3,7 +3,7 @@ from Plant_Handler import Tuber, Fruit
 from datetime import datetime
 import random, os, threading, sys
 
-class Game():
+class GameEngine():
     def __init__(self):
         self.score = 0
         self.my_plants = {}
@@ -37,15 +37,18 @@ class Game():
         modifiers = read_data('modifiers.json')
         self.plant_modifiers = modifiers
 
-    def load_game_state(self):
+    def load_game_state(self, game_id):
+        # needs to go to client
         game_id = input('enter Game ID to load\n >>> ')
         while not os.path.isfile(f'Game{game_id}.json'):
             game_id = input('enter valid ID name\n >>> ')
-        saved_data = read_data(f'Game{game_id}.json') # we only want to read the file once
+        # end code to client
+        saved_data = read_data(f'Game{game_id}.json')
         self.load_plant_data(saved_data['my_plants'])
         self.inventory = saved_data['my_inventory']
         self.clock_speed, self.score = saved_data['clock_speed'], saved_data['score'] 
         self.date_last_saved = datetime.strptime(saved_data['date_last_saved'], "%Y/%m/%d")
+        return saved_data
 
     def load_plant_data(self, plant_dict):
         for plant_id in plant_dict: # load the values from the dictionary
@@ -227,6 +230,6 @@ class Game():
 
 
 if __name__ ==  "__main__":
-    my_game = Game()
+    my_game = GameEngine()
     my_game.run()
     print('The Game has ended')
