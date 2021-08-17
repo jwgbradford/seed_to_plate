@@ -1,5 +1,4 @@
 from network import ConnectionManager as CM
-from threading import Thread
 
 class ClientGame():
     def __init__(self) -> None:
@@ -12,5 +11,4 @@ class ClientGame():
 
 if __name__ == '__main__':
     my_game = ClientGame()
-    run_game = Thread(target=my_game.run())
-    run_game.start()
+    my_game.run()

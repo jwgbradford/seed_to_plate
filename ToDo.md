@@ -1,14 +1,14 @@
 # TO DO
 
 ## Short list
-1. Send client id
-2. Receive starting data
+1. Send client id - send to client
+2. Receive starting data - handle on client side
 3. Run play game - new game / load game / etc
-4. Configure send data structure
-5. send / recv data
-6. ignore recv_data if it is same as last
+5. send / recv data - check
 
 ## long list
+6. ignore recv_data if it is same as last
+7. check on serverside that clock speed is valid
 1. get missed data
 
 # Reference
@@ -17,6 +17,7 @@
 ``` 
 {
     "msg_id" : 1234,
+    "player_id" : 5678,
     "msg" : "load",
     "data" : {
         "date_last_saved": save_date,
