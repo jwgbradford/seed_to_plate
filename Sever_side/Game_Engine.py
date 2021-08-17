@@ -6,7 +6,7 @@ import random, os, threading, sys
 class Game():
     def __init__(self):
         self.score = 0
-        self.my_plants = []
+        self.my_plants = {}
         self.inventory = {}
 
     def run(self):
@@ -48,18 +48,20 @@ class Game():
         self.date_last_saved = datetime.strptime(saved_data['date_last_saved'], "%Y/%m/%d")
 
     def load_plant_data(self, plant_dict):
-        for plant_data in plant_dict.values(): # load the values from the dictionary
+        for plant_id in plant_dict: # load the values from the dictionary
             print('loading data...')
-            # current_plant_dict.update(plant_dict[current_plant_dict['type']][str(current_plant_dict['key'])])
-            self.my_plants.append(eval(f"{plant_data['type']}({plant_data})"))
+            plant_data = plant_dict[plant_id]
+            self.my_plants[plant_id] = eval(f"{plant_data['type']}({plant_data})")
 
     def add_plant(self, plant_db): 
         plant_type = self.choose_plant_type(plant_db)
         plant_key = self.choose_plant(plant_db, plant_type)
         plant_data = {'type' : plant_type, 'key' : plant_key}
-        #plant_data = plant_db[plant_type][plant_key]
-        # eval turning string to python command
-        self.my_plants.append(eval(f'{plant_type}({plant_data})'))
+        new_id = '1'
+        if len(self.my_plants) != 0:
+            working_id = int(str(self.my_plants.keys()[-1][6:]))
+            new_id = str(working_id + 1)
+        self.my_plants[f'plant_{new_id}'] = eval(f'{plant_type}({plant_data})')
 
     def choose_plant_type(self, plant_db):
         plant_type = str(input(str(plant_db.keys()) + '\n enter type of plant\n>>> '))
@@ -121,14 +123,22 @@ class Game():
 
     def grow_plants(self, game_mode):
         weather_today = self.get_weather()
+        dead_plants = []
         print(weather_today)
-        for i, plant in enumerate(self.my_plants):
-            if game_mode == 'normal':
-                plant.grow(weather_today, self.get_modifiers())
+        for key in self.my_plants:
+            plant = self.my_plants[key]
+            if plant.age < plant.days_to_harvest:
+                if game_mode == 'normal':
+                    plant.grow(weather_today, self.get_modifiers())
+                else:
+                    plant.grow(weather_today, {'temp': 0, 'sun': 0, 'water': 0})
+                print(f'Plant_{key}: {plant.save_game_state()}')
+                self.score += plant.health
             else:
-                plant.grow(weather_today, {'temp': 0, 'sun': 0, 'water': 0})
-            print(f'Plant_{i}: {plant.save_game_state()}')
-            self.score += plant.health
+                print('Plant expired')
+                dead_plants.append(key)
+        for key in dead_plants:
+            del self.my_plants[key]
 
     def get_weather(self):
         weather_dict = {
@@ -194,7 +204,7 @@ class Game():
                 if len(add_item) == 0:
                     add_item = 'z'
                 continue
-            if self.inventory[chosen_modifier_type].has_key(choice):
+            if choice in self.inventory[chosen_modifier_type]:
                 self.inventory[chosen_modifier_type][choice]['uses'] += self.plant_modifiers[chosen_modifier_type][choice]['uses']
             else:
                 self.inventory[chosen_modifier_type][choice] = self.plant_modifiers[chosen_modifier_type][choice]
@@ -205,14 +215,14 @@ class Game():
     def save_game_state(self):
         save_date = datetime.today().strftime("%Y/%m/%d")
         game_id = input('Enter a number to save game state into\n >>> ')
-        plants_to_write = {f'plant_{i}': plant.save_game_state() for i, plant in enumerate(self.my_plants)}
+        plants_to_write = {plant_id: self.my_plants[plant_id].save_game_state() for plant_id in self.my_plants}
         dict_to_save = {
-                        'date_last_saved': save_date,
-                        'clock_speed': self.clock_speed,
-                        'score': self.score,
-                        'my_plants': plants_to_write,
-                        'my_inventory' : self.inventory
-                        }
+            'date_last_saved': save_date,
+            'clock_speed': self.clock_speed,
+            'score': self.score,
+            'my_plants': plants_to_write,
+            'my_inventory' : self.inventory
+        }
         write_data(dict_to_save, f'Game{game_id}.json') #save dict form above in file from game_id
 
 

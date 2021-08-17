@@ -1,0 +1,748 @@
+{
+    "date_last_saved": "2021/08/17",
+    "clock_speed": 0.001,
+    "score": 19.06840197427308,
+    "my_plants": {
+        "plant_1": {
+            "key": "0",
+            "type": "Fruit",
+            "name": "pea",
+            "age": 97,
+            "my_height": 0.12977200165668826,
+            "my_branches": 314,
+            "my_produce": {
+                "0": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "1": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.42711552349689685
+                },
+                "2": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "3": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.42711552349689685
+                },
+                "4": {
+                    "status": "flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "5": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "6": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "7": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "8": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "9": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "10": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "11": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "12": {
+                    "status": "flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "13": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "14": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "15": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.42711552349689685
+                },
+                "16": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "17": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "18": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "19": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.42711552349689685
+                },
+                "20": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "21": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "22": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "23": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "24": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "25": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "26": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "27": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "28": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.42711552349689685
+                },
+                "29": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "30": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "31": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "32": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "33": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "34": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "35": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "36": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "37": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "38": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "39": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "40": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "41": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.42711552349689685
+                },
+                "42": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "43": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "44": {
+                    "status": "flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "45": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "46": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "47": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "48": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "49": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "50": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "51": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "52": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "53": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "54": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "55": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "56": {
+                    "status": "flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "57": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "58": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "59": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "60": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "61": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "62": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "63": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.42711552349689685
+                },
+                "64": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "65": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "66": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "67": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.6406732852453453
+                },
+                "68": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "69": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "70": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "71": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "72": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "73": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.42711552349689685
+                },
+                "74": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "75": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "76": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "77": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "78": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "79": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "80": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.6406732852453453
+                },
+                "81": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "82": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "83": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "84": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "85": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.42711552349689685
+                },
+                "86": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "87": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "88": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "89": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "90": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "91": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "92": {
+                    "status": "flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "93": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "94": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "95": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "96": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "97": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "98": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.42711552349689685
+                },
+                "99": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "100": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "101": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "102": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "103": {
+                    "status": "flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "104": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.42711552349689685
+                },
+                "105": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "106": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.42711552349689685
+                },
+                "107": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "108": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "109": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "110": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "111": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "112": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "113": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "114": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "115": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "116": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.42711552349689685
+                },
+                "117": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "118": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "119": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "120": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "121": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "122": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "123": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "124": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "125": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "126": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.21355776174844843
+                },
+                "127": {
+                    "status": "flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "128": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0.42711552349689685
+                },
+                "129": {
+                    "status": "pollinated_flower",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "130": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "131": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "132": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "133": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "134": {
+                    "status": "fruit",
+                    "health": 0.21355776174844843,
+                    "size": 0
+                },
+                "135": {
+                    "status": "fruit",
+                    "health": 0.21126974179495422,
+                    "size": 0
+                }
+            },
+            "rate_of_bifurication": 0.9392999999999129
+        }
+    },
+    "my_inventory": {
+        "temp": {
+            "mt01": {
+                "name": "straw",
+                "description": "helps keep plants warm a little bit",
+                "price": 1,
+                "uses": 5,
+                "power": 0.25
+            },
+            "mt02": {
+                "name": "fan",
+                "description": "helps keep plants cool a little bit",
+                "price": 1,
+                "uses": 5,
+                "power": -0.25
+            }
+        },
+        "water": {
+            "mw01": {
+                "name": "watering can",
+                "description": "helps keep plants watered a little bit",
+                "price": 1,
+                "uses": 1,
+                "power": 0.2
+            },
+            "mw02": {
+                "name": "umbrella",
+                "description": "blocks rainfall",
+                "price": 1,
+                "uses": 3,
+                "power": 0.25
+            }
+        },
+        "sun": {
+            "ms01": {
+                "name": "lamp",
+                "description": "creates more sunlight",
+                "price": 1,
+                "uses": 3,
+                "power": 0.25
+            },
+            "ms02": {
+                "name": "sun shade",
+                "description": "blocks light",
+                "price": 1,
+                "uses": 3,
+                "power": 0.25
+            }
+        }
+    }
+}
