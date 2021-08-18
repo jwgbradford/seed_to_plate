@@ -1,16 +1,14 @@
-from threading import Thread
 from Game_Engine import GameEngine as ge
-import json
-from socket import socket, AF_INET, SOCK_STREAM, SO_REUSEADDR, SOL_SOCKET
+from threading import Thread
+import json, socket
 
 class SeedToPlateServer():
     def __init__(self) -> None:
-        ADDR = ('', 5555) #HOST, PORT
-        # set up our server socket
         self.BUFSIZ = 2048
-        self.SERVER = socket(AF_INET, SOCK_STREAM)
-        self.SERVER.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-        self.SERVER.bind(ADDR)
+        self.ADDR = ('', 5555) #HOST, PORT
+        self.SERVER = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.SERVER.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.SERVER.bind(self.ADDR)
         self.SERVER.listen(5)
         print("Waiting for a connection, Server Started")        
 
@@ -28,13 +26,16 @@ class SeedToPlateServer():
 
     # each player has a handler thread
     def handle_player(self, player_conn, player_id):
+        self.send(player_id[0], player_conn)
+        checked_player_id = self.receive(player_conn)
+        print(f'player_{checked_player_id} joined!')
         game_engine = ge()
         recv_msg_id = 0
         while True:
             try:
-                data = json.loads(player_conn.recv(self.BUFSIZ))
+                data = self.receive(player_conn)
             except:
-                print('Connection lost')
+                print(f'player_{checked_player_id} left!')
                 break
             if data["player_id"] != player_id:
                 print('client not valid')
@@ -42,11 +43,9 @@ class SeedToPlateServer():
             if data["msg_id"] <= recv_msg_id:
                 continue 
             elif data["msg_id"] > recv_msg_id + 1:
-                print('missing msgs')
-                # add code to re-send missing msg's
+                print('missing msgs') # add code to re-send missing msg's
             reply = self.input_message_handler(data, game_engine)
-            json_data = json.dumps(reply)
-            player_conn.send(json_data.encode())
+            self.send(reply, player_conn)
         player_conn.close()
 
     def input_message_handler(self, input_data, game_engine):
@@ -64,17 +63,18 @@ class SeedToPlateServer():
                 break            
             self.send(self.output_buffer)
 
-    def send(self, data):
+    def send(self, data, conn):
         json_data = json.dumps(data)
         try:
-            self.client.send(json_data.encode())
+            conn.send(json_data.encode())
         except socket.error as error:
             print(error)
 
-    def receive(self):
+    def receive(self, conn):
         try:
-            return json.loads(self.client.recv(self.byte_length))
+            return json.loads(conn.recv(self.BUFSIZ))
         except socket.error as error:
+            print(error)
             return error
 
 if __name__ == "__main__":
