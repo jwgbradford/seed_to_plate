@@ -26,16 +26,11 @@ class SeedToPlateServer():
 
     # each player has a handler thread
     def handle_player(self, player_conn, player_id):
-        send_msg_id = 1
-        recv_msg_id = 1
-        player_joined_msg = {
-            "msg_id" : send_msg_id,
-            "player_id" : player_id,
-            "msg" : "new_connection",
-        }
-        self.send(player_joined_msg)
+        self.send(player_id[0], player_conn)
+        checked_player_id = self.receive(player_conn)
         print(f'player_{checked_player_id} joined!')
         game_engine = ge()
+        recv_msg_id = 0
         while True:
             try:
                 data = self.receive(player_conn)
@@ -52,6 +47,30 @@ class SeedToPlateServer():
             reply = self.input_message_handler(data, game_engine)
             self.send(reply, player_conn)
         player_conn.close()
+
+    def run_game(self, ge):
+        game_set = False
+        ge.set_modifiers()
+        while not game_set:
+            game_type = self.send('Do you want a (n)ew game or (l)oad a game?\n >>> ', conn).lower()
+            if len(game_type) > 0:
+                game_type = game_type[0]
+            if game_type == 'l':
+                ge.load_game_state()
+                game_set = True
+            elif game_type == 'n':
+                plant_db = self.read_data('plant_db.json')
+                new_plant = 'p'
+                while new_plant == 'p':
+                    ge.add_plant(plant_db)
+                    new_plant = self.send('Do you want to add another (p)lant or play the game (any key)\n >>> ', conn).lower()
+                    if len(new_plant) > 0:
+                        new_plant = new_plant[0]
+                ge.set_clock()
+                game_set = True
+            else:
+                self.send('Invaild entry, plese enter n / l')
+        ge.main_game_loop()
 
     def input_message_handler(self, input_data, game_engine):
         if input_data['msg'] == 'load':
