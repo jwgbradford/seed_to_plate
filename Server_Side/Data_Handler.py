@@ -10,3 +10,4 @@ def read_data(file_name):
         data = json.load(file)
     file.closed
     return data
+
