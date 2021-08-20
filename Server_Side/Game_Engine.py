@@ -1,4 +1,3 @@
-from test import ask_boolean, pick_from_dict
 from Data_Handler import read_data, write_data
 from Plant_Handler import Tuber, Fruit
 from datetime import datetime
@@ -7,8 +6,13 @@ import random, os, threading, sys
 class GameEngine():
     def __init__(self, player_id):
         self.score = 0
-        self.my_id = player_id
-        self.input_buffer = {}
+        self.my_id = str(player_id)
+        self.input_buffer = {
+            "player_id": "####",
+            "msg_id" : 0,
+            "msg" : "waiting",
+            "data" : {}
+            }
         self.output_buffer = {
             "player_id": "####",
             "msg_id" : 1,
@@ -17,17 +21,28 @@ class GameEngine():
             }
         self.my_plants = {}
         self.inventory = {}
+        self.recv_msg_id = 0
+        self.permitted_functions = [
+            "check_id"
+        ]
 
     def run(self):
-        self.check_player_id()
-        self.set_modifiers()
-        load_game_question = 'Do you want to (l)oad a game or open a (n)ew game?'
-        if ask_boolean(load_game_question, ['l', 'n']):
-            self.load_game_state()
-        plant_db = read_data('plant_db.json')
-        self.get_multiple_options(self.add_plant, "ask_boolean('Do you want a new plant (y / n)?', ['y', 'n']", plant_db)
-        self.set_clock()
-        self.main_game_loop()
+        while True:
+            if self.input_buffer["msg_id"] > self.recv_msg_id and self.input_buffer["msg"] in self.permitted_functions:
+                function_to_call = self.input_buffer["msg"]
+                data_to_pass = self.input_buffer["data"]
+                self.recv_msg_id = self.input_buffer["msg_id"]
+                eval(f'self.{function_to_call}({data_to_pass})')
+                # need to think about storing game logic in {} or similar?
+                load_game_question = 'Do you want to (l)oad a game or open a (n)ew game?'
+                if ask_boolean(load_game_question, ['l', 'n']):
+                    self.load_game_state()
+                plant_db = read_data('plant_db.json')
+                self.get_multiple_options(self.add_plant, "ask_boolean('Do you want a new plant (y / n)?', ['y', 'n']", plant_db)
+                self.set_clock()
+                self.main_game_loop(recv_msg_id)
+            elif self.input_buffer["msg"] not in self.permitted_functions:
+                pass # exception handler for non-recognised function calls
 
     def get_multiple_options(self, func_to_run, get_awnser, pras):
         eval(get_awnser)
@@ -35,17 +50,27 @@ class GameEngine():
             func_to_run(pras)
             eval(get_awnser)
 
-    def check_player_id(self):
-        if self.input_buffer["player_id"] == self.player_id:
-            pass
+    def check_id(self, data):
+        if self.input_buffer["player_id"] == self.my_id:
+            self.output_buffer["msg"] = "ask_boolean"
+            self.output_buffer["data"] = {
+                "question" : "Would you like to (l)oad a saved game or start a (n)ew game?",
+                "options" : {
+                    "l" : "load_game",
+                    "n" : "new_game"
+                }
+            }
+            self.output_buffer["player_id"] = self.my_id
+            self.output_buffer["msg_id"] += 1
         else:
-            sys.exit()
+            print('fail')
+            # need some method to handle player validation fail
 
     def set_modifiers(self):
         modifiers = read_data('modifiers.json')
         self.plant_modifiers = modifiers
 
-    def load_game_state(self, game_id):
+    def load_game(self, game_id):
         # needs to go to client
         game_id = input('enter Game ID to load\n >>> ')
         while not os.path.isfile(f'Game{game_id}.json'):
@@ -74,8 +99,6 @@ class GameEngine():
             new_id = str(working_id + 1)
         self.my_plants[f'plant_{new_id}'] = eval(f'{plant_type}({plant_data})')
 
-
-
     def choose_plant(self, plant_db, plant_type):
         choices = [plant_db[plant_type][data]['name'] for data in plant_db[plant_type]]
         choice = input('pick plant a plant from\n' + str(choices) + '\n >>> ')
@@ -101,7 +124,7 @@ class GameEngine():
             speed = abs(float(input('How many minutes in real time, does 1 day virtual time last?\n >>> ')))
         return speed
 
-    def main_game_loop(self):
+    def main_game_loop(self, recv_msg_id):
         self.catch_up_days()
         self.inventory = dict(self.plant_modifiers)
         playing = True

@@ -5,9 +5,22 @@ class ConnectionManager:
     def __init__(self) -> None:
         ADDR = ("localhost", 5555)
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.output_buffer, self.input_buffer = {}, {}
+        self.output_buffer = {
+            "msg_id" : 0,
+            "player_id" : "####",
+            "msg" : "starting",
+            "data" : {}
+        }
+        self.input_buffer = {
+            "msg_id" : 0,
+            "player_id" : "####",
+            "msg" : "connecting",
+            "data" : {}
+        }
         self.client.connect(ADDR)
         self.byte_length = 2048
+        Thread(target=self.client_network_handler, args=()).start()
+
 
     def send(self, data):
         json_data = json.dumps(data)
@@ -24,7 +37,7 @@ class ConnectionManager:
             return error
 
     def client_network_handler(self):
-        last_msg_id = 1
+        last_msg_id = 0
         while True:
             try:
                 incoming_msg = self.receive()

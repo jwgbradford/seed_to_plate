@@ -33,10 +33,10 @@
     "msg" : "ask_boolean",
     "data" : {
         "question" : "Would you like to (l)oad a saved game or start a (n)ew game?",
-        "options" : [
-            "l",
-            "n"
-        ]
+        "options" : {
+            "l" : "load_game",
+            "n" : "new_game"
+        }
     }
 }
 {
