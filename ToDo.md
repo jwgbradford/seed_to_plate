@@ -18,7 +18,7 @@
 {
     "msg_id" : 1234,
     "player_id" : 5678,
-    "msg" : "load",
+    "msg" : "load_data",
     "data" : {
         "date_last_saved": save_date,
         "clock_speed": self.clock_speed,
@@ -27,9 +27,43 @@
         "my_inventory" : self.inventory
     }
 }
-
 {
     "msg_id" : 1234,
+    "player_id" : 5678,
+    "msg" : "ask_boolean",
+    "data" : {
+        "question" : "Would you like to (l)oad a saved game or start a (n)ew game?",
+        "options" : [
+            "l",
+            "n"
+        ]
+    }
+}
+{
+    "msg_id" : 1234,
+    "player_id" : 5678,
+    "msg" : "confirm_plant",
+    "data" : {
+        "accepted" : "n",
+        "reason" : "insufficient funds",
+        "plant_data" : {
+            "type" : "Fruit",
+            "id" : "1"
+        }
+    }
+}
+{
+    "msg_id" : 1234,
+    "player_id" : 5678,
+    "msg" : "ask_boolean",
+    "data" : {
+        "question" : "Which modifiers would you like to use for this plant?",
+        "options" : {modifiers.json}
+    }
+}
+{
+    "msg_id" : 1234,
+    "player_id" : 5678,
     "msg" : "weather",
     "data" : {
         'type': random.choice(['Snow', 'Normal']),
@@ -44,6 +78,7 @@
 ```
 {
     "msg_id" : 1234,
+    "player_id" : 5678,
     "msg" : "modifier",
     "data" : {
         "user_id": "something"
@@ -54,8 +89,20 @@
 ```
 {
     "msg_id" : 1234,
+    "player_id" : 5678,
     "msg" : "request_for_weather",
     "data" : {}
+}
+{
+    "msg_id" : 1234,
+    "player_id" : 5678,
+    "msg" : "selected_plant",
+    "data" : {
+        "plant" : {
+            "type" : "Fruit",
+            "id" : "01"
+            }
+        }
 }
 
 ```

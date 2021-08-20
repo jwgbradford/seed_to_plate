@@ -1,11 +1,11 @@
-from Game_Engine import GameEngine as ge
+from Game_Engine import GameEngine
 from threading import Thread
 import json, socket
 
 class SeedToPlateServer():
     def __init__(self) -> None:
         self.BUFSIZ = 2048
-        self.ADDR = ('', 5555) #HOST, PORT
+        self.ADDR = ('', 5555)
         self.SERVER = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.SERVER.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.SERVER.bind(self.ADDR)
@@ -22,51 +22,29 @@ class SeedToPlateServer():
     def accept_new_players(self):
         while True:
             player_conn, player_addr = self.SERVER.accept()
-            Thread(target=self.handle_player, args=(player_conn, player_addr)).start()
+            player_ip, player_port = player_addr.split(" ")
+            Thread(target=self.handle_player, args=(player_conn, player_port)).start()
 
     # each player has a handler thread
-    def handle_player(self, player_conn, player_id):
-        send_msg_id = 1
-        recv_msg_id = 1
-        player_joined_msg = {
-            "msg_id" : send_msg_id,
-            "player_id" : player_id,
-            "msg" : "new_connection",
-        }
-        self.send(player_joined_msg)
-        print(f'player_{checked_player_id} joined!')
-        game_engine = ge()
+    def handle_player(self, conn, player_id):
+        ge = GameEngine(player_id)
+        Thread(target=ge.run, args=()).start()
+        recv_msg_id = 1, 1
+        print(f'player_{player_id} joined!')
         while True:
+            self.send(ge.output_buffer, conn)
             try:
-                data = self.receive(player_conn)
+                data = self.receive(conn)
             except:
-                print(f'player_{checked_player_id} left!')
+                print(f'player_{player_id} left!')
                 break
-            if data["player_id"] != player_id:
+            if data["player_id"] == player_id:
                 print('client not valid')
                 break
-            if data["msg_id"] <= recv_msg_id:
-                continue 
-            elif data["msg_id"] > recv_msg_id + 1:
-                print('missing msgs') # add code to re-send missing msg's
-            reply = self.input_message_handler(data, game_engine)
-            self.send(reply, player_conn)
-        player_conn.close()
-
-    def input_message_handler(self, input_data, game_engine):
-        if input_data['msg'] == 'load':
-            file_id = input_data["file_name"]
-            reply = game_engine.load_game_state(file_id) # need to pass saved file data
-        return reply
-
-    def client_network_handler(self):
-        while True:
-            try:
-                self.input_buffer = self.receive()
-            except:
-                print('Connection lost')
-                break            
-            self.send(self.output_buffer)
+            if data["msg_id"] > recv_msg_id:
+                ge.input_buffer = data
+                recv_msg_id = data["msg_id"]
+        conn.close()
 
     def send(self, data, conn):
         json_data = json.dumps(data)

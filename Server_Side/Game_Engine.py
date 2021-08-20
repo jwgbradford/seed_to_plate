@@ -1,37 +1,45 @@
+from test import ask_boolean, pick_from_dict
 from Data_Handler import read_data, write_data
 from Plant_Handler import Tuber, Fruit
 from datetime import datetime
 import random, os, threading, sys
 
 class GameEngine():
-    def __init__(self):
+    def __init__(self, player_id):
         self.score = 0
+        self.my_id = player_id
+        self.input_buffer = {}
+        self.output_buffer = {
+            "player_id": "####",
+            "msg_id" : 1,
+            "msg" : "send_id",
+            "data" : {}
+            }
         self.my_plants = {}
         self.inventory = {}
 
     def run(self):
-        game_set = False
+        self.check_player_id()
         self.set_modifiers()
-        while not game_set:
-            game_type = input('Do you want a (n)ew game or (l)oad a game?\n >>> ').lower()
-            if len(game_type) > 0:
-                game_type = game_type[0]
-            if game_type == 'l':
-                self.load_game_state()
-                game_set = True
-            elif game_type == 'n':
-                plant_db = read_data('plant_db.json')
-                new_plant = 'p'
-                while new_plant == 'p':
-                    self.add_plant(plant_db)
-                    new_plant = input('Do you want to add another (p)lant or play the game (any key)\n >>> ').lower()
-                    if len(new_plant) > 0:
-                        new_plant = new_plant[0]
-                self.set_clock()
-                game_set = True
-            else:
-                print('Invaild entry, plese enter n / l')
+        load_game_question = 'Do you want to (l)oad a game or open a (n)ew game?'
+        if ask_boolean(load_game_question, ['l', 'n']):
+            self.load_game_state()
+        plant_db = read_data('plant_db.json')
+        self.get_multiple_options(self.add_plant, "ask_boolean('Do you want a new plant (y / n)?', ['y', 'n']", plant_db)
+        self.set_clock()
         self.main_game_loop()
+
+    def get_multiple_options(self, func_to_run, get_awnser, pras):
+        eval(get_awnser)
+        while get_awnser:
+            func_to_run(pras)
+            eval(get_awnser)
+
+    def check_player_id(self):
+        if self.input_buffer["player_id"] == self.player_id:
+            pass
+        else:
+            sys.exit()
 
     def set_modifiers(self):
         modifiers = read_data('modifiers.json')
@@ -57,7 +65,7 @@ class GameEngine():
             self.my_plants[plant_id] = eval(f"{plant_data['type']}({plant_data})")
 
     def add_plant(self, plant_db): 
-        plant_type = self.choose_plant_type(plant_db)
+        plant_type = pick_from_dict(plant_db)
         plant_key = self.choose_plant(plant_db, plant_type)
         plant_data = {'type' : plant_type, 'key' : plant_key}
         new_id = '1'
@@ -66,11 +74,7 @@ class GameEngine():
             new_id = str(working_id + 1)
         self.my_plants[f'plant_{new_id}'] = eval(f'{plant_type}({plant_data})')
 
-    def choose_plant_type(self, plant_db):
-        plant_type = str(input(str(plant_db.keys()) + '\n enter type of plant\n>>> '))
-        while plant_type not in plant_db.keys():
-            plant_type = str(input('pick a valid plant type\n enter type of plant\n>>> '))
-        return plant_type
+
 
     def choose_plant(self, plant_db, plant_type):
         choices = [plant_db[plant_type][data]['name'] for data in plant_db[plant_type]]
