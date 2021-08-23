@@ -3,6 +3,7 @@
         "0": {
             "name": "pea",
             "snow_min_temp": -15,
+            "cost": 1,
             "min_temp": -2,
             "ideal_temp": 10,
             "max_temp": 21,
@@ -22,6 +23,7 @@
             "min_temp": 16,
             "ideal_temp": 21,
             "max_temp": 27,
+            "cost": 1,
             "ideal_sunlight": 8,
             "ideal_branches": 100,
             "final_height": 1.8,
@@ -40,6 +42,7 @@
             "min_temp": 10,
             "ideal_temp": 20,
             "max_temp": 35,
+            "cost": 1,
             "ideal_sunlight": 8,
             "ideal_branches": 10,
             "final_height": 1,

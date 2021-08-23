@@ -5,6 +5,8 @@
 2. Receive starting data - handle on client side
 3. Run play game - new game / load game / etc
 5. send / recv data - check
+6. plants cost money
+7. you get a start amount of money
 
 ## long list
 6. ignore recv_data if it is same as last
