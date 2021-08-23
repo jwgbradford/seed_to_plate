@@ -25,6 +25,14 @@ class ClientGame():
 
     def ask_boolean(self, data):
         question = f"{data['question']}\n >>> "
+        print(data["options"])
+        choice = input(question).lower()
+        while choice not in options:
+            choice = input(question).lower()
+        self.connection_manager.output_buffer["load_save_game"] = choice
+
+    def get_string(self, data):
+        question = f"{data['question']}\n >>> "
         options = data["options"]
         choice = input(question).lower()[0]
         while choice not in options.keys():

@@ -33,25 +33,11 @@ class GameEngine():
                 data_to_pass = self.input_buffer["data"]
                 self.recv_msg_id = self.input_buffer["msg_id"]
                 eval(f'self.{function_to_call}({data_to_pass})')
-                # need to think about storing game logic in {} or similar?
-                load_game_question = 'Do you want to (l)oad a game or open a (n)ew game?'
-                if ask_boolean(load_game_question, ['l', 'n']):
-                    self.load_game_state()
-                plant_db = read_data('plant_db.json')
-                self.get_multiple_options(self.add_plant, "ask_boolean('Do you want a new plant (y / n)?', ['y', 'n']", plant_db)
-                self.set_clock()
-                self.main_game_loop(recv_msg_id)
-            elif self.input_buffer["msg"] not in self.permitted_functions:
-                pass # exception handler for non-recognised function calls
-
-    def get_multiple_options(self, func_to_run, get_awnser, pras):
-        eval(get_awnser)
-        while get_awnser:
-            func_to_run(pras)
-            eval(get_awnser)
+                self.output_buffer["msg_id"] += 1
 
     def check_id(self, data):
         if self.input_buffer["player_id"] == self.my_id:
+            self.output_buffer["player_id"] = self.my_id
             self.output_buffer["msg"] = "ask_boolean"
             self.output_buffer["data"] = {
                 "question" : "Would you like to (l)oad a saved game or start a (n)ew game?",
@@ -60,8 +46,6 @@ class GameEngine():
                     "n" : "new_game"
                 }
             }
-            self.output_buffer["player_id"] = self.my_id
-            self.output_buffer["msg_id"] += 1
         else:
             print('fail')
             # need some method to handle player validation fail
@@ -70,18 +54,11 @@ class GameEngine():
         modifiers = read_data('modifiers.json')
         self.plant_modifiers = modifiers
 
-    def load_game(self, game_id):
-        # needs to go to client
-        game_id = input('enter Game ID to load\n >>> ')
-        while not os.path.isfile(f'Game{game_id}.json'):
-            game_id = input('enter valid ID name\n >>> ')
-        # end code to client
-        saved_data = read_data(f'Game{game_id}.json')
-        self.load_plant_data(saved_data['my_plants'])
-        self.inventory = saved_data['my_inventory']
-        self.clock_speed, self.score = saved_data['clock_speed'], saved_data['score'] 
-        self.date_last_saved = datetime.strptime(saved_data['date_last_saved'], "%Y/%m/%d")
-        return saved_data
+    def load_game(self, data):
+        self.output_buffer["msg"] = "get_string"
+        self.output_buffer["data"] = {
+            "question" : "Enter Game ID to load"
+        } # do we include a list of saved files?
 
     def load_plant_data(self, plant_dict):
         for plant_id in plant_dict: # load the values from the dictionary
@@ -260,3 +237,35 @@ if __name__ ==  "__main__":
     my_game = GameEngine()
     my_game.run()
     print('The Game has ended')
+
+# everything below this is holding for code we may not need
+class TempStuff():
+    def holding_logic(self): # to be deleted
+        # need to think about storing game logic in {} or similar?
+        load_game_question = 'Do you want to (l)oad a game or open a (n)ew game?'
+        if ask_boolean(load_game_question, ['l', 'n']):
+            self.load_game_state()
+        plant_db = read_data('plant_db.json')
+        self.get_multiple_options(self.add_plant, "ask_boolean('Do you want a new plant (y / n)?', ['y', 'n']", plant_db)
+        self.set_clock()
+        self.main_game_loop(recv_msg_id)
+        #elif self.input_buffer["msg"] not in self.permitted_functions:
+        pass # exception handler for non-recognised function calls
+
+    def get_multiple_options(self, func_to_run, get_awnser, pras):
+        eval(get_awnser)
+        while get_awnser:
+            func_to_run(pras)
+            eval(get_awnser)
+    def old_load_game(self):        
+        game_id = input('enter Game ID to load\n >>> ')
+        while not os.path.isfile(f'Game{game_id}.json'):
+            game_id = input('enter valid ID name\n >>> ')
+        # end code to client
+        saved_data = read_data(f'Game{game_id}.json')
+        self.load_plant_data(saved_data['my_plants'])
+        self.inventory = saved_data['my_inventory']
+        self.clock_speed, self.score = saved_data['clock_speed'], saved_data['score'] 
+        self.date_last_saved = datetime.strptime(saved_data['date_last_saved'], "%Y/%m/%d")
+        return saved_data
+
