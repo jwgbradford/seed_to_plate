@@ -26,10 +26,10 @@ class ClientGame():
     def ask_boolean(self, data):
         question = f"{data['question']}\n >>> "
         print(data["options"])
-        choice = input(question).lower()
-        while choice not in data["options"]:
+        choice = input(question).lower()[0]
+        while choice not in data["options"].keys():
             choice = input(question).lower()
-        self.connection_manager.output_buffer["load_save_game"] = choice
+        self.connection_manager.output_buffer["msg"] = data["options"][choice]
 
     def get_string(self, data):
         question = f"{data['question']}\n >>> "
@@ -41,14 +41,19 @@ class ClientGame():
 
     def pick_from_dict(self, data):
         options = data["options"].keys()
-        question = f"{data['question']}\n >>> "
-        print(json.dumps(data["options"], indent=4))
-        choice = input(question).lower()
-        while choice not in options:
-            print('not a valid awnser')
+        choice = None
+        if len(options) > 0:
+            question = f"{data['question']}\n >>> "
+            print(json.dumps(data["options"], indent=4))
             choice = input(question).lower()
-        return data[choice] 
-
+            while choice not in options:
+                if choice == '':
+                    break
+                print('not a valid awnser')
+                choice = input(question).lower()
+        self.connection_manager.output_buffer["msg"] = "load_saved_data"
+        self.connection_manager.output_buffer["data"] = {"file_name" : choice}
+        
     def make_dict_to_send(self, output_dict, msg_id, reply_data, msg):
         output_dict["player_id"], output_dict["msg"]  = self.my_id, msg
         output_dict["msg_id"], output_dict["data"] = msg_id, reply_data

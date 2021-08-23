@@ -23,7 +23,10 @@ class GameEngine():
         self.inventory = {}
         self.recv_msg_id = 0
         self.permitted_functions = [
-            "check_id"
+            "check_id",
+            "load_game",
+            "load_save_data"
+            "new_game"
         ]
 
     def run(self):
@@ -50,15 +53,30 @@ class GameEngine():
             print('fail')
             # need some method to handle player validation fail
 
-    def set_modifiers(self):
-        modifiers = read_data('modifiers.json')
-        self.plant_modifiers = modifiers
-
     def load_game(self, data):
-        self.output_buffer["msg"] = "get_string"
+        self.output_buffer["msg"] = "pick_from_dict"
+        # this should be a proper os call to files on disc
+        saved_files = {
+                "plant_01" : "my first save file"
+            }
         self.output_buffer["data"] = {
-            "question" : "Enter Game ID to load"
-        } # do we include a list of saved files?
+            "question" : "Enter Game ID to load",
+            "options" : saved_files
+        }
+
+    def load_saved_data(self, file_name):
+        if file_name == None:
+            self.check_id(file_name)
+        else:
+            saved_data = read_data(f'{file_name}.json')
+            self.load_plant_data(saved_data['my_plants'])
+            self.inventory = saved_data['my_inventory']
+            self.clock_speed, self.score = saved_data['clock_speed'], saved_data['score'] 
+            self.date_last_saved = datetime.strptime(saved_data['date_last_saved'], "%Y/%m/%d")
+            self.output_buffer["msg"] = "load_to_client"
+            self.output_buffer["data"] = {
+                "plant_01" : "plant data from saved file..."
+                }
 
     def load_plant_data(self, plant_dict):
         for plant_id in plant_dict: # load the values from the dictionary
@@ -100,6 +118,10 @@ class GameEngine():
         while speed == 0:
             speed = abs(float(input('How many minutes in real time, does 1 day virtual time last?\n >>> ')))
         return speed
+
+    def set_modifiers(self):
+        modifiers = read_data('modifiers.json')
+        self.plant_modifiers = modifiers
 
     def main_game_loop(self, recv_msg_id):
         self.catch_up_days()
