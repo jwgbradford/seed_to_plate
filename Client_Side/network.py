@@ -44,7 +44,7 @@ class ConnectionManager:
             except:
                 print('Connection lost')
                 break
-            if incoming_msg["msg_id"] != last_msg_id:
+            if incoming_msg["msg_id"] > last_msg_id:
                 self.input_buffer = incoming_msg
                 last_msg_id = incoming_msg["msg_id"]
             self.send(self.output_buffer)

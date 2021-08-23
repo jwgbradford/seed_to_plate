@@ -27,7 +27,7 @@ class ClientGame():
         question = f"{data['question']}\n >>> "
         print(data["options"])
         choice = input(question).lower()
-        while choice not in options:
+        while choice not in data["options"]:
             choice = input(question).lower()
         self.connection_manager.output_buffer["load_save_game"] = choice
 
