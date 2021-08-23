@@ -6,44 +6,34 @@ import random, os, threading, sys
 
 class GameEngine():
     def __init__(self, player_id):
-        self.score = 0
-        self.my_id = player_id
-        self.input_buffer = {}
+        self.input_buffer, self.inventory,  self.my_plants = {}, {}, {}
+        self.plant_modifiers = read_data('modifiers.json')
+        self.score, self.my_id = 0, player_id
         self.output_buffer = {
-            "player_id": "####",
+            "player_id": None,
             "msg_id" : 1,
             "msg" : "send_id",
-            "data" : {}
+            "data" : None
             }
-        self.my_plants = {}
-        self.inventory = {}
 
     def run(self):
         self.check_player_id()
-        self.set_modifiers()
-        load_game_question = 'Do you want to (l)oad a game or open a (n)ew game?'
-        if ask_boolean(load_game_question, ['l', 'n']):
-            self.load_game_state()
         plant_db = read_data('plant_db.json')
-        self.get_multiple_options(self.add_plant, "ask_boolean('Do you want a new plant (y / n)?', ['y', 'n']", plant_db)
+        load_game_question = 'Do you want to (l)oad a game or open a (n)ew game?'
+        if self.ask_boolean(load_game_question, ['l', 'n']):
+            self.load_game_state()
+        add_plant_answer = self.ask_boolean('Do you want a new plant (y / n)?)', ['y', 'n'])
+        while add_plant_answer:
+            self.add_plant(plant_db)
+            add_plant_answer = self.ask_boolean('Do you want another new plant (y / n)?)', ['y', 'n'])
         self.set_clock()
         self.main_game_loop()
-
-    def get_multiple_options(self, func_to_run, get_awnser, pras):
-        eval(get_awnser)
-        while get_awnser:
-            func_to_run(pras)
-            eval(get_awnser)
 
     def check_player_id(self):
         if self.input_buffer["player_id"] == self.player_id:
             pass
         else:
             sys.exit()
-
-    def set_modifiers(self):
-        modifiers = read_data('modifiers.json')
-        self.plant_modifiers = modifiers
 
     def load_game_state(self, game_id):
         # needs to go to client
@@ -65,23 +55,12 @@ class GameEngine():
             self.my_plants[plant_id] = eval(f"{plant_data['type']}({plant_data})")
 
     def add_plant(self, plant_db): 
-        plant_type = pick_from_dict(plant_db)
-        plant_key = self.choose_plant(plant_db, plant_type)
-        plant_data = {'type' : plant_type, 'key' : plant_key}
-        new_id = '1'
-        if len(self.my_plants) != 0:
-            working_id = int(str(self.my_plants.keys()[-1][6:]))
-            new_id = str(working_id + 1)
-        self.my_plants[f'plant_{new_id}'] = eval(f'{plant_type}({plant_data})')
-
-
-
-    def choose_plant(self, plant_db, plant_type):
-        choices = [plant_db[plant_type][data]['name'] for data in plant_db[plant_type]]
-        choice = input('pick plant a plant from\n' + str(choices) + '\n >>> ')
-        while choice not in choices:
-            choice = input('choose again\n pick plant a plant from\n' + str(choices) + '\n >>> ')
-        return str(choices.index(choice))
+        plant_db_simple = {key:{"name": plant_db[key]["name"], "decription": plant_db[key]["description"], "cost":plant_db[key]["cost"]} for key in plant_db}
+        plant_keys = self.pick_from_dict('Please pick a plant', plant_db_simple)
+        for plant_key in plant_keys:
+            plant_type = plant_db[plant_key]["type"]
+            plant_data = {'type' : plant_type, 'key' : plant_key}
+            self.my_plants[f'plant_{plant_key}'] = eval(f'{plant_type}({plant_data})')
 
     def set_clock(self):
         self.clock_speed = self.set_clock_speed(self.set_clock_type())
