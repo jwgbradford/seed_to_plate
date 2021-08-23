@@ -232,6 +232,48 @@ class GameEngine():
         }
         write_data(dict_to_save, f'Game{game_id}.json') #save dict form above in file from game_id
 
+    def ask_boolean(self, question, options):
+        data_to_send = {"question": question, "options": options}
+        self.set_output_buffer(data_to_send, 'ask_boolean')
+        if self.input_buffer['msg'] != 'answer to boolean question':
+            print('client side error')
+            sys.exit()
+        if self.input_buffer['data'] == options[0]:
+            return True
+        return False
+
+    def pick_from_dict_code(self, question, options):
+        data_to_send = {"question": question, "options": options}
+        self.set_output_buffer(data_to_send, 'pick_from_dict')
+        if self.input_buffer['msg'] != 'picked options from dict':
+            print('client side error')
+            sys.exit()
+        for option in self.input_buffer['data']: 
+            if option not in list(options.keys()):
+                print('client side error')
+                sys.exit()
+        cost_of_objects = 0
+        for option in self.input_buffer['data']:
+            cost_of_objects += options[option]['cost']
+        return cost_of_objects
+
+    def pick_from_dict(self, question, options):
+        #data is list of keys
+        cost_of_objects = self.pick_from_dict_code(question, options)
+        while cost_of_objects > self.score:
+            print('can not afords it')
+            self.pick_from_dict_code(question, options)
+        return self.input_buffer['data']
+
+    def set_output_buffer(self, data_to_send, msg_to_send): 
+        dict_to_send = dict(self.output_buffer)
+        dict_to_send['data'] = data_to_send
+        dict_to_send['msg'] = msg_to_send
+        dict_to_send['msg_id'] += 1
+        self.output_buffer = dict_to_send 
+        while self.input_buffer['msg_id'] < self.set_output_buffer['msg_id']: 
+            pass
+
 
 if __name__ ==  "__main__":
     my_game = GameEngine()
