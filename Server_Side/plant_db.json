@@ -1,6 +1,7 @@
 {
     "f0": {
         "name": "pea",
+        "type" : "Fruit",
         "snow_min_temp": -15,
         "cost": 1,
         "min_temp": -2,
@@ -19,6 +20,7 @@
     "f1": {
         "name": "tomato",
         "snow_min_temp": "?",
+        "type": "Fruit",
         "min_temp": 16,
         "ideal_temp": 21,
         "max_temp": 27,
@@ -36,6 +38,7 @@
     "t0": {
         "name": "potato",
         "snow_min_temp": "?",
+        "type": "Tuber",
         "min_temp": 10,
         "ideal_temp": 20,
         "max_temp": 35,
