@@ -252,9 +252,3 @@ class GameEngine():
         self.output_buffer = dict_to_send 
         while self.input_buffer['msg_id'] < self.set_output_buffer['msg_id']: 
             pass
-
-
-if __name__ ==  "__main__":
-    my_game = GameEngine()
-    my_game.run()
-    print('The Game has ended')
