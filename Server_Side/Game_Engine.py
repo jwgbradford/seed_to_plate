@@ -41,7 +41,7 @@ class GameEngine():
             sys.exit()
         elif self.input_buffer["msg"] != 'got player_id':
             sys.exit()
-        elif self.input_buffer["player_id"] != self.player_id:
+        elif self.input_buffer["player_id"] != self.my_id:
             sys.exit()
         print('ID okay')
 
