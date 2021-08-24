@@ -17,15 +17,15 @@ class ClientGame():
                 eval(f'self.{function_to_call}({data_to_pass})')
                 send_msg_id += 1
                 self.connection_manager.output_buffer["msg_id"] = send_msg_id
+                print(self.connection_manager.output_buffer)
 
     def send_id(self, data):
         player_id = input('Please enter player ID')
         self.connection_manager.output_buffer["player_id"] = player_id
-        self.connection_manager.output_buffer["msg"] = "check_entered_id"
+        self.connection_manager.output_buffer["msg"] = "check_id"
 
     def ask_boolean(self, data):
         question = f"{data['question']}\n >>> "
-        print(data["options"])
         choice = input(question).lower()[0]
         while choice not in data["options"].keys():
             choice = input(question).lower()
@@ -42,6 +42,7 @@ class ClientGame():
     def pick_from_dict(self, data):
         options = data["options"].keys()
         choice = None
+        print(options)
         if len(options) > 0:
             question = f"{data['question']}\n >>> "
             print(json.dumps(data["options"], indent=4))
@@ -51,15 +52,9 @@ class ClientGame():
                     break
                 print('not a valid awnser')
                 choice = input(question).lower()
-        self.connection_manager.output_buffer["msg"] = "load_saved_data"
-        self.connection_manager.output_buffer["data"] = {"file_name" : choice}
+        self.connection_manager.output_buffer["msg"] = data["next_func"]
+        self.connection_manager.output_buffer["data"] = {"picked" : choice}
         
-    def make_dict_to_send(self, output_dict, msg_id, reply_data, msg):
-        output_dict["player_id"], output_dict["msg"]  = self.my_id, msg
-        output_dict["msg_id"], output_dict["data"] = msg_id, reply_data
-        if not isinstance(output_dict["data"], dict):
-            output_dict["data"] = {"reply": reply_data}
-
 if __name__ == '__main__':
     my_game = ClientGame()
     my_game.run()

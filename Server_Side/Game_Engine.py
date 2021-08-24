@@ -25,8 +25,9 @@ class GameEngine():
         self.permitted_functions = [
             "check_id",
             "load_game",
-            "load_save_data"
-            "new_game"
+            "load_saved_data",
+            "new_game",
+            "load_first_plant"
         ]
 
     def run(self):
@@ -61,7 +62,8 @@ class GameEngine():
             }
         self.output_buffer["data"] = {
             "question" : "Enter Game ID to load",
-            "options" : saved_files
+            "options" : saved_files,
+            "next_func" : "load_saved_data"
         }
 
     def load_saved_data(self, file_name):
@@ -83,6 +85,16 @@ class GameEngine():
             print('loading data...')
             plant_data = plant_dict[plant_id]
             self.my_plants[plant_id] = eval(f"{plant_data['type']}({plant_data})")
+
+    def new_game(self, data):
+        self.output_buffer["msg"] = "pick_from_dict"
+        plant_db = read_data('plant_db.json')
+        data_to_send = {plant_db[plant_key]['name'] for plant_key in plant_db}
+        self.output_buffer["data"] = {
+                "question" : "Pick your first plant",
+                "options" : data_to_send,
+                "next_func" : "load_first_plant"
+            }
 
     def add_plant(self, plant_db): 
         plant_type = pick_from_dict(plant_db)
@@ -261,6 +273,7 @@ if __name__ ==  "__main__":
     print('The Game has ended')
 
 # everything below this is holding for code we may not need
+'''
 class TempStuff():
     def holding_logic(self): # to be deleted
         # need to think about storing game logic in {} or similar?
@@ -291,3 +304,4 @@ class TempStuff():
         self.date_last_saved = datetime.strptime(saved_data['date_last_saved'], "%Y/%m/%d")
         return saved_data
 
+'''
