@@ -43,6 +43,7 @@ class GameEngine():
             sys.exit()
         elif self.input_buffer["player_id"] != self.player_id:
             sys.exit()
+        print('ID okay')
 
     def load_game_state(self):
         games_list = [name.spit(".")[0] for name in listdir(f'{self.current_folder}/Games/')]
