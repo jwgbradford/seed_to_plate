@@ -1,22 +1,29 @@
-from test import ask_boolean, pick_from_dict
 from Data_Handler import read_data, write_data
 from Plant_Handler import Tuber, Fruit
 from datetime import datetime
-import random, os, threading, sys
+from os import listdir, path
+from time import sleep
+import sys, random
 
 class GameEngine():
     def __init__(self, player_id):
         self.input_buffer, self.inventory,  self.my_plants = {}, {}, {}
-        self.plant_modifiers = read_data('modifiers.json')
+        self.current_folder = path.dirname(path.realpath(__file__))
+        self.plant_modifiers = read_data(f'{self.current_folder}/modifiers.json')
+        self.save_file_name = 'temorpary_game.json'
         self.score, self.my_id = 0, player_id
         self.output_buffer = {
             "player_id": None,
-            "msg_id" : 1,
-            "msg" : "send_id",
-            "data" : None
+            "msg_id": 1,
+            "msg": "send_id",
+            "data": None
             }
 
     def run(self):
+        print('wating')
+        while len(self.input_buffer) == 0:
+            pass
+        print('end of wait')
         self.check_player_id()
         plant_db = read_data('plant_db.json')
         load_game_question = 'Do you want to (l)oad a game or open a (n)ew game?'
@@ -30,29 +37,23 @@ class GameEngine():
         self.main_game_loop()
 
     def check_player_id(self):
-        if self.input_buffer["player_id"] == self.player_id:
-            pass
-        else:
+        if self.input_buffer["msg_id"] != 1:
+            sys.exit()
+        elif self.input_buffer["msg"] != 'got player_id':
+            sys.exit()
+        elif self.input_buffer["player_id"] != self.player_id:
             sys.exit()
 
-    def load_game_state(self, game_id):
-        # needs to go to client
-        game_id = input('enter Game ID to load\n >>> ')
-        while not os.path.isfile(f'Game{game_id}.json'):
-            game_id = input('enter valid ID name\n >>> ')
-        # end code to client
-        saved_data = read_data(f'Game{game_id}.json')
-        self.load_plant_data(saved_data['my_plants'])
-        self.inventory = saved_data['my_inventory']
-        self.clock_speed, self.score = saved_data['clock_speed'], saved_data['score'] 
+    def load_game_state(self):
+        games_list = [name.spit(".")[0] for name in listdir(f'{self.current_folder}/Games/')]
+        games_dict = dict(zip(range(len(games_list)), games_list))
+        self.save_file_name = f"{self.pick_from_dict('enter Game ID to load', games_dict)}.json"
+        saved_data = read_data(f'{self.current_folder}/Games/{self.save_file_name}') #playes can pick multiple need to fix
+        self.inventory, self.score = saved_data['my_inventory'], saved_data['score'] 
+        self.clock_speed, plant_data = saved_data['clock_speed'], saved_data['my_plants']
         self.date_last_saved = datetime.strptime(saved_data['date_last_saved'], "%Y/%m/%d")
+        self.my_plants[self.save_file_name] = eval(f"{plant_data['type']}({games_dict[self.save_file_name]})")
         return saved_data
-
-    def load_plant_data(self, plant_dict):
-        for plant_id in plant_dict: # load the values from the dictionary
-            print('loading data...')
-            plant_data = plant_dict[plant_id]
-            self.my_plants[plant_id] = eval(f"{plant_data['type']}({plant_data})")
 
     def add_plant(self, plant_db): 
         plant_db_simple = {key:{"name": plant_db[key]["name"], "decription": plant_db[key]["description"], "cost":plant_db[key]["cost"]} for key in plant_db}
@@ -63,45 +64,24 @@ class GameEngine():
             self.my_plants[f'plant_{plant_key}'] = eval(f'{plant_type}({plant_data})')
 
     def set_clock(self):
-        self.clock_speed = self.set_clock_speed(self.set_clock_type())
+        self.clock_speed = 1440 #set defult speed to how many minites in a day(24 * 60)
+        if self.ask_boolean('Do you wish for realistic time(0) or vitual time(1)', ['1', '0']):
+            self.clock_speed = self.pick_from_dict('chose speed', {"0": 0.1, "1": 5})
         self.date_last_saved = datetime.strptime(datetime.now().strftime("%Y/%m/%d"), "%Y/%m/%d")
-
-    def set_clock_type(self):
-        clock_type = input('Do you wish for realistic time(0) or virtual time(1)\n >>> ')
-        while (clock_type != '0') and (clock_type != '1'):
-            clock_type = input('Do you wish for realistic time(0) or vitual time(1)\n>>> ')
-        return clock_type
-
-    def set_clock_speed(self, clock_type):
-        if clock_type == '0':
-            return 1440 # 24hours * 60minutes
-        speed = 0
-        while speed == 0:
-            speed = abs(float(input('How many minutes in real time, does 1 day virtual time last?\n >>> ')))
-        return speed
 
     def main_game_loop(self):
         self.catch_up_days()
         self.inventory = dict(self.plant_modifiers)
-        playing = True
-        while playing:
+        while True:
             self.add_inventory_items()
-            threading.Event().wait(self.clock_speed * 60)
+            sleep(self.clock_speed * 60)
             self.grow_plants(game_mode='normal')
-            still_playing = input('press enter to continue and any other key to stop')
-            if still_playing != '':
-                playing = False
-        self.save_game_state()
 
     def catch_up_days(self):
         days_to_run = self.get_missed_days()
         while days_to_run > 0:
-            try:
-                self.grow_plants(game_mode='catchup')
-                days_to_run -= 1
-            except KeyboardInterrupt:
-                self.save_game_state()
-                sys.exit()
+            self.grow_plants(game_mode='catchup')
+            days_to_run -= 1
 
     def get_missed_days(self):
         todays_date = datetime.strptime(datetime.now().strftime("%Y/%m/%d"), "%Y/%m/%d")
@@ -200,7 +180,6 @@ class GameEngine():
 
     def save_game_state(self):
         save_date = datetime.today().strftime("%Y/%m/%d")
-        game_id = input('Enter a number to save game state into\n >>> ')
         plants_to_write = {plant_id: self.my_plants[plant_id].save_game_state() for plant_id in self.my_plants}
         dict_to_save = {
             'date_last_saved': save_date,
@@ -209,7 +188,7 @@ class GameEngine():
             'my_plants': plants_to_write,
             'my_inventory' : self.inventory
         }
-        write_data(dict_to_save, f'Game{game_id}.json') #save dict form above in file from game_id
+        write_data(dict_to_save, f'{self.current_folder}/Games/{self.save_file_name}') #save dict form above in file from game_id
 
     def ask_boolean(self, question, options):
         data_to_send = {"question": question, "options": options}
