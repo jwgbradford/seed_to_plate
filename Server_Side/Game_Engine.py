@@ -30,10 +30,8 @@ class GameEngine():
         load_game_question = 'Do you want to (l)oad a game or open a (n)ew game?'
         if self.ask_boolean(load_game_question, ['l', 'n']):
             self.load_game_state()
-        new_plant = self.ask_boolean('Do you want a new plant (y / n)?)', ['y', 'n'])
-        while new_plant:
+        while self.ask_boolean('Do you want a new plant (y / n)?)', ['y', 'n']):
             self.add_plant(plant_db)
-            new_plant = self.ask_boolean('Do you want another new plant (y / n)?)', ['y', 'n'])
         self.set_clock()
         self.main_game_loop()
 
@@ -81,13 +79,12 @@ class GameEngine():
         self.catch_up_days()
         self.inventory = dict(self.plant_modifiers)
         while True:
-            self.add_inventory_items()
             sleep(self.clock_speed * 60)
             self.grow_plants(game_mode='normal')
 
     def catch_up_days(self):
-        days_to_run = self.get_missed_days()
-        while days_to_run > 0:
+        days_to_run = 0
+        while self.get_missed_days() > 0:
             self.grow_plants(game_mode='catchup')
             days_to_run -= 1
 
@@ -103,7 +100,7 @@ class GameEngine():
             plant = self.my_plants[key]
             if plant.age < plant.days_to_harvest:
                 if game_mode == 'normal':
-                    plant.grow(weather_today, self.get_modifiers())
+                    plant.grow(weather_today, self.choose_modifiers())
                 else:
                     plant.grow(weather_today, {'temp': 0, 'sun': 0, 'water': 0})
                 print(f'Plant_{key}: {plant.save_game_state()}')
@@ -123,68 +120,20 @@ class GameEngine():
             }
         return weather_dict
 
-    def delete_invetory_item(self, modifier_type, modifier_uid):
-        self.inventory[modifier_type][modifier_uid]['uses'] -= 1
-        if self.inventory[modifier_type][modifier_uid]['uses'] == 0:
-            del self.inventory[modifier_type][modifier_uid]
-
-    def get_modifiers(self):
-        pick_modifiers, choices = 'n', []
-        modifier_options = dict(self.inventory)
-        chosen_modifiers = {'temp': 0, 'sun': 0, 'water': 0}
-        pick_modifiers = input('do you wish to pick a modifer (y/any) ')
-        while pick_modifiers == 'y':
-            for modifier_type in modifier_options:
-                for modifier_key in modifier_options[modifier_type]:
-                    modifier = modifier_options[modifier_type][modifier_key]
-                    print(modifier['name']+': '+modifier['description']+' ('+modifier_key+')')
-                    choices.append([modifier_key, modifier_type])
-            choice = input('pick a modifer key to use\n >>>')
-            while choice not in [option[0] for option in choices]:
-                choice = input('pick a real modifer key to use\n >>>')
-            for modifier_type in modifier_options:
-                if choice[1] == modifier_type[0]:
-                    chosen_modifier_type = modifier_type
-            chosen_modifier = modifier_options[chosen_modifier_type][choice]
-            chosen_modifiers[chosen_modifier_type] = chosen_modifier['power']
-            self.delete_invetory_item(chosen_modifier_type, choice)
-            del modifier_options[chosen_modifier_type]
-            if len(modifier_options) > 0:
-                pick_modifiers = input('do you wish for another modifer (y/any) ')
-            else:
-                pick_modifiers == 'n'
+    def choose_modifiers(self):
+        chosen_modifiers, modifier_options, del_options = [], dict(self.plant_modifiers), {}
+        while self.ask_boolean('Do you wish to pick a modifier (y / n)', ['y', 'n']):
+            chosen_modifiers.append(self.buy_something('Choose a modifier', modifier_options))
+            for modifer_key in modifier_options:
+                if modifier_options[modifer_key]["type"] == chosen_modifiers[-1]["type"]:
+                    del_options.append(modifer_key)
+            for option in del_options:
+                del chosen_modifiers[option]
+        for modifier_key in chosen_modifiers:
+            self.inventory[modifier_key]['uses'] -= 1
+            if self.inventory[modifier_key]['uses'] == 0:
+                del self.inventory[modifier_key]
         return chosen_modifiers
-
-    def add_inventory_items(self):
-        add_item = input(' do you wish to buy a modifier (y/any) ')
-        if len(add_item) == 0:
-            add_item = 'z'
-        choices = []
-        while add_item[0] == 'y':
-            for modifier_type in self.plant_modifiers:
-                for modifier_key in self.plant_modifiers[modifier_type]:
-                    modifier = self.plant_modifiers[modifier_type][modifier_key]
-                    print(modifier['name']+': '+modifier['description']+' ('+modifier_key+')')
-                    choices.append([modifier_key, modifier_type])
-            choice = input('pick a modifer key to add to your inventory\n >>>')
-            while choice not in [option[0] for option in choices]:
-                choice = input('pick a real modifer key to add to your inventory\n >>>')
-            for modifier_type in self.plant_modifiers:
-                if choice[1] == modifier_type[0]:
-                    chosen_modifier_type = modifier_type
-            if self.plant_modifiers[chosen_modifier_type][choice]['price'] > self.score:
-                print('cost_to_much')
-                add_item = input(' do you wish to try again (y) / anykey\n >>>').lower()
-                if len(add_item) == 0:
-                    add_item = 'z'
-                continue
-            if choice in self.inventory[chosen_modifier_type]:
-                self.inventory[chosen_modifier_type][choice]['uses'] += self.plant_modifiers[chosen_modifier_type][choice]['uses']
-            else:
-                self.inventory[chosen_modifier_type][choice] = self.plant_modifiers[chosen_modifier_type][choice]
-            add_item = input(' do you wish to buy something else (y) / any key\n >>>').lower()
-            if len(add_item) == 0:
-                add_item = 'z'
 
     def save_game_state(self):
         save_date = datetime.today().strftime("%Y/%m/%d")
