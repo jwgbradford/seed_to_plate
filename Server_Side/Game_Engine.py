@@ -65,7 +65,7 @@ class GameEngine():
     def add_plant(self, plant_db): 
         plant_db_simple = {key:{"name": plant_db[key]["name"], "cost":plant_db[key]["cost"]} for key in plant_db}
         plant_db_simple["null"] = "continue without buying a plant"
-        plant_key = self.pick_from_dict('Please pick a plant', plant_db_simple)
+        plant_key = self.buy_something('Please pick a plant', plant_db_simple)
         if plant_key != 'null':
             plant_data = {'type': plant_db[plant_key]["type"], 'key': plant_key}
             self.my_plants[f'plant_{plant_key}'] = eval(f'{plant_db[plant_key]["type"]}({plant_data})')
@@ -73,7 +73,8 @@ class GameEngine():
     def set_clock(self):
         self.clock_speed = 1440 #set defult speed to how many minites in a day(24 * 60)
         if self.ask_boolean('Do you wish for realistic time(0) or vitual time(1)', ['1', '0']):
-            self.clock_speed = self.pick_from_dict('chose speed', {"0": 0.1, "1": 5})
+            time_options ={"0": 0.1, "1": 5, "2": 10, "3": 100, "4": 150, "5": 1000, "6": 3000}
+            self.clock_speed = time_options[self.pick_from_dict('chose speed', time_options)]
         self.date_last_saved = datetime.strptime(datetime.now().strftime("%Y/%m/%d"), "%Y/%m/%d")
 
     def main_game_loop(self):
@@ -207,16 +208,22 @@ class GameEngine():
             return True
         return False
 
-    def pick_from_dict(self, question, options):
+    def buy_something(self, question, options):
         cost_of_object = self.score + 1
         while cost_of_object > self.score:
-            self.set_output_buffer({"question": question, "options": options}, 'pick_from_dict')
-            if (self.input_buffer['msg'] != 'picked options from dict') or (self.input_buffer['data'] not in options.keys()):
-                print('client side error while picking from dict')
-                sys.exit()
-            cost_of_object = options[self.input_buffer['data']]['cost']
-            question = 'too expensive ty again'
+            _ = self.pick_from_dict(question, options)
+            cost_of_object = 0
+            if self.input_buffer['data'] != 'null':
+                cost_of_object = options[self.input_buffer['data']]['cost']
+                question = 'too expensive ty again'
         self.score -= cost_of_object
+        return self.input_buffer['data']
+
+    def pick_from_dict(self, question, options):
+        self.set_output_buffer({"question": question, "options": options}, 'pick_from_dict')
+        if (self.input_buffer['msg'] != 'picked options from dict') or (self.input_buffer['data'] not in options.keys()):
+            print('client side error while picking from dict')
+            sys.exit()
         return self.input_buffer['data']
 
     def set_output_buffer(self, data_to_send, msg_to_send): 
