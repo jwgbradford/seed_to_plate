@@ -2,42 +2,42 @@
     "mt01": {
         "name" : "straw",
         "description" : "helps keep plants warm a little bit",
-        "price": 1,
+        "cost": 1,
         "uses" : 5,
         "power" : 0.25
     },
     "mt02":{
         "name" : "fan",
         "description" : "helps keep plants cool a little bit",
-        "price": 1,
+        "cost": 1,
         "uses" : 5,
         "power" : -0.25
     },
     "mw01": {
         "name" : "watering can",
         "description" : "helps keep plants watered a little bit",
-        "price": 1,
+        "cost": 1,
         "uses" : 1,
         "power" : 0.2
     },
     "mw02":{
         "name":  "umbrella",
         "description": "blocks rainfall",
-        "price": 1,
+        "cost": 1,
         "uses": 3,
         "power": 0.25
     },
     "ms01":{
         "name":  "lamp",
         "description": "creates more sunlight",
-        "price": 1,
+        "cost": 1,
         "uses": 3,
         "power": 0.25
     },
     "ms02":{
         "name":  "sun shade",
         "description": "blocks light",
-        "price": 1,
+        "cost": 1,
         "uses": 3,
         "power": 0.25
     }
