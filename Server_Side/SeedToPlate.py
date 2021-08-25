@@ -30,7 +30,6 @@ class SeedToPlateServer():
         ge = GameEngine(player_id)
         Thread(target=ge.run, args=()).start()
         recv_msg_id = 0
-        print(f'player_{player_id} joined!')
         while True:
             self.send(ge.output_buffer, conn)
             try:
@@ -39,9 +38,6 @@ class SeedToPlateServer():
                 print(f'player_{player_id} left!')
                 break
             if len(data) > 0:
-                if data["player_id"] == player_id:
-                    print('client not valid')
-                    break
                 if data["msg_id"] > recv_msg_id:
                     ge.input_buffer = data
                     recv_msg_id = data["msg_id"]

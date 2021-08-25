@@ -18,7 +18,7 @@ class ClientGame():
                     send_msg_id = send_msg_id + 1
 
     def send_id(self, data):
-        self.my_id = input('what is your player id? \n >>> ')
+        self.my_id = int(input('what is your player id? \n >>> '))
         return 'got player_id', self.my_id
 
     def ask_boolean(self, data):
@@ -45,8 +45,6 @@ class ClientGame():
         output_dict = dict(self.connection_manager.output_buffer)
         output_dict["player_id"], output_dict["msg"]  = self.my_id, msg
         output_dict["msg_id"], output_dict["data"] = msg_id, reply_data
-        if not isinstance(output_dict["data"], dict):
-            output_dict["data"] = {"reply": reply_data}
         self.connection_manager.output_buffer = output_dict
 
 if __name__ == '__main__':

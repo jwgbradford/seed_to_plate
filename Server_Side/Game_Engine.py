@@ -20,12 +20,13 @@ class GameEngine():
             }
 
     def run(self):
-        print('wating')
+        print(f'player_{self.my_id} joined!')
+        print('wating for confirmation')
         while len(self.input_buffer) == 0:
             pass
         print('end of wait')
         self.check_player_id()
-        plant_db = read_data('plant_db.json')
+        plant_db = read_data(f'{self.current_folder}/plant_db.json')
         load_game_question = 'Do you want to (l)oad a game or open a (n)ew game?'
         if self.ask_boolean(load_game_question, ['l', 'n']):
             self.load_game_state()
@@ -38,10 +39,15 @@ class GameEngine():
 
     def check_player_id(self):
         if self.input_buffer["msg_id"] != 1:
+            print('exiting: bad msg_id')
             sys.exit()
         elif self.input_buffer["msg"] != 'got player_id':
+            print('exiting: bad msg')
             sys.exit()
         elif self.input_buffer["player_id"] != self.my_id:
+            print('exiting: bad player id')
+            if self.input_buffer["player_id"] != self.input_buffer["data"]:
+                print('exiting: bad data')
             sys.exit()
         print('ID okay')
 
@@ -230,5 +236,5 @@ class GameEngine():
         dict_to_send['msg'] = msg_to_send
         dict_to_send['msg_id'] += 1
         self.output_buffer = dict_to_send 
-        while self.input_buffer['msg_id'] < self.set_output_buffer['msg_id']: 
+        while self.input_buffer['msg_id'] < self.output_buffer['msg_id']: 
             pass
