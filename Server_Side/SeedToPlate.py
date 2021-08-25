@@ -39,6 +39,7 @@ class SeedToPlateServer():
                 break
             if len(data) > 0:
                 if data["msg_id"] > recv_msg_id:
+                    print(data)
                     ge.input_buffer = data
                     recv_msg_id = data["msg_id"]
         ge.save_game_state()

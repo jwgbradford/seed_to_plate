@@ -13,6 +13,7 @@ class ClientGame():
             input_dict = self.connection_manager.input_buffer
             if len(input_dict) > 0:
                 if input_dict["msg_id"] > send_msg_id:
+                    print(input_dict)
                     msg, reply_data = eval(f'self.{input_dict["msg"]}({input_dict["data"]})')
                     self.make_dict_to_send(input_dict["msg_id"], reply_data, msg)
                     send_msg_id = send_msg_id + 1
@@ -27,9 +28,7 @@ class ClientGame():
         choice = input(question).lower()[0]
         while choice not in options:
             choice = input(question).lower()[0]
-        if choice == options[0]:
-            return 'answer to boolean question', True
-        return 'answer to boolean question', False
+        return 'answer to boolean question', choice
 
     def pick_from_dict(self, data):
         options = data["options"].keys()
@@ -39,7 +38,7 @@ class ClientGame():
         while choice not in options:
             print('not a valid awnser')
             choice = input(question).lower()
-        return 'picked options from dict', data[choice] 
+        return 'picked options from dict', choice
 
     def make_dict_to_send(self, msg_id, reply_data, msg):
         output_dict = dict(self.connection_manager.output_buffer)

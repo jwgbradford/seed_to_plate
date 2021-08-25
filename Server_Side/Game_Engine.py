@@ -11,7 +11,7 @@ class GameEngine():
         self.current_folder = path.dirname(path.realpath(__file__))
         self.plant_modifiers = read_data(f'{self.current_folder}/modifiers.json')
         self.save_file_name = 'temorpary_game.json'
-        self.score, self.my_id = 0, player_id
+        self.score, self.my_id = 1, player_id
         self.output_buffer = {
             "player_id": None,
             "msg_id": 1,
@@ -30,10 +30,10 @@ class GameEngine():
         load_game_question = 'Do you want to (l)oad a game or open a (n)ew game?'
         if self.ask_boolean(load_game_question, ['l', 'n']):
             self.load_game_state()
-        add_plant_answer = self.ask_boolean('Do you want a new plant (y / n)?)', ['y', 'n'])
-        while add_plant_answer:
+        new_plant = self.ask_boolean('Do you want a new plant (y / n)?)', ['y', 'n'])
+        while new_plant:
             self.add_plant(plant_db)
-            add_plant_answer = self.ask_boolean('Do you want another new plant (y / n)?)', ['y', 'n'])
+            new_plant = self.ask_boolean('Do you want another new plant (y / n)?)', ['y', 'n'])
         self.set_clock()
         self.main_game_loop()
 
@@ -63,12 +63,12 @@ class GameEngine():
         return saved_data
 
     def add_plant(self, plant_db): 
-        plant_db_simple = {key:{"name": plant_db[key]["name"], "decription": plant_db[key]["description"], "cost":plant_db[key]["cost"]} for key in plant_db}
-        plant_keys = self.pick_from_dict('Please pick a plant', plant_db_simple)
-        for plant_key in plant_keys:
-            plant_type = plant_db[plant_key]["type"]
-            plant_data = {'type' : plant_type, 'key' : plant_key}
-            self.my_plants[f'plant_{plant_key}'] = eval(f'{plant_type}({plant_data})')
+        plant_db_simple = {key:{"name": plant_db[key]["name"], "cost":plant_db[key]["cost"]} for key in plant_db}
+        plant_db_simple["null"] = "continue without buying a plant"
+        plant_key = self.pick_from_dict('Please pick a plant', plant_db_simple)
+        if plant_key != 'null':
+            plant_data = {'type': plant_db[plant_key]["type"], 'key': plant_key}
+            self.my_plants[f'plant_{plant_key}'] = eval(f'{plant_db[plant_key]["type"]}({plant_data})')
 
     def set_clock(self):
         self.clock_speed = 1440 #set defult speed to how many minites in a day(24 * 60)
@@ -201,37 +201,27 @@ class GameEngine():
         data_to_send = {"question": question, "options": options}
         self.set_output_buffer(data_to_send, 'ask_boolean')
         if self.input_buffer['msg'] != 'answer to boolean question':
-            print('client side error')
+            print('client side error while awnsering bolean question')
             sys.exit()
         if self.input_buffer['data'] == options[0]:
             return True
         return False
 
-    def pick_from_dict_code(self, question, options):
-        data_to_send = {"question": question, "options": options}
-        self.set_output_buffer(data_to_send, 'pick_from_dict')
-        if self.input_buffer['msg'] != 'picked options from dict':
-            print('client side error')
-            sys.exit()
-        for option in self.input_buffer['data']: 
-            if option not in list(options.keys()):
-                print('client side error')
-                sys.exit()
-        cost_of_objects = 0
-        for option in self.input_buffer['data']:
-            cost_of_objects += options[option]['cost']
-        return cost_of_objects
-
     def pick_from_dict(self, question, options):
-        #data is list of keys
-        cost_of_objects = self.pick_from_dict_code(question, options)
-        while cost_of_objects > self.score:
-            print('can not afords it')
-            self.pick_from_dict_code(question, options)
+        cost_of_object = self.score + 1
+        while cost_of_object > self.score:
+            self.set_output_buffer({"question": question, "options": options}, 'pick_from_dict')
+            if (self.input_buffer['msg'] != 'picked options from dict') or (self.input_buffer['data'] not in options.keys()):
+                print('client side error while picking from dict')
+                sys.exit()
+            cost_of_object = options[self.input_buffer['data']]['cost']
+            question = 'too expensive ty again'
+        self.score -= cost_of_object
         return self.input_buffer['data']
 
     def set_output_buffer(self, data_to_send, msg_to_send): 
         dict_to_send = dict(self.output_buffer)
+        dict_to_send['player_id'] = self.my_id
         dict_to_send['data'] = data_to_send
         dict_to_send['msg'] = msg_to_send
         dict_to_send['msg_id'] += 1
