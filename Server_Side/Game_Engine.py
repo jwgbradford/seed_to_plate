@@ -20,7 +20,6 @@ class GameEngine():
             "data" : {}
             }
         self.my_plants = {}
-        self.inventory = {}
         self.recv_msg_id = 0
         self.permitted_functions = [
             "check_id",
@@ -35,6 +34,11 @@ class GameEngine():
             "pick_modifier",
             "grow_plants"
         ]
+        self.starting_inventory()
+
+    def starting_inventory(self):
+        modifiers = read_data('modifiers.json')
+        self.inventory = dict(modifiers)
 
     def run(self):
         while True:
@@ -168,13 +172,26 @@ class GameEngine():
         self.date_last_saved = datetime.strptime(datetime.now().strftime("%Y/%m/%d"), "%Y/%m/%d")
         self.get_weather({})
 
-    def set_modifiers(self):
-        modifiers = read_data('modifiers.json')
-        self.plant_modifiers = modifiers
+    def get_weather(self, data):
+        weather_dict = {
+            'type': random.choice(['Snow', 'Normal']),
+            'temp': round(random.uniform(9, 21), 2),
+            'sun': round(random.uniform(0,8), 2),
+            'rainfall': random.uniform(0, 0.13143)
+            }
+        question = f'Todays weather is {weather_dict}, do you want to apply a modifier to your plants? (y) / (n)'
+        self.output_buffer["msg"] = "ask_boolean"
+        self.output_buffer["data"] = {
+            "question" : question,
+            "options" : {
+                "y" : "pick_modifier",
+                "n" : "grow_plants"
+            }
+        }
 
     def main_game_loop(self, recv_msg_id):
         self.catch_up_days()
-        self.inventory = dict(self.plant_modifiers)
+        self.inventory = dict(modifiers)
         playing = True
         while playing:
             self.add_inventory_items()
@@ -218,23 +235,6 @@ class GameEngine():
         for key in dead_plants:
             del self.my_plants[key]
 
-    def get_weather(self, data):
-        weather_dict = {
-            'type': random.choice(['Snow', 'Normal']),
-            'temp': round(random.uniform(9, 21), 2),
-            'sun': round(random.uniform(0,8), 2),
-            'rainfall': random.uniform(0, 0.13143)
-            }
-        question = f'Todays weather is {weather_dict}, do you want to apply a modifier to your plants? (y) / (n)'
-        self.output_buffer["msg"] = "ask_boolean"
-        self.output_buffer["data"] = {
-            "question" : question,
-            "options" : {
-                "y" : "pick_modifier",
-                "n" : "grow_plants"
-            }
-        }
-
     def delete_invetory_item(self, modifier_type, modifier_uid):
         self.inventory[modifier_type][modifier_uid]['uses'] -= 1
         if self.inventory[modifier_type][modifier_uid]['uses'] == 0:
@@ -269,31 +269,32 @@ class GameEngine():
 
     def add_inventory_items(self):
         add_item = input(' do you wish to buy a modifier (y/any) ')
+        modifiers = read_data('modifiers.json') # need to think about this carefully
         if len(add_item) == 0:
             add_item = 'z'
         choices = []
         while add_item[0] == 'y':
-            for modifier_type in self.plant_modifiers:
-                for modifier_key in self.plant_modifiers[modifier_type]:
-                    modifier = self.plant_modifiers[modifier_type][modifier_key]
+            for modifier_type in modifiers:
+                for modifier_key in modifiers[modifier_type]:
+                    modifier = modifiers[modifier_type][modifier_key]
                     print(modifier['name']+': '+modifier['description']+' ('+modifier_key+')')
                     choices.append([modifier_key, modifier_type])
             choice = input('pick a modifer key to add to your inventory\n >>>')
             while choice not in [option[0] for option in choices]:
                 choice = input('pick a real modifer key to add to your inventory\n >>>')
-            for modifier_type in self.plant_modifiers:
+            for modifier_type in modifiers:
                 if choice[1] == modifier_type[0]:
                     chosen_modifier_type = modifier_type
-            if self.plant_modifiers[chosen_modifier_type][choice]['price'] > self.score:
+            if modifiers[chosen_modifier_type][choice]['price'] > self.score:
                 print('cost_to_much')
                 add_item = input(' do you wish to try again (y) / anykey\n >>>').lower()
                 if len(add_item) == 0:
                     add_item = 'z'
                 continue
             if choice in self.inventory[chosen_modifier_type]:
-                self.inventory[chosen_modifier_type][choice]['uses'] += self.plant_modifiers[chosen_modifier_type][choice]['uses']
+                self.inventory[chosen_modifier_type][choice]['uses'] += modifiers[chosen_modifier_type][choice]['uses']
             else:
-                self.inventory[chosen_modifier_type][choice] = self.plant_modifiers[chosen_modifier_type][choice]
+                self.inventory[chosen_modifier_type][choice] = modifiers[chosen_modifier_type][choice]
             add_item = input(' do you wish to buy something else (y) / any key\n >>>').lower()
             if len(add_item) == 0:
                 add_item = 'z'
