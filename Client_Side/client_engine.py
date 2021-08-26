@@ -17,7 +17,7 @@ class ClientGame():
                 eval(f'self.{function_to_call}({data_to_pass})')
                 send_msg_id += 1
                 self.connection_manager.output_buffer["msg_id"] = send_msg_id
-                print(self.connection_manager.output_buffer)
+                print('output buffer: ',self.connection_manager.output_buffer)
 
     def send_id(self, data):
         player_id = input('Please enter player ID')

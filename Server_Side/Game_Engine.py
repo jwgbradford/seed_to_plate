@@ -27,7 +27,8 @@ class GameEngine():
             "load_game",
             "load_saved_data",
             "new_game",
-            "load_first_plant"
+            "load_first_plant",
+            "add_plant"
         ]
 
     def run(self):
@@ -81,55 +82,84 @@ class GameEngine():
                 }
 
     def load_plant_data(self, plant_dict):
+        plant_db = read_data('plant_db.json')
         for plant_id in plant_dict: # load the values from the dictionary
             print('loading data...')
-            plant_data = plant_dict[plant_id]
+            uid = plant_dict[plant_id]['uid']
+            base_data = plant_db[uid]
+            saved_data = plant_dict[plant_id]
+            plant_data = {**base_data,  **saved_data}
             self.my_plants[plant_id] = eval(f"{plant_data['type']}({plant_data})")
 
     def new_game(self, data):
         self.output_buffer["msg"] = "pick_from_dict"
         plant_db = read_data('plant_db.json')
-        data_to_send = {plant_db[plant_key]['name'] for plant_key in plant_db}
+        data_to_send = {plant_key : plant_db[plant_key]['name'] for plant_key in plant_db}
         self.output_buffer["data"] = {
-                "question" : "Pick your first plant",
-                "options" : data_to_send,
-                "next_func" : "load_first_plant"
+            "question" : "Pick your first plant",
+            "options" : data_to_send,
+            "next_func" : "load_first_plant"
+        }
+
+    def load_plant(self, data): # check plant value against score
+        plant_db = read_data('plant_db.json')
+        plant_data = plant_db[data['picked']]
+        plant_type = plant_data['type']
+        new_id = '1'
+        if self.score >= plant_data['cost']:
+            if len(self.my_plants) != 0:
+                working_id = int(str(self.my_plants.keys()[-1][6:]))
+                new_id = str(working_id + 1)
+            self.my_plants[f'plant_{new_id}'] = eval(f'{plant_type}({plant_data})')
+            self.score -= plant_data['cost']
+            return True
+        else:
+            return False
+
+    def load_first_plant(self, data):
+        self.score = 999999 # get a free plant to start
+        _ = self.load_plant(data)
+        self.score = 0
+        self.output_buffer["msg"] = "ask_boolean"
+        self.output_buffer["data"] = {
+            "question" : "Would you like (r)eal time or (f)ast time?",
+            "options" : {
+                "r" : "real_time",
+                "f" : "fast_time"
+            }
+        }
+
+    def add_plant(self, data):
+        if self.load_plant(data):
+            question = "Would you like buy another (p)lant or (r)un the game?"
+        else:
+            question = "You have insufficent funds, would you like buy another (p)lant or (r)un the game?"
+        self.output_buffer["msg"] = "ask_boolean"
+        self.output_buffer["data"] = {
+            "question" : question,
+            "options" : {
+                "p" : "add_plant",
+                "r" : "get_weather"
+            }
+        }
+
+    def real_time(self, data):
+        self.set_clock_speed(1440)
+
+    def fast_time(self, data):
+            self.output_buffer["msg"] = "get_string"
+            self.output_buffer["data"] = {
+                "question" : "You have insufficent funds, would you like buy another (p)lant or (r)un the game?",
+                "options" : {
+                    "p" : "add_plant",
+                    "r" : "get_weather"
+                }
             }
 
-    def add_plant(self, plant_db): 
-        plant_type = pick_from_dict(plant_db)
-        plant_key = self.choose_plant(plant_db, plant_type)
-        plant_data = {'type' : plant_type, 'key' : plant_key}
-        new_id = '1'
-        if len(self.my_plants) != 0:
-            working_id = int(str(self.my_plants.keys()[-1][6:]))
-            new_id = str(working_id + 1)
-        self.my_plants[f'plant_{new_id}'] = eval(f'{plant_type}({plant_data})')
 
-    def choose_plant(self, plant_db, plant_type):
-        choices = [plant_db[plant_type][data]['name'] for data in plant_db[plant_type]]
-        choice = input('pick plant a plant from\n' + str(choices) + '\n >>> ')
-        while choice not in choices:
-            choice = input('choose again\n pick plant a plant from\n' + str(choices) + '\n >>> ')
-        return str(choices.index(choice))
-
-    def set_clock(self):
-        self.clock_speed = self.set_clock_speed(self.set_clock_type())
+    def set_clock_speed(self, data):
+        self.clock_speed = self.set_clock_speed(data)
         self.date_last_saved = datetime.strptime(datetime.now().strftime("%Y/%m/%d"), "%Y/%m/%d")
-
-    def set_clock_type(self):
-        clock_type = input('Do you wish for realistic time(0) or virtual time(1)\n >>> ')
-        while (clock_type != '0') and (clock_type != '1'):
-            clock_type = input('Do you wish for realistic time(0) or vitual time(1)\n>>> ')
-        return clock_type
-
-    def set_clock_speed(self, clock_type):
-        if clock_type == '0':
-            return 1440 # 24hours * 60minutes
-        speed = 0
-        while speed == 0:
-            speed = abs(float(input('How many minutes in real time, does 1 day virtual time last?\n >>> ')))
-        return speed
 
     def set_modifiers(self):
         modifiers = read_data('modifiers.json')
@@ -303,5 +333,13 @@ class TempStuff():
         self.clock_speed, self.score = saved_data['clock_speed'], saved_data['score'] 
         self.date_last_saved = datetime.strptime(saved_data['date_last_saved'], "%Y/%m/%d")
         return saved_data
+
+
+        if clock_type == '0':
+            return 1440 # 24hours * 60minutes
+        speed = 0
+        while speed == 0:
+            speed = abs(float(input('How many minutes in real time, does 1 day virtual time last?\n >>> ')))
+        return speed
 
 '''

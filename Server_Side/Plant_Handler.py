@@ -4,8 +4,7 @@ from Data_Handler import read_data
 class Plant():
     def __init__(self, plant_data):
         self.set_independant_attributes()
-        self.set_base_attributes(plant_data)
-        self.set_saved_attributes(plant_data)
+        self.set_plant_attributes(plant_data)
 
     def set_independant_attributes(self):
         self.my_flowers, self.my_fruit, self.pollinated_flowers = 0, 0, 0
@@ -14,12 +13,12 @@ class Plant():
         self.my_produce = {}
         self.my_branches, self.expected_yield = 1, 1
 
-    def set_base_attributes(self, plant_model):
-        base_model = read_data('plant_db.json')[plant_model['type']][plant_model['key']]
-        self.my_key = plant_model['key']
-        for key in base_model:
-            setattr(self, key, base_model[key])
-        self.rate_of_bifurication = self.set_bifurication_rate()
+    def set_plant_attributes(self, plant_model):
+        self.my_key = plant_model['uid']
+        for key in plant_model:
+            setattr(self, key, plant_model[key])
+        if plant_model["rate_of_bifurication"] == 0:
+            self.rate_of_bifurication = self.set_bifurication_rate()
         self.daily_growth_rate = self.final_height/self.days_to_harvest
 
     def add_branches(self):
@@ -27,10 +26,6 @@ class Plant():
             branching = uniform(0,1)
             if branching > self.rate_of_bifurication:
                 self.my_branches += 1
-
-    def set_saved_attributes(self, plant_model):
-        for key in plant_model:
-            setattr(self, key, plant_model[key])
 
     def set_bifurication_rate(self):
         rate_of_bifurication = 0
