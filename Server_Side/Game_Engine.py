@@ -28,7 +28,12 @@ class GameEngine():
             "load_saved_data",
             "new_game",
             "load_first_plant",
-            "add_plant"
+            "add_plant",
+            "real_time",
+            "fast_time",
+            "set_clock_speed",
+            "pick_modifier",
+            "grow_plants"
         ]
 
     def run(self):
@@ -147,19 +152,21 @@ class GameEngine():
         self.set_clock_speed(1440)
 
     def fast_time(self, data):
-            self.output_buffer["msg"] = "get_string"
+            self.output_buffer["msg"] = "pick_from_dict"
             self.output_buffer["data"] = {
-                "question" : "You have insufficent funds, would you like buy another (p)lant or (r)un the game?",
+                "question" : "How many minutes in real time, does 1 day virtual time last?",
                 "options" : {
-                    "p" : "add_plant",
-                    "r" : "get_weather"
-                }
+                    "0.01" : "1 second",
+                    "0.1" : "6 seconds",
+                    "1" : "1 minute"
+                },
+                "next_func" : "set_clock_speed"
             }
 
-
     def set_clock_speed(self, data):
-        self.clock_speed = self.set_clock_speed(data)
+        self.clock_speed = data
         self.date_last_saved = datetime.strptime(datetime.now().strftime("%Y/%m/%d"), "%Y/%m/%d")
+        self.get_weather({})
 
     def set_modifiers(self):
         modifiers = read_data('modifiers.json')
@@ -211,14 +218,22 @@ class GameEngine():
         for key in dead_plants:
             del self.my_plants[key]
 
-    def get_weather(self):
+    def get_weather(self, data):
         weather_dict = {
             'type': random.choice(['Snow', 'Normal']),
             'temp': round(random.uniform(9, 21), 2),
             'sun': round(random.uniform(0,8), 2),
             'rainfall': random.uniform(0, 0.13143)
             }
-        return weather_dict
+        question = f'Todays weather is {weather_dict}, do you want to apply a modifier to your plants? (y) / (n)'
+        self.output_buffer["msg"] = "ask_boolean"
+        self.output_buffer["data"] = {
+            "question" : question,
+            "options" : {
+                "y" : "pick_modifier",
+                "n" : "grow_plants"
+            }
+        }
 
     def delete_invetory_item(self, modifier_type, modifier_uid):
         self.inventory[modifier_type][modifier_uid]['uses'] -= 1
