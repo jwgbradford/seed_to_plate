@@ -54,7 +54,29 @@ class ClientGame():
                 choice = input(question).lower()
         self.connection_manager.output_buffer["msg"] = data["next_func"]
         self.connection_manager.output_buffer["data"] = {"picked" : choice}
-        
+
+    def multi_from_dict(self, data):
+        options = list(data["options"].keys())
+        choices = []
+        pick_another = 'y'
+        print(options)
+        if len(options) > 0 and pick_another == 'y':
+            question = f"{data['question']}\n >>> "
+            for key in data['options']:
+                print(f'{key} : a {data["options"][key]["name"]}, it {data["options"][key]["description"]}')
+            choice = input(question).lower()
+            while choice not in options:
+                if choice == '':
+                    break
+                print('not a valid awnser')
+                choice = input(question).lower()
+            choices.append(choice)
+            options.remove(choice)
+            if len(options) > 0:
+                pick_another = input('would you like to choose another (y) / (any key)?').lower()[0]
+        self.connection_manager.output_buffer["msg"] = data["next_func"]
+        self.connection_manager.output_buffer["data"] = {"picked" : choices}
+
 if __name__ == '__main__':
     my_game = ClientGame()
     my_game.run()

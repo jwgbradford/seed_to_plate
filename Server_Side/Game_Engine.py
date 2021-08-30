@@ -21,6 +21,8 @@ class GameEngine():
             }
         self.my_plants = {}
         self.recv_msg_id = 0
+        self.current_plant = 0
+        self.chosen_modifiers = {}
         self.permitted_functions = [
             "check_id",
             "load_game",
@@ -32,7 +34,8 @@ class GameEngine():
             "fast_time",
             "set_clock_speed",
             "pick_modifier",
-            "grow_plants"
+            "grow_plants",
+            "record_modifier_choice"
         ]
         self.starting_inventory()
 
@@ -170,15 +173,20 @@ class GameEngine():
     def set_clock_speed(self, data):
         self.clock_speed = data
         self.date_last_saved = datetime.strptime(datetime.now().strftime("%Y/%m/%d"), "%Y/%m/%d")
-        self.get_weather({})
+        self.get_weather(data)
 
     def get_weather(self, data):
+        self.current_plant = 0
         weather_dict = {
             'type': random.choice(['Snow', 'Normal']),
             'temp': round(random.uniform(9, 21), 2),
             'sun': round(random.uniform(0,8), 2),
             'rainfall': random.uniform(0, 0.13143)
             }
+        self.weather_today = weather_dict
+        self.show_weather(weather_dict)
+
+    def show_weather(self, weather_dict):
         question = f'Todays weather is {weather_dict}, do you want to apply a modifier to your plants? (y) / (n)'
         self.output_buffer["msg"] = "ask_boolean"
         self.output_buffer["data"] = {
@@ -189,18 +197,34 @@ class GameEngine():
             }
         }
 
-    def main_game_loop(self, recv_msg_id):
-        self.catch_up_days()
-        self.inventory = dict(modifiers)
-        playing = True
-        while playing:
-            self.add_inventory_items()
-            threading.Event().wait(self.clock_speed * 60)
-            self.grow_plants(game_mode='normal')
-            still_playing = input('press enter to continue and any other key to stop')
-            if still_playing != '':
-                playing = False
-        self.save_game_state()
+    def pick_modifier(self, data):
+        modifier_options = {
+            key : {
+                'name' : self.inventory[key]['name'],
+                'description' : self.inventory[key]['description']
+            } for key in self.inventory
+        }
+        applied_plant_key = list(self.my_plants)[self.current_plant]
+        plant_name = self.my_plants[applied_plant_key].name
+        self.output_buffer["msg"] = "multi_from_dict"
+        self.output_buffer["data"] = {
+            "question" : f'Which modifier would you like to apply to your {plant_name}',
+            "options" : modifier_options,
+            "next_func" : "record_modifier_choice"
+        }
+
+    def record_modifier_choice(self, data):
+        for modifier in data['picked']:
+            self.chosen_modifiers[self.current_plant] = {self.inventory[modifier]}
+            if self.inventory[modifier]['uses'] > 1:
+                self.inventory[modifier]['uses'] -= 1
+            else:
+                del self.inventory[modifier]
+        if self.current_plant == len(self.my_plants) - 1:
+            self.grow_plants()
+        else:
+            self.current_plant += 1
+            self.show_weather(self.weather_today)
 
     def catch_up_days(self):
         days_to_run = self.get_missed_days()
@@ -216,10 +240,9 @@ class GameEngine():
         todays_date = datetime.strptime(datetime.now().strftime("%Y/%m/%d"), "%Y/%m/%d")
         return ((todays_date.day - self.date_last_saved.day) * 1440) / self.clock_speed
 
-    def grow_plants(self, game_mode):
-        weather_today = self.get_weather()
+    def grow_plants(self, data):
+        input('ready to grow plants')
         dead_plants = []
-        print(weather_today)
         for key in self.my_plants:
             plant = self.my_plants[key]
             if plant.age < plant.days_to_harvest:
@@ -235,37 +258,10 @@ class GameEngine():
         for key in dead_plants:
             del self.my_plants[key]
 
-    def delete_invetory_item(self, modifier_type, modifier_uid):
+    def delete_inventory_item(self, modifier_type, modifier_uid):
         self.inventory[modifier_type][modifier_uid]['uses'] -= 1
         if self.inventory[modifier_type][modifier_uid]['uses'] == 0:
             del self.inventory[modifier_type][modifier_uid]
-
-    def get_modifiers(self):
-        pick_modifiers, choices = 'n', []
-        modifier_options = dict(self.inventory)
-        chosen_modifiers = {'temp': 0, 'sun': 0, 'water': 0}
-        pick_modifiers = input('do you wish to pick a modifer (y/any) ')
-        while pick_modifiers == 'y':
-            for modifier_type in modifier_options:
-                for modifier_key in modifier_options[modifier_type]:
-                    modifier = modifier_options[modifier_type][modifier_key]
-                    print(modifier['name']+': '+modifier['description']+' ('+modifier_key+')')
-                    choices.append([modifier_key, modifier_type])
-            choice = input('pick a modifer key to use\n >>>')
-            while choice not in [option[0] for option in choices]:
-                choice = input('pick a real modifer key to use\n >>>')
-            for modifier_type in modifier_options:
-                if choice[1] == modifier_type[0]:
-                    chosen_modifier_type = modifier_type
-            chosen_modifier = modifier_options[chosen_modifier_type][choice]
-            chosen_modifiers[chosen_modifier_type] = chosen_modifier['power']
-            self.delete_invetory_item(chosen_modifier_type, choice)
-            del modifier_options[chosen_modifier_type]
-            if len(modifier_options) > 0:
-                pick_modifiers = input('do you wish for another modifer (y/any) ')
-            else:
-                pick_modifiers == 'n'
-        return chosen_modifiers
 
     def add_inventory_items(self):
         add_item = input(' do you wish to buy a modifier (y/any) ')
@@ -350,6 +346,45 @@ class TempStuff():
         self.date_last_saved = datetime.strptime(saved_data['date_last_saved'], "%Y/%m/%d")
         return saved_data
 
+    def main_game_loop(self, recv_msg_id):
+        self.catch_up_days()
+        self.inventory = dict(modifiers)
+        playing = True
+        while playing:
+            self.add_inventory_items()
+            threading.Event().wait(self.clock_speed * 60)
+            self.grow_plants(game_mode='normal')
+            still_playing = input('press enter to continue and any other key to stop')
+            if still_playing != '':
+                playing = False
+        self.save_game_state()
+
+    def get_modifiers(self, data):
+        pick_modifiers, choices = 'n', []
+        modifier_options = dict(self.inventory)
+        chosen_modifiers = {'temp': 0, 'sun': 0, 'water': 0}
+        pick_modifiers = input('do you wish to pick a modifer (y/any) ')
+        while pick_modifiers == 'y':
+            for modifier_type in modifier_options:
+                for modifier_key in modifier_options[modifier_type]:
+                    modifier = modifier_options[modifier_type][modifier_key]
+                    print(modifier['name']+': '+modifier['description']+' ('+modifier_key+')')
+                    choices.append([modifier_key, modifier_type])
+            choice = input('pick a modifer key to use\n >>>')
+            while choice not in [option[0] for option in choices]:
+                choice = input('pick a real modifer key to use\n >>>')
+            for modifier_type in modifier_options:
+                if choice[1] == modifier_type[0]:
+                    chosen_modifier_type = modifier_type
+            chosen_modifier = modifier_options[chosen_modifier_type][choice]
+            chosen_modifiers[chosen_modifier_type] = chosen_modifier['power']
+            self.delete_inventory_item(chosen_modifier_type, choice)
+            del modifier_options[chosen_modifier_type]
+            if len(modifier_options) > 0:
+                pick_modifiers = input('do you wish for another modifer (y/any) ')
+            else:
+                pick_modifiers == 'n'
+        return chosen_modifiers
 
         if clock_type == '0':
             return 1440 # 24hours * 60minutes
