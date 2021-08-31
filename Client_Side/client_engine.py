@@ -39,6 +39,12 @@ class ClientGame():
             choice = input(question).lower()
         return 'picked options from dict', choice
 
+    def view_current_plant_state(self, data):
+        question = 'Do you wish to see the current state of you plant (y/n)\n >>>'
+        if self.ask_boolean([question, ["y", "n"]])[1]:
+            print(data)
+        return 'displayed plant state', None
+
     def make_dict_to_send(self, msg_id, reply_data, msg):
         output_dict = dict(self.connection_manager.output_buffer)
         output_dict["player_id"], output_dict["msg"]  = self.my_id, msg

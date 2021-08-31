@@ -7,11 +7,12 @@ import sys, random
 
 class GameEngine():
     def __init__(self, player_id):
-        self.input_buffer, self.inventory,  self.my_plants = {}, {}, {}
-        self.current_folder = path.dirname(path.realpath(__file__))
+        self.current_folder, self.my_id = path.dirname(path.realpath(__file__)), player_id
         self.plant_modifiers = read_data(f'{self.current_folder}/modifiers.json')
-        self.save_file_name = 'temorpary_game.json'
-        self.score, self.my_id = 1, player_id
+        self.score, self.save_file_name = 1, 'temorpary_game.json'
+        self.inventory = dict(self.plant_modifiers)
+        self.input_buffer, self.my_plants = {}, {}
+        self.plant_db = None
         self.output_buffer = {
             "player_id": None,
             "msg_id": 1,
@@ -26,13 +27,11 @@ class GameEngine():
             pass
         print('end of wait')
         self.check_player_id()
-        plant_db = read_data(f'{self.current_folder}/plant_db.json')
         load_game_question = 'Do you want to (l)oad a game or open a (n)ew game?'
         if self.ask_boolean(load_game_question, ['l', 'n']):
             self.load_game_state()
-        while self.ask_boolean('Do you want a new plant (y / n)?)', ['y', 'n']):
-            self.add_plant(plant_db)
-        self.set_clock()
+        while self.ask_boolean('Do you want a new plant (y / n)?', ['y', 'n']):
+            self.add_plant()
         self.main_game_loop()
 
     def check_player_id(self):
@@ -60,7 +59,11 @@ class GameEngine():
         self.my_plants[self.save_file_name] = eval(f"{plant_data['type']}({games_dict[self.save_file_name]})")
         return saved_data
 
-    def add_plant(self, plant_db): 
+    def add_plant(self):
+        if self.plant_db == None:
+            plant_db = read_data(f'{self.current_folder}/plant_db.json')
+        else:
+            plant_db = dict(self.plant_db)
         plant_db_simple = {key:{"name": plant_db[key]["name"], "cost":plant_db[key]["cost"]} for key in plant_db}
         plant_db_simple["null"] = "continue without buying a plant"
         plant_key = self.buy_something('Please pick a plant', plant_db_simple)
@@ -71,41 +74,37 @@ class GameEngine():
     def set_clock(self):
         self.clock_speed = 1440 #set defult speed to how many minites in a day(24 * 60)
         if self.ask_boolean('Do you wish for realistic time(0) or vitual time(1)', ['1', '0']):
-            time_options ={"0": 0.1, "1": 5, "2": 10, "3": 100, "4": 150, "5": 1000, "6": 3000}
-            self.clock_speed = time_options[self.pick_from_dict('chose speed', time_options)]
+            self.plant_db = read_data(f'{self.current_folder}/plant_db.json')
+            time_options = {"0": 0.1, "1": 5, "2": 10, "3": 100, "4": 150, "5": 1000}
+            self.clock_speed = time_options[self.pick_from_dict('choose speed', time_options)]
         self.date_last_saved = datetime.strptime(datetime.now().strftime("%Y/%m/%d"), "%Y/%m/%d")
 
     def main_game_loop(self):
+        self.set_clock()
         self.catch_up_days()
-        self.inventory = dict(self.plant_modifiers)
         while True:
+            self.buy_modifiers()
+            while self.ask_boolean('Do you want a new plant (y / n)?', ['y', 'n']):
+                self.add_plant()
+            self.grow_plants()
+            self.send_plant_state()
             sleep(self.clock_speed * 60)
-            self.grow_plants(game_mode='normal')
 
     def catch_up_days(self):
-        days_to_run = 0
-        while self.get_missed_days() > 0:
-            self.grow_plants(game_mode='catchup')
-            days_to_run -= 1
-
-    def get_missed_days(self):
         todays_date = datetime.strptime(datetime.now().strftime("%Y/%m/%d"), "%Y/%m/%d")
-        return ((todays_date.day - self.date_last_saved.day) * 1440) / self.clock_speed
+        for _ in range(int(((todays_date.day - self.date_last_saved.day) * 1440) / self.clock_speed)):
+            self.grow_plants()
 
-    def grow_plants(self, game_mode):
-        weather_today = self.get_weather()
-        dead_plants = []
-        print(weather_today)
+    def grow_plants(self):
+        weather_today, dead_plants = self.get_weather(), []
         for key in self.my_plants:
             plant = self.my_plants[key]
             if plant.age < plant.days_to_harvest:
                 plant.grow(weather_today, self.choose_modifiers())
                 self.score += plant.health
             else:
-                print('Plant expired')
                 dead_plants.append(key)
-        for key in dead_plants:
-            del self.my_plants[key]
+        [self.my_plants.pop(key) for key in dead_plants]
 
     def get_weather(self):
         weather_dict = {
@@ -119,20 +118,35 @@ class GameEngine():
     def choose_modifiers(self):
         chosen_modifiers, modifier_options, del_options = {}, dict(self.plant_modifiers), []
         while self.ask_boolean('Do you wish to pick a modifier (y / n)', ['y', 'n']):
-            key = self.buy_something('Choose a modifier', modifier_options)
-            chosen_modifiers[key] = dict(self.plant_modifiers[key])
-            for modifer_key in modifier_options:
-                if modifier_options[modifer_key]["type"] == chosen_modifiers[-1]["type"]:
-                    del_options.append(modifer_key)
-                [chosen_modifiers.pop(option) for option in del_options]
+            modifier_options["null"] = "continue without choosing a modifier"
+            key = self.pick_from_dict('Choose a modifier', modifier_options)
+            if key != "null":
+                del modifier_options["null"]
+                chosen_modifiers[key] = dict(self.plant_modifiers[key])
+                for modifer_key in modifier_options:
+                    if modifier_options[modifer_key]["type"] == chosen_modifiers[list(chosen_modifiers.keys())[-1]]["type"]:
+                        del_options.append(modifer_key)
+                [modifier_options.pop(option) for option in del_options]
+                del_options = []
+        if 'null' in chosen_modifiers.keys():
+            del chosen_modifiers['null']
         for modifier_key in chosen_modifiers:
             self.inventory[modifier_key]['uses'] -= 1
             if self.inventory[modifier_key]['uses'] == 0:
                 del self.inventory[modifier_key]
-        sun_effect = [modifier['power'] for modifier in chosen_modifiers if modifier['type'] == 'sun']
-        temp_effect = [modifier['power'] for modifier in chosen_modifiers if modifier['type'] == 'temp']
-        water_effect = [modifier['power'] for modifier in chosen_modifiers if modifier['type'] == 'water']
-        return {'temp': sum(temp_effect), 'sun': sum(sun_effect), 'water': sum(water_effect)}
+        sun_effect = [chosen_modifiers[modifier]['power'] for modifier in chosen_modifiers if chosen_modifiers[modifier]['type'] == 'sun']
+        temp_effect = [chosen_modifiers[modifier]['power'] for modifier in chosen_modifiers if chosen_modifiers[modifier]['type'] == 'temp']
+        water_effect = [chosen_modifiers[modifier]['power'] for modifier in chosen_modifiers if chosen_modifiers[modifier]['type'] == 'water']
+        return {'temp': sum(temp_effect), 'sun': sum(sun_effect), 'rainfall': sum(water_effect)}
+
+    def buy_modifiers(self):
+        chosen_modifiers, modifier_options = {}, dict(self.plant_modifiers)
+        modifier_options["null"] = "continue without choosing a modifier"
+        while self.ask_boolean('Do you wish to buy a modifier (y / n)', ['y', 'n']):
+            key = self.buy_something('Choose a modifier', modifier_options)
+            if key != "null":
+                chosen_modifiers[key] = dict(self.plant_modifiers[key])
+        self.inventory.update(chosen_modifiers)
 
     def save_game_state(self):
         save_date = datetime.today().strftime("%Y/%m/%d")
@@ -183,3 +197,10 @@ class GameEngine():
         self.output_buffer = dict_to_send 
         while self.input_buffer['msg_id'] < self.output_buffer['msg_id']: 
             pass
+
+    def send_plant_state(self):
+        for key in self.my_plants:
+            plant = self.my_plants[key]
+            data_to_send =  plant.save_game_state()
+            msg_to_send = "view_current_plant_state"
+            self.set_output_buffer(data_to_send, msg_to_send)
