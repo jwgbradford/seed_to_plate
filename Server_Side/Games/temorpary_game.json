@@ -1,7 +1,67 @@
 {
-    "date_last_saved": "2021/08/25",
-    "clock_speed": 1440,
-    "score": 0,
-    "my_plants": {},
-    "my_inventory": {}
+    "date_last_saved": "2021/08/31",
+    "clock_speed": 0.1,
+    "score": 0.2428736266752035,
+    "my_plants": {
+        "plant_t0": {
+            "key": "t0",
+            "type": "Tuber",
+            "name": "potato",
+            "age": 2,
+            "my_height": 0.005782705397028655,
+            "my_branches": 2,
+            "my_produce": {},
+            "rate_of_bifurication": 0.9368999999999131
+        }
+    },
+    "my_inventory": {
+        "mt01": {
+            "name": "straw",
+            "description": "helps keep plants warm a little bit",
+            "type": "temperature",
+            "cost": 1,
+            "uses": 5,
+            "power": 0.25
+        },
+        "mt02": {
+            "name": "fan",
+            "description": "helps keep plants cool a little bit",
+            "type": "temperature",
+            "cost": 1,
+            "uses": 5,
+            "power": -0.25
+        },
+        "mw01": {
+            "name": "watering can",
+            "description": "helps keep plants watered a little bit",
+            "type": "water",
+            "cost": 1,
+            "uses": 1,
+            "power": 0.2
+        },
+        "mw02": {
+            "name": "umbrella",
+            "description": "blocks rainfall",
+            "type": "water",
+            "cost": 1,
+            "uses": 3,
+            "power": 0.25
+        },
+        "ms01": {
+            "name": "lamp",
+            "description": "creates more sunlight",
+            "type": "sunlight",
+            "cost": 1,
+            "uses": 3,
+            "power": 0.25
+        },
+        "ms02": {
+            "name": "sun shade",
+            "description": "blocks light",
+            "type": "sunlight",
+            "cost": 1,
+            "uses": 3,
+            "power": 0.25
+        }
+    }
 }

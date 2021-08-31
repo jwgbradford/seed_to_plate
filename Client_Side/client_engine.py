@@ -1,5 +1,4 @@
 from network import ConnectionManager
-from threading import Thread
 import json
 
 class ClientGame():
@@ -18,7 +17,7 @@ class ClientGame():
                     self.make_dict_to_send(input_dict["msg_id"], reply_data, msg)
                     send_msg_id = send_msg_id + 1
 
-    def send_id(self, data):
+    def send_id(self, _):
         self.my_id = int(input('what is your player id? \n >>> '))
         return 'got player_id', self.my_id
 

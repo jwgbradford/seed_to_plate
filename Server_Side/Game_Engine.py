@@ -99,11 +99,7 @@ class GameEngine():
         for key in self.my_plants:
             plant = self.my_plants[key]
             if plant.age < plant.days_to_harvest:
-                if game_mode == 'normal':
-                    plant.grow(weather_today, self.choose_modifiers())
-                else:
-                    plant.grow(weather_today, {'temp': 0, 'sun': 0, 'water': 0})
-                print(f'Plant_{key}: {plant.save_game_state()}')
+                plant.grow(weather_today, self.choose_modifiers())
                 self.score += plant.health
             else:
                 print('Plant expired')
@@ -121,19 +117,22 @@ class GameEngine():
         return weather_dict
 
     def choose_modifiers(self):
-        chosen_modifiers, modifier_options, del_options = [], dict(self.plant_modifiers), {}
+        chosen_modifiers, modifier_options, del_options = {}, dict(self.plant_modifiers), []
         while self.ask_boolean('Do you wish to pick a modifier (y / n)', ['y', 'n']):
-            chosen_modifiers.append(self.buy_something('Choose a modifier', modifier_options))
+            key = self.buy_something('Choose a modifier', modifier_options)
+            chosen_modifiers[key] = dict(self.plant_modifiers[key])
             for modifer_key in modifier_options:
                 if modifier_options[modifer_key]["type"] == chosen_modifiers[-1]["type"]:
                     del_options.append(modifer_key)
-            for option in del_options:
-                del chosen_modifiers[option]
+                [chosen_modifiers.pop(option) for option in del_options]
         for modifier_key in chosen_modifiers:
             self.inventory[modifier_key]['uses'] -= 1
             if self.inventory[modifier_key]['uses'] == 0:
                 del self.inventory[modifier_key]
-        return chosen_modifiers
+        sun_effect = [modifier['power'] for modifier in chosen_modifiers if modifier['type'] == 'sun']
+        temp_effect = [modifier['power'] for modifier in chosen_modifiers if modifier['type'] == 'temp']
+        water_effect = [modifier['power'] for modifier in chosen_modifiers if modifier['type'] == 'water']
+        return {'temp': sum(temp_effect), 'sun': sum(sun_effect), 'water': sum(water_effect)}
 
     def save_game_state(self):
         save_date = datetime.today().strftime("%Y/%m/%d")
