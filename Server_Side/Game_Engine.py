@@ -214,8 +214,10 @@ class GameEngine():
         }
 
     def record_modifier_choice(self, data):
+        modified_plant_key = list(self.my_plants)[self.current_plant]
+        print(self.inventory)
+        self.chosen_modifiers[modified_plant_key] = {self.inventory[modifier] for modifier in data['picked']}
         for modifier in data['picked']:
-            self.chosen_modifiers[self.current_plant] = {self.inventory[modifier]}
             if self.inventory[modifier]['uses'] > 1:
                 self.inventory[modifier]['uses'] -= 1
             else:
@@ -249,7 +251,7 @@ class GameEngine():
                 if self.clock_speed == 1440:
                     plant.grow(self.weather_today, self.chosen_modifiers)
                 else:
-                    plant.grow(weather_today, {'temp': 0, 'sun': 0, 'water': 0})
+                    plant.grow(self.weather_today, {'temp': 0, 'sun': 0, 'water': 0})
                 print(f'Plant_{key}: {plant.save_game_state()}')
                 self.score += plant.health
             else:
