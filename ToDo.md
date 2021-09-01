@@ -17,6 +17,8 @@
 http://datapoint.metoffice.gov.uk/public/data/{resource}?key={APIkey}
 https://www.metoffice.gov.uk/services/data/datapoint/code-definitions
 https://www.metoffice.gov.uk/services/data/datapoint/uk-3-hourly-site-specific-forecast
+https://www.metoffice.gov.uk/services/data/datapoint/api-reference
+
 
 ## Messages to client
 ``` 
