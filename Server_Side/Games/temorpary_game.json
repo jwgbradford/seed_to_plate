@@ -1,5 +1,5 @@
 {
-    "date_last_saved": "2021/08/31",
+    "date_last_saved": "2021/09/01",
     "clock_speed": 0.1,
     "score": 0.0,
     "my_plants": {
@@ -8,10 +8,10 @@
             "type": "Tuber",
             "name": "potato",
             "age": 1,
-            "my_height": 0.00012835916984744672,
+            "my_height": 0.0,
             "my_branches": 1,
             "my_produce": {},
-            "rate_of_bifurication": 0.9345999999999134
+            "rate_of_bifurication": 0.9235999999999146
         }
     },
     "my_inventory": {
