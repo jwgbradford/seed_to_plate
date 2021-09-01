@@ -1,7 +1,7 @@
 from Data_Handler import read_data, write_data
 from Plant_Handler import Tuber, Fruit
 from datetime import datetime
-import random, os, threading, sys
+import random, sys
 
 class GameEngine():
     def __init__(self, player_id):
@@ -246,8 +246,8 @@ class GameEngine():
         for key in self.my_plants:
             plant = self.my_plants[key]
             if plant.age < plant.days_to_harvest:
-                if game_mode == 'normal':
-                    plant.grow(weather_today, self.get_modifiers())
+                if self.clock_speed == 1440:
+                    plant.grow(self.weather_today, self.chosen_modifiers)
                 else:
                     plant.grow(weather_today, {'temp': 0, 'sun': 0, 'water': 0})
                 print(f'Plant_{key}: {plant.save_game_state()}')
