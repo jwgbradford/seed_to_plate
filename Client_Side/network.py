@@ -5,7 +5,7 @@ class ConnectionManager:
     def __init__(self) -> None:
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.output_buffer, self.input_buffer = {}, {}
-        self.client.connect(("localhost", 5555))
+        self.client.connect(("172.20.4.175", 5555))
         self.byte_length = 2048
         Thread(target=self.client_network_handler, args=()).start()
 

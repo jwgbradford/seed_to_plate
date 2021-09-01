@@ -5,7 +5,7 @@ import json, socket
 class SeedToPlateServer():
     def __init__(self) -> None:
         self.BUFSIZ = 2048
-        self.ADDR = ('', 5555)
+        self.ADDR = ('172.20.4.175', 5555)
         self.SERVER = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.SERVER.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.SERVER.bind(self.ADDR)
