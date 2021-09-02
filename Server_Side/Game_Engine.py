@@ -35,7 +35,9 @@ class GameEngine():
             "set_clock_speed",
             "pick_modifier",
             "grow_plants",
-            "record_modifier_choice"
+            "record_modifier_choice",
+            "get_weather",
+            "save_game"
         ]
         self.starting_inventory()
 
@@ -215,18 +217,28 @@ class GameEngine():
 
     def record_modifier_choice(self, data):
         modified_plant_key = list(self.my_plants)[self.current_plant]
-        print(self.inventory)
-        self.chosen_modifiers[modified_plant_key] = {self.inventory[modifier] for modifier in data['picked']}
+        self.chosen_modifiers[modified_plant_key] = self.get_modifier_power(data)
         for modifier in data['picked']:
             if self.inventory[modifier]['uses'] > 1:
                 self.inventory[modifier]['uses'] -= 1
             else:
                 del self.inventory[modifier]
         if self.current_plant == len(self.my_plants) - 1:
-            self.grow_plants()
+            self.grow_plants(data)
         else:
             self.current_plant += 1
             self.show_weather(self.weather_today)
+
+    def get_modifier_power(self, modifiers):
+        base_modifiers = {'temp': 0, 'sun': 0, 'water': 0}
+        for modifier in modifiers['picked']:
+            if modifier[1] == 't':
+                base_modifiers["temp"] += self.inventory[modifier]['power']
+            elif modifier[1] == 's':
+                base_modifiers["sun"] += self.inventory[modifier]['power']
+            else:
+                base_modifiers["water"] += self.inventory[modifier]['power']
+        return base_modifiers
 
     def catch_up_days(self):
         days_to_run = self.get_missed_days()
@@ -243,7 +255,6 @@ class GameEngine():
         return ((todays_date.day - self.date_last_saved.day) * 1440) / self.clock_speed
 
     def grow_plants(self, data):
-        input('ready to grow plants')
         dead_plants = []
         for key in self.my_plants:
             plant = self.my_plants[key]
@@ -259,6 +270,14 @@ class GameEngine():
                 dead_plants.append(key)
         for key in dead_plants:
             del self.my_plants[key]
+        self.output_buffer["msg"] = "ask_boolean"
+        self.output_buffer["data"] = {
+            "question" : "Would you like to (p)lay another day or (s)ave your game?",
+            "options" : {
+                "p" : "get_weather",
+                "s" : "save_game"
+            }
+        }
 
     def delete_inventory_item(self, modifier_type, modifier_uid):
         self.inventory[modifier_type][modifier_uid]['uses'] -= 1
@@ -297,9 +316,8 @@ class GameEngine():
             if len(add_item) == 0:
                 add_item = 'z'
 
-    def save_game_state(self):
+    def save_game(self, data):
         save_date = datetime.today().strftime("%Y/%m/%d")
-        game_id = input('Enter a number to save game state into\n >>> ')
         plants_to_write = {plant_id: self.my_plants[plant_id].save_game_state() for plant_id in self.my_plants}
         dict_to_save = {
             'date_last_saved': save_date,
@@ -308,8 +326,8 @@ class GameEngine():
             'my_plants': plants_to_write,
             'my_inventory' : self.inventory
         }
-        write_data(dict_to_save, f'Game{game_id}.json') #save dict form above in file from game_id
-
+        write_data(dict_to_save, f'Game{self.my_id}.json') #save dict form above in file from game_id
+        self.check_id(data)
 
 if __name__ ==  "__main__":
     my_game = GameEngine()

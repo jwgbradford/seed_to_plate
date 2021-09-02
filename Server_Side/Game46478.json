@@ -1,0 +1,56 @@
+{
+    "date_last_saved": "2021/09/02",
+    "clock_speed": {
+        "picked": "0.01"
+    },
+    "score": 0.0,
+    "my_plants": {
+        "plant_1": {
+            "key": "f0",
+            "type": "Fruit",
+            "name": "pea",
+            "age": 1,
+            "my_height": 4.584743383426308e-05,
+            "my_branches": 1,
+            "my_produce": {},
+            "rate_of_bifurication": 0.9391999999999129
+        }
+    },
+    "my_inventory": {
+        "mt01": {
+            "name": "straw",
+            "description": "helps keep plants warm a little bit",
+            "price": 1,
+            "uses": 5,
+            "power": 0.25
+        },
+        "mt02": {
+            "name": "fan",
+            "description": "helps keep plants cool a little bit",
+            "price": 1,
+            "uses": 5,
+            "power": -0.25
+        },
+        "mw02": {
+            "name": "umbrella",
+            "description": "blocks rainfall",
+            "price": 1,
+            "uses": 3,
+            "power": 0.25
+        },
+        "ms01": {
+            "name": "lamp",
+            "description": "creates more sunlight",
+            "price": 1,
+            "uses": 2,
+            "power": 0.25
+        },
+        "ms02": {
+            "name": "sun shade",
+            "description": "blocks light",
+            "price": 1,
+            "uses": 3,
+            "power": 0.25
+        }
+    }
+}

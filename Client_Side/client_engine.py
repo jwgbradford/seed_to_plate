@@ -60,7 +60,7 @@ class ClientGame():
         choices = []
         pick_another = 'y'
         print(options)
-        if len(options) > 0 and pick_another == 'y':
+        while len(options) > 0 and pick_another == 'y':
             question = f"{data['question']}\n >>> "
             for key in data['options']:
                 print(f'{key} : a {data["options"][key]["name"]}, it {data["options"][key]["description"]}')
