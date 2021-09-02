@@ -3,7 +3,7 @@
     "clock_speed": 0.1,
     "score": 0.0,
     "my_plants": {
-        "plant_t0": {
+        "plant_0": {
             "key": "t0",
             "type": "Tuber",
             "name": "potato",
