@@ -62,7 +62,7 @@ class ClientGame():
         print(options)
         while len(options) > 0 and pick_another == 'y':
             question = f"{data['question']}\n >>> "
-            for key in data['options']:
+            for key in options:
                 print(f'{key} : a {data["options"][key]["name"]}, it {data["options"][key]["description"]}')
             choice = input(question).lower()
             while choice not in options:

@@ -51,6 +51,7 @@ class Plant():
 
     def grow(self, weather_today, modifiers):
         self.age += 1
+        print(modifiers)
         sunlight_modifier = self.growth_modifier_sunlight(weather_today['sun'], modifiers['sun'])
         hydration_modifier = self.growth_modifier_hydration(weather_today['rainfall'],  modifiers['water'])
         temperature_modifier = self.growth_modifier_temperature(weather_today['temp'], weather_today['type'], modifiers['temp'])

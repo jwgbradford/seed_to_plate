@@ -35,7 +35,6 @@ class GameEngine():
             "new_game",
             "load_first_plant",
             "add_plant",
-            "real_time",
             "fast_time",
             "set_clock_speed",
             "pick_modifier",
@@ -143,7 +142,7 @@ class GameEngine():
         self.output_buffer["data"] = {
             "question" : "Would you like (r)eal time or (f)ast time?",
             "options" : {
-                "r" : "real_time",
+                "r" : "set_clock_speed",
                 "f" : "fast_time"
             }
         }
@@ -162,9 +161,6 @@ class GameEngine():
             }
         }
 
-    def real_time(self, data):
-        self.set_clock_speed(1440)
-
     def fast_time(self, data):
             self.output_buffer["msg"] = "pick_from_dict"
             self.output_buffer["data"] = {
@@ -174,7 +170,9 @@ class GameEngine():
             }
 
     def set_clock_speed(self, data):
-        if data["picked"] in self.speed_options:
+        print(data)
+        print(self.speed_options)
+        if data["picked"] in self.speed_options.keys():
             self.clock_speed = float(data["picked"])
         else:
             self.clock_speed = 1440
@@ -264,7 +262,7 @@ class GameEngine():
             plant = self.my_plants[key]
             if plant.age < plant.days_to_harvest:
                 if self.clock_speed == 1440:
-                    plant.grow(self.weather_today, self.chosen_modifiers)
+                    plant.grow(self.weather_today, self.chosen_modifiers[key])
                 else:
                     plant.grow(self.weather_today, {'temp': 0, 'sun': 0, 'water': 0})
                 print(f'Plant_{key}: {plant.save_game_state()}')
