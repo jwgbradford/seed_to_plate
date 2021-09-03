@@ -1,3 +1,4 @@
+from Modules.Get_Weather import get_weather_today, get_metofffice_data
 from Modules.Data_Handler import read_data, write_data
 from Plant_Handler import Tuber, Fruit
 from datetime import datetime
@@ -29,7 +30,7 @@ class GameEngine():
         load_game_question = 'Do you want to (l)oad a game or open a (n)ew game?'
         if self.ask_boolean(load_game_question, ['l', 'n']):
             self.load_game_state()
-        else: self.set_clock()
+        else: self.new_game_setup()
         self.main_game_loop()
 
     def check_player_id(self):
@@ -71,7 +72,7 @@ class GameEngine():
             plant_data = {'type': plant_db[plant_key]["type"], 'key': plant_key}
             self.my_plants[f'plant_{new_id}'] = eval(f'{plant_db[plant_key]["type"]}({plant_data})')
 
-    def set_clock(self):
+    def new_game_setup(self):
         self.clock_speed = 1440 #set defult speed to how many minites in a day(24 * 60)
         if self.ask_boolean('Do you wish for realistic time(0) or vitual time(1)', ['1', '0']):
             self.plant_db = read_data(f'{self.current_folder}/Data/plant_db.json')
@@ -82,6 +83,9 @@ class GameEngine():
     def main_game_loop(self):
         self.catch_up_days()
         while True:
+            if self.clock_speed == 1440:
+                print('Using Real weather for plant')
+                get_metofffice_data('val/wxfcs/all/json/310004', 'weather_today')
             while self.ask_boolean('Do you want a new plant (y / n)?', ['y', 'n']):
                 self.add_plant()
             self.buy_modifiers()
@@ -94,11 +98,18 @@ class GameEngine():
             self.grow_plants('catchup')
 
     def grow_plants(self, game_mode):
-        weather_today, dead_plants = self.get_weather(), []
+        dead_plants = []
+        if self.clock_speed == 1440:
+            weather_today = get_weather_today()
+        else: weather_today = self.get_weather()
         for key in self.my_plants:
             plant = self.my_plants[key]
             if plant.age < plant.days_to_harvest:
-                plant_modifiers = {'temp': 0, 'sun': 0, 'rainfall': 0}
+                plant_modifiers = {
+                    'type': 'normal',
+                    'temp': 0, 
+                    'sun': 0, 
+                    'rainfall': 0}
                 if game_mode != 'catchup':
                     plant_modifiers = self.choose_modifiers()
                 plant.grow(weather_today, plant_modifiers)
