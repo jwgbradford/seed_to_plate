@@ -1,4 +1,4 @@
-from Data_Handler import read_data, write_data
+from Modules.Data_Handler import read_data, write_data
 from Plant_Handler import Tuber, Fruit
 from datetime import datetime
 from os import listdir, path
@@ -8,11 +8,10 @@ import sys, random
 class GameEngine():
     def __init__(self, player_id):
         self.current_folder, self.my_id = path.dirname(path.realpath(__file__)), player_id
-        self.plant_modifiers = read_data(f'{self.current_folder}/modifiers.json')
+        self.plant_modifiers = read_data(f'{self.current_folder}/Data/modifiers.json')
+        self.input_buffer, self.my_plants, self.plant_db  = {}, {}, {}
         self.score, self.save_file_name = 1, 'temorpary_game.json'
         self.inventory = dict(self.plant_modifiers)
-        self.input_buffer, self.my_plants = {}, {}
-        self.plant_db = None
         self.output_buffer = {
             "player_id": None,
             "msg_id": 1,
@@ -30,8 +29,7 @@ class GameEngine():
         load_game_question = 'Do you want to (l)oad a game or open a (n)ew game?'
         if self.ask_boolean(load_game_question, ['l', 'n']):
             self.load_game_state()
-        while self.ask_boolean('Do you want a new plant (y / n)?', ['y', 'n']):
-            self.add_plant()
+        else: self.set_clock()
         self.main_game_loop()
 
     def check_player_id(self):
@@ -49,43 +47,44 @@ class GameEngine():
         print('ID okay')
 
     def load_game_state(self):
-        games_list = [name.spit(".")[0] for name in listdir(f'{self.current_folder}/Games/')]
-        games_dict = dict(zip(range(len(games_list)), games_list))
-        self.save_file_name = f"{self.pick_from_dict('enter Game ID to load', games_dict)}.json"
-        saved_data = read_data(f'{self.current_folder}/Games/{self.save_file_name}') #playes can pick multiple need to fix
+        list_of_game_files = [name.split(".")[0] for name in listdir(f'{self.current_folder}/Games/')]
+        games_dict = dict(zip([str(game_id) for game_id in list(range(len(list_of_game_files)))], list_of_game_files))
+        self.save_file_name = list_of_game_files[int(self.pick_from_dict('enter Game ID to load', games_dict))]+'.json'
+        saved_data = read_data(f'{self.current_folder}/Games/{self.save_file_name}')
         self.inventory, self.score = saved_data['my_inventory'], saved_data['score'] 
         self.clock_speed, plant_data = saved_data['clock_speed'], saved_data['my_plants']
         self.date_last_saved = datetime.strptime(saved_data['date_last_saved'], "%Y/%m/%d")
-        self.my_plants[self.save_file_name] = eval(f"{plant_data['type']}({games_dict[self.save_file_name]})")
-        return saved_data
+        for plant_id in plant_data:
+            self.my_plants[plant_id] = eval(f"{plant_data[plant_id]['type']}({plant_data[plant_id]})")
 
     def add_plant(self):
-        if self.plant_db == None:
-            plant_db = read_data(f'{self.current_folder}/plant_db.json')
-        else:
-            plant_db = dict(self.plant_db)
+        plant_db, new_id = dict(self.plant_db), '1'
+        if self.plant_db == {}:
+            plant_db = read_data(f'{self.current_folder}/Data/plant_db.json')
         plant_db_simple = {key:{"name": plant_db[key]["name"], "cost":plant_db[key]["cost"]} for key in plant_db}
         plant_db_simple["null"] = "continue without buying a plant"
         plant_key = self.buy_something('Please pick a plant', plant_db_simple)
         if plant_key != 'null':
+            if len(self.my_plants) != 0:
+                working_id = int(str(self.my_plants.keys()[-1][6:]))
+                new_id = str(working_id + 1)
             plant_data = {'type': plant_db[plant_key]["type"], 'key': plant_key}
-            self.my_plants[f'plant_{plant_key}'] = eval(f'{plant_db[plant_key]["type"]}({plant_data})')
+            self.my_plants[f'plant_{new_id}'] = eval(f'{plant_db[plant_key]["type"]}({plant_data})')
 
     def set_clock(self):
         self.clock_speed = 1440 #set defult speed to how many minites in a day(24 * 60)
         if self.ask_boolean('Do you wish for realistic time(0) or vitual time(1)', ['1', '0']):
-            self.plant_db = read_data(f'{self.current_folder}/plant_db.json')
+            self.plant_db = read_data(f'{self.current_folder}/Data/plant_db.json')
             time_options = {"0": 0.1, "1": 5, "2": 10, "3": 100, "4": 150, "5": 1000}
             self.clock_speed = time_options[self.pick_from_dict('choose speed', time_options)]
         self.date_last_saved = datetime.strptime(datetime.now().strftime("%Y/%m/%d"), "%Y/%m/%d")
 
     def main_game_loop(self):
-        self.set_clock()
         self.catch_up_days()
         while True:
-            self.buy_modifiers()
             while self.ask_boolean('Do you want a new plant (y / n)?', ['y', 'n']):
                 self.add_plant()
+            self.buy_modifiers()
             self.grow_plants()
             self.send_plant_state()
             sleep(self.clock_speed * 60)
@@ -158,7 +157,7 @@ class GameEngine():
             'my_plants': plants_to_write,
             'my_inventory' : self.inventory
         }
-        write_data(dict_to_save, f'{self.current_folder}/Games/{self.save_file_name}') #save dict form above in file from game_id
+        write_data(dict_to_save, f'{self.current_folder}/Data/Games/{self.save_file_name}') #save dict form above in file from game_id
 
     def ask_boolean(self, question, options):
         data_to_send = {"question": question, "options": options}
