@@ -59,7 +59,7 @@ class GameEngine():
 
     def add_plant(self):
         plant_db, new_id = dict(self.plant_db), '1'
-        if self.plant_db == {}:
+        if plant_db == {}:
             plant_db = read_data(f'{self.current_folder}/Data/plant_db.json')
         plant_db_simple = {key:{"name": plant_db[key]["name"], "cost":plant_db[key]["cost"]} for key in plant_db}
         plant_db_simple["null"] = "continue without buying a plant"
@@ -85,24 +85,26 @@ class GameEngine():
             while self.ask_boolean('Do you want a new plant (y / n)?', ['y', 'n']):
                 self.add_plant()
             self.buy_modifiers()
-            self.grow_plants()
-            self.send_plant_state()
+            self.grow_plants('normal')
             sleep(self.clock_speed * 60)
 
     def catch_up_days(self):
         todays_date = datetime.strptime(datetime.now().strftime("%Y/%m/%d"), "%Y/%m/%d")
         for _ in range(int(((todays_date.day - self.date_last_saved.day) * 1440) / self.clock_speed)):
-            self.grow_plants()
+            self.grow_plants('catchup')
 
-    def grow_plants(self):
+    def grow_plants(self, game_mode):
         weather_today, dead_plants = self.get_weather(), []
         for key in self.my_plants:
             plant = self.my_plants[key]
             if plant.age < plant.days_to_harvest:
-                plant.grow(weather_today, self.choose_modifiers())
+                plant_modifiers = {'temp': 0, 'sun': 0, 'rainfall': 0}
+                if game_mode != 'catchup':
+                    plant_modifiers = self.choose_modifiers()
+                plant.grow(weather_today, plant_modifiers)
+                self.send_plant_state()
                 self.score += plant.health
-            else:
-                dead_plants.append(key)
+            else: dead_plants.append(key)
         [self.my_plants.pop(key) for key in dead_plants]
 
     def get_weather(self):
@@ -157,7 +159,7 @@ class GameEngine():
             'my_plants': plants_to_write,
             'my_inventory' : self.inventory
         }
-        write_data(dict_to_save, f'{self.current_folder}/Data/Games/{self.save_file_name}') #save dict form above in file from game_id
+        write_data(dict_to_save, f'{self.current_folder}/Games/{self.save_file_name}') #save dict form above in file from game_id
 
     def ask_boolean(self, question, options):
         data_to_send = {"question": question, "options": options}

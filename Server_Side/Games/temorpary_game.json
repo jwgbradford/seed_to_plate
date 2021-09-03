@@ -1,17 +1,17 @@
 {
-    "date_last_saved": "2021/09/01",
+    "date_last_saved": "2021/09/03",
     "clock_speed": 0.1,
-    "score": 0.0,
+    "score": 0.0013313099066170864,
     "my_plants": {
-        "plant_0": {
-            "key": "t0",
-            "type": "Tuber",
-            "name": "potato",
-            "age": 1,
-            "my_height": 0.0,
+        "plant_1": {
+            "key": "f1",
+            "type": "Fruit",
+            "name": "tomato",
+            "age": 4,
+            "my_height": 7.98785943970252e-05,
             "my_branches": 1,
             "my_produce": {},
-            "rate_of_bifurication": 0.9235999999999146
+            "rate_of_bifurication": 0.8617999999999214
         }
     },
     "my_inventory": {

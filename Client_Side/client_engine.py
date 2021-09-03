@@ -40,8 +40,8 @@ class ClientGame():
         return 'picked options from dict', choice
 
     def view_current_plant_state(self, data):
-        question = 'Do you wish to see the current state of you plant (y/n)\n >>>'
-        if self.ask_boolean({'question': question, 'options': ["y", "n"]})[1]:
+        question = 'Do you wish to see the current state of you plant (y/n)'
+        if self.ask_boolean({'question': question, 'options': ["y", "n"]}) == 'y':
             print(data)
         return 'displayed plant state', None
 
