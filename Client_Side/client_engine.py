@@ -40,7 +40,7 @@ class ClientGame():
         self.connection_manager.output_buffer["msg"] = options[choice]
 
     def pick_from_dict(self, data):
-        options = data["options"].keys()
+        options = list(data["options"].keys())
         choice = None
         print(options)
         if len(options) > 0:

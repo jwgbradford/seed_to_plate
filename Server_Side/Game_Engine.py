@@ -23,6 +23,11 @@ class GameEngine():
         self.recv_msg_id = 0
         self.current_plant = 0
         self.chosen_modifiers = {}
+        self.speed_options = {
+            "0.01" : "1 second",
+            "0.1" : "6 seconds",
+            "1" : "1 minute"
+        }
         self.permitted_functions = [
             "check_id",
             "load_game",
@@ -73,7 +78,7 @@ class GameEngine():
         self.output_buffer["msg"] = "pick_from_dict"
         # this should be a proper os call to files on disc
         saved_files = {
-                "plant_01" : "my first save file"
+                "Game46478" : "my save file"
             }
         self.output_buffer["data"] = {
             "question" : "Enter Game ID to load",
@@ -164,16 +169,15 @@ class GameEngine():
             self.output_buffer["msg"] = "pick_from_dict"
             self.output_buffer["data"] = {
                 "question" : "How many minutes in real time, does 1 day virtual time last?",
-                "options" : {
-                    "0.01" : "1 second",
-                    "0.1" : "6 seconds",
-                    "1" : "1 minute"
-                },
+                "options" : self.speed_options,
                 "next_func" : "set_clock_speed"
             }
 
     def set_clock_speed(self, data):
-        self.clock_speed = data
+        if data["picked"] in self.speed_options:
+            self.clock_speed = float(data["picked"])
+        else:
+            self.clock_speed = 1440
         self.date_last_saved = datetime.strptime(datetime.now().strftime("%Y/%m/%d"), "%Y/%m/%d")
         self.get_weather(data)
 

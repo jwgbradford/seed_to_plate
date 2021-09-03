@@ -1,8 +1,6 @@
 {
     "date_last_saved": "2021/09/02",
-    "clock_speed": {
-        "picked": "0.01"
-    },
+    "clock_speed": 0.01,
     "score": 0.0,
     "my_plants": {
         "plant_1": {
@@ -10,10 +8,10 @@
             "type": "Fruit",
             "name": "pea",
             "age": 1,
-            "my_height": 4.584743383426308e-05,
+            "my_height": 0.00021865547218445337,
             "my_branches": 1,
             "my_produce": {},
-            "rate_of_bifurication": 0.9391999999999129
+            "rate_of_bifurication": 0.9321999999999137
         }
     },
     "my_inventory": {
@@ -42,7 +40,7 @@
             "name": "lamp",
             "description": "creates more sunlight",
             "price": 1,
-            "uses": 2,
+            "uses": 3,
             "power": 0.25
         },
         "ms02": {
