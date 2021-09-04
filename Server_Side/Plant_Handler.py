@@ -1,5 +1,4 @@
 from random import uniform
-from Data_Handler import read_data
 
 class Plant():
     def __init__(self, plant_data):

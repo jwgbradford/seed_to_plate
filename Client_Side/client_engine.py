@@ -24,7 +24,7 @@ class ClientGame():
         self.connection_manager.output_buffer["player_id"] = player_id
         self.connection_manager.output_buffer["msg"] = "check_id"
 
-    def ask_boolean(self, data):
+    def ask_multi_choice(self, data):
         question = f"{data['question']}\n >>> "
         choice = input(question).lower()[0]
         while choice not in data["options"].keys():
