@@ -52,7 +52,8 @@ class GameEngine():
         self.inventory = dict(modifiers)
 
     def run(self):
-        while True:
+        self.player_connected = True
+        while self.player_connected:
             if self.input_buffer["msg_id"] > self.recv_msg_id and self.input_buffer["msg"] in self.permitted_functions:
                 function_to_call = self.input_buffer["msg"]
                 if function_to_call == "":
