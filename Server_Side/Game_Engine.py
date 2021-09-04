@@ -2,6 +2,7 @@ from Plant_Handler import Tuber, Fruit
 from datetime import datetime
 from random import uniform
 import sys, requests, json
+from os import listdir, path
 
 class GameEngine():
     def __init__(self, player_id):
@@ -81,9 +82,8 @@ class GameEngine():
     def load_game(self, data):
         self.output_buffer["msg"] = "pick_from_dict"
         # this should be a proper os call to files on disc
-        saved_files = {
-                "Game46478" : "my save file"
-            }
+        games_list = [name.spit(".")[0] for name in listdir(f'{self.current_folder}/Games/')]
+        saved_files = dict(zip(range(len(games_list)), games_list))        
         self.output_buffer["data"] = {
             "question" : "Enter Game ID to load",
             "options" : saved_files,
