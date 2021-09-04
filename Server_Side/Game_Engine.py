@@ -1,4 +1,4 @@
-from Data_Handler import read_data, write_data
+from Data_Handler import read_data, write_data, get_weather_today
 from Plant_Handler import Tuber, Fruit
 from datetime import datetime
 import random, sys
@@ -7,6 +7,7 @@ class GameEngine():
     def __init__(self, player_id):
         self.score = 0
         self.my_id = str(player_id)
+        self.my_location_id = "310004"
         self.input_buffer = {
             "player_id": "####",
             "msg_id" : 0,
@@ -181,17 +182,19 @@ class GameEngine():
 
     def get_weather(self, data):
         self.current_plant = 0
+        '''
         weather_dict = {
             'type': random.choice(['Snow', 'Normal']),
             'temp': round(random.uniform(9, 21), 2),
             'sun': round(random.uniform(0,8), 2),
             'rainfall': random.uniform(0, 0.13143)
             }
-        self.weather_today = weather_dict
-        self.show_weather(weather_dict)
+        '''
+        self.weather_today = get_weather_today(self.my_location_id)
+        self.show_weather(data)
 
-    def show_weather(self, weather_dict):
-        question = f'Todays weather is {weather_dict}, do you want to apply a modifier to your plants? (y) / (n)'
+    def show_weather(self, data):
+        question = f'Todays weather is {self.weather_today}, do you want to apply a modifier to your plants? (y) / (n)'
         self.output_buffer["msg"] = "ask_boolean"
         self.output_buffer["data"] = {
             "question" : question,
