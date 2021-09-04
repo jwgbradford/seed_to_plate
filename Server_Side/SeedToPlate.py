@@ -28,7 +28,8 @@ class SeedToPlateServer():
     # each player has a handler thread
     def handle_player(self, conn, player_id):
         ge = GameEngine(player_id)
-        GE_RUN = Thread(target=ge.run, args=()).start()
+        GE_RUN = Thread(target=ge.run, args=())
+        GE_RUN.start()
         recv_msg_id = 0
         print(f'player_{player_id} joined!')
         while True:

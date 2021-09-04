@@ -80,10 +80,10 @@ class GameEngine():
             # need some method to handle player validation fail
 
     def load_game(self, data):
-        self.output_buffer["msg"] = "pick_from_dict"
-        # this should be a proper os call to files on disc
-        games_list = [name.spit(".")[0] for name in listdir(f'{self.current_folder}/Games/')]
+        current_folder = path.dirname(path.realpath(__file__))
+        games_list = [name.spit(".")[0] for name in listdir(f'{current_folder}/Games/')]
         saved_files = dict(zip(range(len(games_list)), games_list))        
+        self.output_buffer["msg"] = "pick_from_dict"
         self.output_buffer["data"] = {
             "question" : "Enter Game ID to load",
             "options" : saved_files,
