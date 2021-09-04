@@ -60,7 +60,7 @@ class ClientGame():
         choices = []
         pick_another = 'y'
         print(options)
-        while len(options) > 0 and pick_another == 'y':
+        while len(options) > 0 and pick_another[0] == 'y':
             question = f"{data['question']}\n >>> "
             for key in options:
                 print(f'{key} : a {data["options"][key]["name"]}, it {data["options"][key]["description"]}')
@@ -73,7 +73,7 @@ class ClientGame():
             choices.append(choice)
             options.remove(choice)
             if len(options) > 0:
-                pick_another = input('would you like to choose another (y) / (any key)?').lower()[0]
+                pick_another = input('would you like to choose another (y) / (any key)?').lower()
         self.connection_manager.output_buffer["msg"] = data["next_func"]
         self.connection_manager.output_buffer["data"] = {"picked" : choices}
 
