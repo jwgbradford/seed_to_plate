@@ -24,9 +24,9 @@ class ClientGame():
     def ask_boolean(self, data):
         question = f"{data['question']}\n >>> "
         options = data["options"]
-        choice = input(question).lower()[0]
+        choice = input(question).lower()
         while choice not in options:
-            choice = input(question).lower()[0]
+            choice = input(question).lower()
         return 'answer to boolean question', choice
 
     def pick_from_dict(self, data):
@@ -40,8 +40,8 @@ class ClientGame():
         return 'picked options from dict', choice
 
     def view_current_plant_state(self, data):
-        question = 'Do you wish to see the current state of you plant (y/n)\n >>>'
-        if self.ask_boolean({'question': question, 'options': ["y", "n"]})[1]:
+        question = 'Do you wish to see the current state of you plant (y/n)'
+        if self.ask_boolean({'question': question, 'options': ["y", "n"]})[1]== 'y':
             print(data)
         return 'displayed plant state', None
 

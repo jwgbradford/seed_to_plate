@@ -1,5 +1,5 @@
+from Modules.Data_Handler import read_data
 from random import uniform
-from Data_Handler import read_data
 import os
 
 class Plant():
@@ -16,7 +16,7 @@ class Plant():
         self.my_branches, self.expected_yield = 1, 1
 
     def set_base_attributes(self, plant_model):
-        base_model = read_data(os.path.dirname(os.path.realpath(__file__))+'/plant_db.json')[plant_model['key']]
+        base_model = read_data(os.path.dirname(os.path.realpath(__file__))+'/Data/plant_db.json')[plant_model['key']]
         self.my_key = plant_model['key']
         for key in base_model:
             setattr(self, key, base_model[key])
