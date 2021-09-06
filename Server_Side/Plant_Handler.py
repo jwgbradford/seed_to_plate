@@ -1,5 +1,6 @@
 from random import uniform
 from Data_Handler import read_data
+import os
 
 class Plant():
     def __init__(self, plant_data):
@@ -11,10 +12,11 @@ class Plant():
         self.my_flowers, self.my_fruit, self.pollinated_flowers = 0, 0, 0
         self.my_height, self.stored_water, self.age = 0, 0, 0
         self.sun_recovery_day, self.water_recovery_day, self.temp_recovery_day = 0, 0, 0
-        self.my_branches = 1
+        self.my_produce = {}
+        self.my_branches, self.expected_yield = 1, 1
 
     def set_base_attributes(self, plant_model):
-        base_model = read_data('plant.json')[plant_model['type']][plant_model['key']]
+        base_model = read_data(os.path.dirname(os.path.realpath(__file__))+'/plant_db.json')[plant_model['key']]
         self.my_key = plant_model['key']
         for key in base_model:
             setattr(self, key, base_model[key])
@@ -56,7 +58,7 @@ class Plant():
     def grow(self, weather_today, modifiers):
         self.age += 1
         sunlight_modifier = self.growth_modifier_sunlight(weather_today['sun'], modifiers['sun'])
-        hydration_modifier = self.growth_modifier_hydration(weather_today['rainfall'],  modifiers['water'])
+        hydration_modifier = self.growth_modifier_hydration(weather_today['rainfall'],  modifiers['rainfall'])
         temperature_modifier = self.growth_modifier_temperature(weather_today['temp'], weather_today['type'], modifiers['temp'])
         self.health = self.my_height / (self.daily_growth_rate * self.age)
         if self.age < self.days_to_harvest:
@@ -64,7 +66,40 @@ class Plant():
         self.plant_type_growth()
 
     def plant_type_growth(self):
-        pass
+        if (self.sun_recovery_day + self.water_recovery_day + self.temp_recovery_day) == 0:
+            if (self.age < self.days_to_flower) and (self.my_height > 0):
+                self.add_branches()
+            elif self.age == self.days_to_flower:
+                self.expected_yield = round(self.my_branches / uniform(self.min_fruit_per_branch, self.max_fruit_per_branch))
+            elif self.days_to_flower < self.age < self.days_to_fruit:
+                if len(self.my_produce) < self.expected_yield:
+                    self.add_produce()
+                self.grow_produce()
+            elif self.days_to_fruit < self.age < self.days_to_harvest:
+                self.grow_produce()
+
+    def add_produce(self):
+        index = len(self.my_produce)
+        for _ in range(self.my_branches):
+            if self.health > uniform(0, 0.5) and len(self.my_produce) < self.expected_yield:
+                self.my_produce[index] = {
+                    "status" : "flower", 
+                    "health" : self.health, 
+                    "size" : 0
+                }
+                index += 1
+
+    def grow_produce(self):
+        for index in self.my_produce:
+            produce = self.my_produce[index]
+            if produce["health"] > uniform(0, 0.5):
+                if produce["status"] == 'flower':
+                    produce["status"] = 'pollinated_flower'
+                elif produce["status"] == 'pollinated_flower':
+                    produce["status"] = 'fruit'
+                else:
+                    produce["size"] += produce["health"]
+                self.my_produce[index] = produce
 
     def apply_modifier(self, actual, ideal, modifier_value):
         modifier_effect = (ideal - actual ) * modifier_value
@@ -172,26 +207,5 @@ class Fruit(Plant):
         return my_flowers
 
 class Tuber(Plant):
-    def __init__(self, plant_key):
-        super().__init__(plant_key)
-        self.current_tubers = 0
-        self.tuber_size = 0
-
-    def plant_type_growth(self):
-        if 0 < self.age <= self.days_to_flower:
-            self.add_branches()
-        elif (self.days_to_flower <= self.age <= (self.days_to_fruit)): # small tubers grow when plant flowers
-            self.current_tubers = self.ideal_tubers * ( (self.age - self.days_to_flower) / (self.days_to_fruit - self.days_to_flower) )
-        elif self.days_to_fruit < self.age < self.days_to_harvest:
-            self.tuber_size += self.health
-
-    def save_game_state(self):
-        return {'key': self.my_key,
-                'type': self.__class__.__name__, 
-                'name': self.name, 
-                'age': self.age, 
-                'tuber_size': self.tuber_size,
-                'my_branches': self.my_branches,
-                'current_tubers': self.current_tubers,
-                'my_height': round(self.my_height, 2), 
-                'rate_of_bifurication' : self.rate_of_bifurication}
+    def __init__(self, plant_data):
+        super().__init__(plant_data)
