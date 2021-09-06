@@ -28,10 +28,9 @@ class SeedToPlateServer():
     # each player has a handler thread
     def handle_player(self, conn, player_id):
         ge = GameEngine(player_id)
-        GE_RUN = Thread(target=ge.run, args=())
-        GE_RUN.start()
-        recv_msg_id = 0
+        Thread(target=ge.run, args=()).start()
         print(f'player_{player_id} joined!')
+        recv_msg_id = 0
         while True:
             self.send(ge.output_buffer, conn)
             try:
@@ -39,16 +38,13 @@ class SeedToPlateServer():
             except:
                 print(f'player_{player_id} left!')
                 break
-            if data["player_id"] == player_id:
-                print('client not valid')
-                break
-            if data["msg_id"] > recv_msg_id:
-                ge.input_buffer = data
-                recv_msg_id = data["msg_id"]
-            if not GE_RUN.is_alive():
-                break
+            if len(data) > 0:
+                if data["msg_id"] > recv_msg_id:
+                    print(data)
+                    ge.input_buffer = data
+                    recv_msg_id = data["msg_id"]
+        ge.save_game_state()
         conn.close()
-        GE_RUN.player_connected = False
 
     def send(self, data, conn):
         json_data = json.dumps(data)

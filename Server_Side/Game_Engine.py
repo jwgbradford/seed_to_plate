@@ -81,7 +81,7 @@ class GameEngine():
 
     def load_game(self, data):
         current_folder = path.dirname(path.realpath(__file__))
-        games_list = [name.spit(".")[0] for name in listdir(f'{current_folder}/Games/')]
+        games_list = [name.spit(".")[0] for name in listdir(current_folder)] # not working yet
         saved_files = dict(zip(range(len(games_list)), games_list))        
         self.output_buffer["msg"] = "pick_from_dict"
         self.output_buffer["data"] = {
